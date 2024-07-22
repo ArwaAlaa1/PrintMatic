@@ -5,6 +5,14 @@ VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintMatic", "PrintMatic\PrintMatic.csproj", "{5F9FCAB8-B233-47D4-8A49-B414A2AF5483}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintMatic.Core", "PrintMatic.Core\PrintMatic.Core.csproj", "{CE411632-2611-4A36-A866-93F1BD689AEF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintMatic.Repository", "PrintMatic.Repository\PrintMatic.Repository.csproj", "{F6732CB5-EF5A-4AC8-9902-B8CDC6208398}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintMartic_DashBoard", "PrintMartic_DashBoard\PrintMartic_DashBoard.csproj", "{8F166EEF-9D52-4AE4-B363-F39376E5D869}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrintMatic.Services", "PrintMatic.Services\PrintMatic.Services.csproj", "{DE12930C-050C-44BC-A441-4F978D54730C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +23,22 @@ Global
 		{5F9FCAB8-B233-47D4-8A49-B414A2AF5483}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F9FCAB8-B233-47D4-8A49-B414A2AF5483}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F9FCAB8-B233-47D4-8A49-B414A2AF5483}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE411632-2611-4A36-A866-93F1BD689AEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE411632-2611-4A36-A866-93F1BD689AEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE411632-2611-4A36-A866-93F1BD689AEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE411632-2611-4A36-A866-93F1BD689AEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6732CB5-EF5A-4AC8-9902-B8CDC6208398}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6732CB5-EF5A-4AC8-9902-B8CDC6208398}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6732CB5-EF5A-4AC8-9902-B8CDC6208398}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6732CB5-EF5A-4AC8-9902-B8CDC6208398}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F166EEF-9D52-4AE4-B363-F39376E5D869}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F166EEF-9D52-4AE4-B363-F39376E5D869}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F166EEF-9D52-4AE4-B363-F39376E5D869}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F166EEF-9D52-4AE4-B363-F39376E5D869}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE12930C-050C-44BC-A441-4F978D54730C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE12930C-050C-44BC-A441-4F978D54730C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE12930C-050C-44BC-A441-4F978D54730C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE12930C-050C-44BC-A441-4F978D54730C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
