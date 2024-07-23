@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using PrintMatic.Repository.Data;
+
 namespace PrintMartic_DashBoard
 {
 	public class Program
@@ -8,7 +11,9 @@ namespace PrintMartic_DashBoard
 
 			// Add services to the container.
 			builder.Services.AddControllersWithViews();
-
+			//Add Context Services
+			builder.Services.AddDbContext<PrintMaticContext>(
+				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.

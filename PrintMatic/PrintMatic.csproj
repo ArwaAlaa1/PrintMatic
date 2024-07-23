@@ -24,4 +24,10 @@
     <ProjectReference Include="..\PrintMatic.Services\PrintMatic.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="PrintMatic.Repository">
+      <HintPath>..\PrintMatic.Repository\bin\Debug\net8.0\PrintMatic.Repository.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

@@ -8,18 +8,21 @@
 
   <ItemGroup>
     <Compile Remove="Data\Configurations\**" />
-    <Compile Remove="Data\Migrations\**" />
     <Compile Remove="Repository\**" />
     <EmbeddedResource Remove="Data\Configurations\**" />
-    <EmbeddedResource Remove="Data\Migrations\**" />
     <EmbeddedResource Remove="Repository\**" />
     <None Remove="Data\Configurations\**" />
-    <None Remove="Data\Migrations\**" />
     <None Remove="Repository\**" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PrintMatic.Core\PrintMatic.Core.csproj" />
+    <ProjectReference Include="..\PrintMatic.Services\PrintMatic.Services.csproj" />
     <ProjectReference Include="..\PrintMatic\PrintMatic.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\Migrations\" />
   </ItemGroup>
 
 </Project>

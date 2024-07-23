@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using PrintMatic.Repository.Data;
+
 namespace PrintMatic
 {
 	public class Program
@@ -13,8 +16,11 @@ namespace PrintMatic
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
+            //Add Context Services
+            builder.Services.AddDbContext<PrintMaticContext>(
+                options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
-			var app = builder.Build();
+            var app = builder.Build();
 
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
