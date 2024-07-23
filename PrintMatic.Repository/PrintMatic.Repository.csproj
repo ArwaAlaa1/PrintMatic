@@ -7,9 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Configurations\" />
-    <Folder Include="Data\Migrations\" />
-    <Folder Include="Repository\" />
+    <Compile Remove="Data\Configurations\**" />
+    <Compile Remove="Data\Migrations\**" />
+    <Compile Remove="Repository\**" />
+    <EmbeddedResource Remove="Data\Configurations\**" />
+    <EmbeddedResource Remove="Data\Migrations\**" />
+    <EmbeddedResource Remove="Repository\**" />
+    <None Remove="Data\Configurations\**" />
+    <None Remove="Data\Migrations\**" />
+    <None Remove="Repository\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PrintMatic\PrintMatic.csproj" />
   </ItemGroup>
 
 </Project>

@@ -7,8 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\" />
-    <Folder Include="Repositories.Contract\" />
+    <Compile Remove="Entities\**" />
+    <Compile Remove="Repositories.Contract\**" />
+    <EmbeddedResource Remove="Entities\**" />
+    <EmbeddedResource Remove="Repositories.Contract\**" />
+    <None Remove="Entities\**" />
+    <None Remove="Repositories.Contract\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PrintMatic\PrintMatic.csproj" />
   </ItemGroup>
 
 </Project>
