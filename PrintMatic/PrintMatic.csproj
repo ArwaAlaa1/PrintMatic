@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -21,13 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PrintMatic.Services\PrintMatic.Services.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="PrintMatic.Repository">
-      <HintPath>..\PrintMatic.Repository\bin\Debug\net8.0\PrintMatic.Repository.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\PrintMatic.Repository\PrintMatic.Repository.csproj" />
   </ItemGroup>
 
 </Project>

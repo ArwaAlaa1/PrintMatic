@@ -12,8 +12,4 @@
     <None Remove="Repositories.Contract\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\PrintMatic\PrintMatic.csproj" />
-  </ItemGroup>
-
 </Project>
