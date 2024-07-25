@@ -12,4 +12,8 @@
     <None Remove="Repositories.Contract\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Helper\" />
+  </ItemGroup>
+
 </Project>
