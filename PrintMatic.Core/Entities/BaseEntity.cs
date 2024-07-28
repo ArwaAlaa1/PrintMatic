@@ -13,8 +13,8 @@ namespace PrintMatic.Core.Entities
         public DateTime CreatedDate { get; set; } = DateTime.Now;
         public DateTime ModifiedDate { get; set; } = DateTime.Now;
 
-        public bool IsDeleted { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsDeleted { get; set; }= false;
+        public bool IsActive { get; set; } = true;
 
 
     }

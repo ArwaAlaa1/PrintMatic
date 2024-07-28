@@ -10,6 +10,8 @@ namespace PrintMartic_DashBoard.Helper
 		public MappingProfiles()
 		{
 			CreateMap<CategoryVM, Category>().ReverseMap();
-		}
-	}
+            CreateMap<SaleVM, Sale>().ReverseMap();
+
+        }
+    }
 }

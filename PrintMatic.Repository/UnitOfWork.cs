@@ -28,7 +28,7 @@ namespace PrintMatic.Repository
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+             _Context.Dispose();
         }
     }
 }
