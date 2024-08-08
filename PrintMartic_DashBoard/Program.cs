@@ -19,6 +19,7 @@ namespace PrintMartic_DashBoard
 			#region Services
 			builder.Services.AddDbContext<PrintMaticContext>(
 				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
+
 			builder.Services.AddScoped(typeof(IUnitOfWork<>),typeof(UnitOfWork<>));
 			builder.Services.AddAutoMapper(typeof(MappingProfiles));
 			#endregion

@@ -8,15 +8,14 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\PrintMatic.Repository\PrintMatic.Repository.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="wwwroot\images\category\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PrintMatic\PrintMatic.csproj" />
   </ItemGroup>
 
 </Project>
