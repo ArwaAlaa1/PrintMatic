@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PrintMatic.Core.Entities.Identity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -32,9 +33,9 @@ namespace PrintMatic.Core.Entities
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
 
-		public Company Company { get; set; }
-		[ForeignKey(nameof(Company))]
-		public int CompanyId { get; set; }
+		public AppUser AppUser { get; set; }
+		[ForeignKey(nameof(AppUser))]
+		public string UserId { get; set; }
 
 	}
 }
