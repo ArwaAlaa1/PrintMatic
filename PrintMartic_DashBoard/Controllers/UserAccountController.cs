@@ -2,7 +2,7 @@
 
 namespace PrintMartic_DashBoard.Controllers
 {
-	public class RoleController1 : Controller
+	public class UserAccountController : Controller
 	{
 		public IActionResult Index()
 		{

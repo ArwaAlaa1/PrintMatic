@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PrintMatic.Core\PrintMatic.Core.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PrintMartic_DashBoard.Helper;
 using PrintMatic.Core;
+using PrintMatic.Core.Entities.Identity;
 using PrintMatic.Repository;
 using PrintMatic.Repository.Data;
 
@@ -17,12 +19,18 @@ namespace PrintMartic_DashBoard
 			//Add Context Services
 
 			#region Services
+
 			builder.Services.AddDbContext<PrintMaticContext>(
 				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
+			builder.Services.AddIdentity<AppUser, IdentityRole>()
+				.AddEntityFrameworkStores<PrintMaticContext>();
+
 			builder.Services.AddScoped(typeof(IUnitOfWork<>),typeof(UnitOfWork<>));
 			builder.Services.AddAutoMapper(typeof(MappingProfiles));
+			
 			#endregion
+
 			var app = builder.Build();
 
 			// Configure the HTTP request pipeline.

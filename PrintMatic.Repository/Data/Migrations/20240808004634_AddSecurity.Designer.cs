@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrintMatic.Repository.Data;
 
 #nullable disable
 
-namespace PrintMatic.Repository.Data.Migrations
+namespace PrintMatic.Repository.Data.Migrarions
 {
     [DbContext(typeof(PrintMaticContext))]
-    partial class PrintMaticContextModelSnapshot : ModelSnapshot
+    [Migration("20240808004634_AddSecurity")]
+    partial class AddSecurity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

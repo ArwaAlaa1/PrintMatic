@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PrintMatic.Core.Entities;
+using PrintMatic.Core.Entities.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace PrintMatic.Repository.Data
 {
-	public class PrintMaticContext: DbContext
+	public class PrintMaticContext: IdentityDbContext<AppUser>
 	{
         public PrintMaticContext()
         {
