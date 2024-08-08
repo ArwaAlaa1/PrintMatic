@@ -7,13 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helper\**" />
     <Compile Remove="Repositories.Contract\**" />
+    <EmbeddedResource Remove="Helper\**" />
     <EmbeddedResource Remove="Repositories.Contract\**" />
+    <None Remove="Helper\**" />
     <None Remove="Repositories.Contract\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helper\" />
+    <Folder Include="Repository.Contract\" />
   </ItemGroup>
 
 </Project>

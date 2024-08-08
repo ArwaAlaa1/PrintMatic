@@ -32,5 +32,9 @@ namespace PrintMatic.Core.Entities
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
 
-    }
+		public Company Company { get; set; }
+		[ForeignKey(nameof(Company))]
+		public int CompanyId { get; set; }
+
+	}
 }
