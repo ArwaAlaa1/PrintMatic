@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
 using System;
@@ -14,16 +15,22 @@ namespace PrintMatic.Repository.Data
 {
 	public class PrintMaticContext: IdentityDbContext<AppUser>
 	{
+        private readonly IConfiguration configuration;
+
+        public PrintMaticContext(DbContextOptions<PrintMaticContext> options,IConfiguration configuration)
+            :base(options)
+        {
+            this.configuration = configuration;
+        }
         public PrintMaticContext()
         {
             
         }
-        public PrintMaticContext(DbContextOptions<PrintMaticContext> options)
-            :base(options)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("conn"));
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -33,7 +40,8 @@ namespace PrintMatic.Repository.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Sale> Sales { get; set; }
-
+        public DbSet<ProductPhotos> ProductPhotos { get; set; }
+        public DbSet<ProductSale> productSales { get; set; }
         public DbSet<Review> Reviews { get; set; }
     }
 }

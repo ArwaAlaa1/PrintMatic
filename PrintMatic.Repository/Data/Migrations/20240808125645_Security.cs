@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PrintMatic.Repository.Data.Migrarions
+namespace PrintMatic.Repository.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddSecurity : Migration
+    public partial class Security : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

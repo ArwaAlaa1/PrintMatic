@@ -39,7 +39,7 @@ namespace PrintMartic_DashBoard.Controllers
 
         //Create Sale --Post
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(int id, SaleVM saleVM)
         {
             
@@ -82,7 +82,7 @@ namespace PrintMartic_DashBoard.Controllers
 
         //Edit Sale -- post
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, SaleVM saleVM)
         {
             if (ModelState.IsValid)
@@ -123,13 +123,15 @@ namespace PrintMartic_DashBoard.Controllers
 
         //Delete Sale --post
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id, Sale sale) 
         {
             try
             {
-                _unitOfWork.generic.Delete(sale);
+                sale.IsDeleted = true;
+                _unitOfWork.generic.Update(sale);
                 var count =_unitOfWork.Complet();
+                
                 if (count > 0)
                 {
                     TempData["Message"] = "Sale Deleted Successfully";

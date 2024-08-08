@@ -16,10 +16,10 @@ namespace PrintMatic.Core.Entities
 
         public int? NumOfPhotos { get; set; }
 
-        public DateTime NormalMinDate { get; set; }
-        public DateTime NormalMaxDate { get; set; }
-        public DateTime UrgentMinDate { get; set; }
-        public DateTime UrgentMaxDate { get; set; }
+        public int NormalMinDate { get; set; } //int
+        public int NormalMaxDate { get; set; }
+        public int UrgentMinDate { get; set; }
+        public int UrgentMaxDate { get; set; }
 
         public decimal NormalPrice { get; set; }
         public decimal UrgentPrice { get;set; }
@@ -28,7 +28,7 @@ namespace PrintMatic.Core.Entities
         public bool Text { get; set; }
         public bool Date { get; set; }
         
-        public Category Category { get; set; }
+        public virtual Category Category { get; set; }
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
 

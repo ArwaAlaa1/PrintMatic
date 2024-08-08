@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PrintMartic_DashBoard.ViewModels;
@@ -8,38 +9,74 @@ namespace PrintMartic_DashBoard.Controllers
 	public class RoleController : Controller
 	{
 		private readonly RoleManager<IdentityRole> roleManager;
+        private readonly IMapper mapper;
 
-		public RoleController(RoleManager<IdentityRole> roleManager)
+        public RoleController(RoleManager<IdentityRole> roleManager,IMapper mapper)
 		{
 			this.roleManager = roleManager;
-		}
+            this.mapper = mapper;
+        }
 		public async Task<IActionResult> Index()
 		{
 			var Roles = await roleManager.Roles.ToListAsync();
 			return View(Roles);
 		}
 
+
+        // GET: RoleController/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: RoleController/Create
         [HttpPost]
-        public async Task<IActionResult> Create(RoleFormViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(RoleViewModel roleViewModel)
         {
             if (ModelState.IsValid)
             {
-                var RoleExsits = await roleManager.RoleExistsAsync(model.Name);
-                if (!RoleExsits)
+                var roleExist = await roleManager.RoleExistsAsync(roleViewModel.RoleName);
+                try
                 {
-                    await roleManager.CreateAsync(new IdentityRole(model.Name.Trim()));
-                    return RedirectToAction(nameof(Index), await roleManager.Roles.ToListAsync());
+                    if (!roleExist)
+                    {
+                        var mappedrole = mapper.Map<RoleViewModel,IdentityRole>(roleViewModel);
+                        await roleManager.CreateAsync(mappedrole);
+
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Name", "Role Name Is Exist");
+                        return View(roleViewModel);
+                    }
+
                 }
-                else
+                catch (Exception ex)
                 {
-                    ModelState.AddModelError("Name", "Role Is Exists");
-                    return View(nameof(Index), await roleManager.Roles.ToListAsync());
-
-
+                    ModelState.AddModelError(string.Empty, ex.Message);
                 }
             }
             return RedirectToAction(nameof(Index));
+
         }
+
+        public async Task<IActionResult> Delete(string id)
+        {
+            var role = await roleManager.FindByIdAsync(id);
+            await roleManager.DeleteAsync(role);
+            return RedirectToAction(nameof(Index));
+        }
+
+        //public async Task<IActionResult> Edit(string id)
+        //{
+        //    var role = await roleManager.FindByIdAsync(id);
+        //    var mappedRole = new RoleViewModel()
+        //    {
+        //        Name = role.Name
+        //    };
+        //    return View(mappedRole);
+        //}
     }
 
 }

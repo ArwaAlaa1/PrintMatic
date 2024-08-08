@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using PrintMartic_DashBoard.Helper.ViewModels;
+using PrintMartic_DashBoard.ViewModels;
 using PrintMatic.Core.Entities;
 
 namespace PrintMartic_DashBoard.Helper
@@ -11,6 +13,14 @@ namespace PrintMartic_DashBoard.Helper
 		{
 			CreateMap<CategoryVM, Category>().ReverseMap();
             CreateMap<SaleVM, Sale>().ReverseMap();
+			CreateMap<ProductPhotos, ProductPhotosVM>().ReverseMap();
+            CreateMap<Review, ReviewVM>().ReverseMap();
+            CreateMap<ProductSale, ProductSaleVM>().ReverseMap();
+            CreateMap<Product, ProductVM>().ReverseMap();
+
+            CreateMap<IdentityRole, RoleViewModel>().ReverseMap();
+
+
 
         }
     }

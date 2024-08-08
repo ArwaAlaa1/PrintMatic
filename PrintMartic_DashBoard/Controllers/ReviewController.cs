@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using PrintMartic_DashBoard.Helper.ViewModels;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities;
 
@@ -7,10 +9,12 @@ namespace PrintMartic_DashBoard.Controllers
     public class ReviewController : Controller
     {
         private readonly IUnitOfWork<Review> _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public ReviewController(IUnitOfWork<Review> unitOfWork )
+        public ReviewController(IUnitOfWork<Review> unitOfWork,IMapper mapper )
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
         public async Task<IActionResult> Index()
         {
@@ -21,9 +25,10 @@ namespace PrintMartic_DashBoard.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var item = await _unitOfWork.generic.GetByIdAsync(id);
+            var item = await _unitOfWork.review.GetIdIncludeProductAsync(id);
             if (item == null) return NotFound();
-            return View(item);
+            var RevMapped = _mapper.Map<Review,ReviewVM>(item);
+            return View(RevMapped);
         }
 
         public async Task<IActionResult> Delete(int id)
@@ -32,24 +37,27 @@ namespace PrintMartic_DashBoard.Controllers
         }
 
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
-        public IActionResult Delete(int id , Review review)
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id , ReviewVM reviewVM)
         {
             try
-            { 
-             _unitOfWork.generic.Delete(review);
-            var count = _unitOfWork.Complet();
-            if (count > 0)
+            {
+                var RevMapped = _mapper.Map<ReviewVM,Review>(reviewVM);
+                RevMapped.IsDeleted = true;
+                _unitOfWork.generic.Update(RevMapped);
+                var count = _unitOfWork.Complet();
+
+                if (count> 0)
             {
                 TempData["Message"] = "Review Deleted Successfully";
             }
             return RedirectToAction(nameof(Index));
 
             }
-            catch (Exception ex)
+            catch 
             {
                 TempData["Message"] = "Deletion operation failed";
-                return View(review);
+                return View(reviewVM);
             }
         }
     }

@@ -1,0 +1,26 @@
+﻿@model ProductSaleVM
+
+<div >
+
+    <div class="form-group pb-3" hidden>
+        <label asp-for="ProductId" class="col-form-label fw-bold fs-4"></label>
+        <input asp-for="ProductId" class="form-control" readonly />
+
+    </div>
+    <div class="form-group">
+    <label asp-for="Product.Name" class="col-form-label"></label>
+        <input value="@Model.Product.Name" class="form-control" readonly/>
+
+    <div class="form-group pb-3" hidden>
+    <label asp-for="SaleId" class="col-form-label fw-bold fs-4"></label>
+    <input asp-for="SaleId" class="form-control" readonly />
+
+    </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Sale.SaleDiscountPercentage" class="col-form-label"></label>
+        <input value="@Model.Sale.SaleDiscountPercentage" class="form-control" readonly />
+
+    </div>
+    
+</div>
