@@ -1,0 +1,26 @@
+﻿@model ReviewVM
+
+<div >
+   
+    <div class="form-group">
+    <label asp-for="Message" class="col-form-label"></label>
+        <input asp-for="Message" class="form-control" readonly/>
+
+    </div>
+    <div class="form-group">
+        <label asp-for="Rating" class="col-form-label"></label>
+        <input asp-for="Rating" class="form-control" readonly />
+
+    </div>
+    <div class="form-group" > 
+        <label asp-for="ProductId" class="col-form-label" ></label>
+        <input asp-for="ProductId" class="form-control" readonly  />
+
+    </div>
+    <div class="form-group">
+        <label asp-for="Product.Name" class="col-form-label"></label>
+        <input value="@Model.Product.Name" class="form-control" readonly />
+
+    </div>
+   
+</div>

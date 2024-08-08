@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 
 namespace PrintMatic.Core.Entities
 {
-    public class ProductPhotos
+    public class ProductPhotos : Entity
     {
         public string Photo {  get; set; }
 
-        public Product Product { get; set; }
+        public virtual Product Product { get; set; }
 
         public int ProductId { get; set; }
+
+       
     }
 }

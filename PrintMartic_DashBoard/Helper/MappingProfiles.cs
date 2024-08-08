@@ -11,6 +11,13 @@ namespace PrintMartic_DashBoard.Helper
 		{
 			CreateMap<CategoryVM, Category>().ReverseMap();
             CreateMap<SaleVM, Sale>().ReverseMap();
+			CreateMap<ProductPhotos, ProductPhotosVM>().ReverseMap();
+            CreateMap<Review, ReviewVM>().ReverseMap();
+            CreateMap<ProductSale, ProductSaleVM>().ReverseMap();
+            CreateMap<Product, ProductVM>().ReverseMap();
+
+
+
 
         }
     }

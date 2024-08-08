@@ -21,7 +21,7 @@ namespace PrintMatic.Repository
 
         public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _context.Set<T>().ToListAsync();
+            return await _context.Set<T>().Where(z =>z.IsDeleted == false).ToListAsync();
         }
 
         public async Task<T> GetByIdAsync(int id)
@@ -38,9 +38,9 @@ namespace PrintMatic.Repository
         {
             _context.Update(entity);
         }
-        public void Delete(T entity)
-        { 
-            _context.Remove(entity);
-        }
+        //public void Delete(int id)
+        //{ 
+        //    _context.Remove(entity);
+        //}
     }
 }

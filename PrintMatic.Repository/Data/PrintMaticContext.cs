@@ -20,7 +20,11 @@ namespace PrintMatic.Repository.Data
         {
             
         }
-
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.UseSqlServer("Data source = .; Database = PtintMaticDB ; integrated security = true ;MultipleActiveResultSets=true;TrustServerCertificate=True");
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -30,7 +34,8 @@ namespace PrintMatic.Repository.Data
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Sale> Sales { get; set; }
-
+        public DbSet<ProductPhotos> ProductPhotos { get; set; }
+        public DbSet<ProductSale> productSales { get; set; }
         public DbSet<Review> Reviews { get; set; }
     }
 }

@@ -15,7 +15,7 @@ namespace PrintMatic.Core.Entities
         [Range(1 , 5)]
         public float? Rating { get; set; }
 
-        public Product Product { get; set; }
+        public virtual Product Product { get; set; }
         [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }
     }

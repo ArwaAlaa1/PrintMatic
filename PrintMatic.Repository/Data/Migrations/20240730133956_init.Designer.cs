@@ -12,7 +12,7 @@ using PrintMatic.Repository.Data;
 namespace PrintMatic.Repository.Data.Migrations
 {
     [DbContext(typeof(PrintMaticContext))]
-    [Migration("20240723162656_init")]
+    [Migration("20240730133956_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -97,11 +97,11 @@ namespace PrintMatic.Repository.Data.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<DateTime>("NormalMaxDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("NormalMaxDate")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("NormalMinDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("NormalMinDate")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("NormalPrice")
                         .HasColumnType("decimal(18,2)");
@@ -112,11 +112,11 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.Property<bool>("Text")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("UrgentMaxDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("UrgentMaxDate")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime>("UrgentMinDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("UrgentMinDate")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("UrgentPrice")
                         .HasColumnType("decimal(18,2)");
@@ -136,6 +136,18 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.Property<string>("Photo")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("ProductId", "Photo");
 
                     b.ToTable("ProductPhotos");
@@ -149,11 +161,23 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.Property<int>("SaleId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("ProductId", "SaleId");
 
                     b.HasIndex("SaleId");
 
-                    b.ToTable("ProductSale");
+                    b.ToTable("productSales");
                 });
 
             modelBuilder.Entity("PrintMatic.Core.Entities.Review", b =>

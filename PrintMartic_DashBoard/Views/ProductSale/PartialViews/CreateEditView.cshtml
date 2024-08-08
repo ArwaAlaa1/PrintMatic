@@ -1,0 +1,24 @@
+﻿@model ProductSaleVM
+
+<div class="form-group  ">
+    <div asp-validation-summary="All"></div>
+    <div class="form-group">
+        <label  class="col-form-label">Product Name</label>
+        <select asp-for="ProductId" class="form-select  form-select-lg mb-3" aria-label="Large select example" asp-items="@(new SelectList(Model.Products,"Id","Name"))">
+            <option value="0">select a Product Name</option>
+            </select>
+       @*  <span asp-validation-for="Product.Name" class="text-danger"></span> *@
+    </div>
+
+    <div class="form-group">
+        <label class="col-form-label">Discount</label>
+        <select asp-for="SaleId" class="form-select  form-select-lg mb-3" aria-label="Large select example" asp-items="@(new SelectList(Model.Sales,"Id","SaleDiscountPercentage"))">
+            <option value="0">select a Discount</option>
+        </select>
+        @*  <span asp-validation-for="Product.Name" class="text-danger"></span> *@
+    </div>
+
+
+</div>
+
+

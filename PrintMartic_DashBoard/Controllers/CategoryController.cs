@@ -96,7 +96,7 @@ namespace PrintMartic_DashBoard.Controllers
 
         //Edit category --post Category/Edit/id
         [HttpPost]
-        [AutoValidateAntiforgeryToken]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CategoryVM categoryVM)
         {
             if (ModelState.IsValid) 
@@ -135,16 +135,19 @@ namespace PrintMartic_DashBoard.Controllers
         }
 
         //Delete category --post
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id , CategoryVM categoryVM)
         {
             try
             {
                 var category = _mapper.Map<CategoryVM, Category>(categoryVM);
-                _unitOfWork.generic.Delete(category);
+                category.IsDeleted = true;
+                _unitOfWork.generic.Update(category);
                 var count = _unitOfWork.Complet();
                 if (count > 0)
                 {
-                    DocumentSetting.DeleteFile("category", category.PhotoURL);
+                   // DocumentSetting.DeleteFile("category", category.PhotoURL);
                     TempData["Message"] = "Category Deleted Successfully";
                 }
                 return RedirectToAction(nameof(Index));

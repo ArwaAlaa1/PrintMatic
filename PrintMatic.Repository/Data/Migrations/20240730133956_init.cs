@@ -59,10 +59,10 @@ namespace PrintMatic.Repository.Data.Migrations
                     Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NumOfPhotos = table.Column<int>(type: "int", nullable: true),
-                    NormalMinDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NormalMaxDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UrgentMinDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UrgentMaxDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    NormalMinDate = table.Column<int>(type: "int", nullable: false),
+                    NormalMaxDate = table.Column<int>(type: "int", nullable: false),
+                    UrgentMinDate = table.Column<int>(type: "int", nullable: false),
+                    UrgentMaxDate = table.Column<int>(type: "int", nullable: false),
                     NormalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     UrgentPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Color = table.Column<bool>(type: "bit", nullable: false),
@@ -90,7 +90,11 @@ namespace PrintMatic.Repository.Data.Migrations
                 columns: table => new
                 {
                     Photo = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -104,23 +108,27 @@ namespace PrintMatic.Repository.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductSale",
+                name: "productSales",
                 columns: table => new
                 {
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    SaleId = table.Column<int>(type: "int", nullable: false)
+                    SaleId = table.Column<int>(type: "int", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductSale", x => new { x.ProductId, x.SaleId });
+                    table.PrimaryKey("PK_productSales", x => new { x.ProductId, x.SaleId });
                     table.ForeignKey(
-                        name: "FK_ProductSale_Products_ProductId",
+                        name: "FK_productSales_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductSale_Sales_SaleId",
+                        name: "FK_productSales_Sales_SaleId",
                         column: x => x.SaleId,
                         principalTable: "Sales",
                         principalColumn: "Id",
@@ -158,8 +166,8 @@ namespace PrintMatic.Repository.Data.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductSale_SaleId",
-                table: "ProductSale",
+                name: "IX_productSales_SaleId",
+                table: "productSales",
                 column: "SaleId");
 
             migrationBuilder.CreateIndex(
@@ -175,7 +183,7 @@ namespace PrintMatic.Repository.Data.Migrations
                 name: "ProductPhotos");
 
             migrationBuilder.DropTable(
-                name: "ProductSale");
+                name: "productSales");
 
             migrationBuilder.DropTable(
                 name: "Reviews");

@@ -1,4 +1,5 @@
 ﻿using PrintMatic.Core.Entities;
+using PrintMatic.Core.Repository.Contract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace PrintMatic.Core
 	{
 		public IGenericRepository<T> generic { get; set; }
 
+		public IReviewRepository review { get; set; }
 		int Complet();
 	}
 }
