@@ -253,7 +253,6 @@ namespace PrintMatic.Repository.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Location")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
@@ -280,7 +279,6 @@ namespace PrintMatic.Repository.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Photo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
@@ -632,8 +630,7 @@ namespace PrintMatic.Repository.Data.Migrations
 
             modelBuilder.Entity("PrintMatic.Core.Entities.Identity.AppUser", b =>
                 {
-                    b.Navigation("Address")
-                        .IsRequired();
+                    b.Navigation("Address");
                 });
 #pragma warning restore 612, 618
         }

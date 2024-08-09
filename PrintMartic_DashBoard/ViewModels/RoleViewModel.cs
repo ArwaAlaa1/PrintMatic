@@ -4,9 +4,10 @@ namespace PrintMartic_DashBoard.ViewModels
 {
 	public class RoleViewModel
 	{
-        public int Id { get; set; }
 
-        [Required(ErrorMessage = "Name is required")]
+        public string Id { get; set; }
+      
         public string RoleName { get; set; }
+        public bool IsSelected { get; set; }
     }
 }

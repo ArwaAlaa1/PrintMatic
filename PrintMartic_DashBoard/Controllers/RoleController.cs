@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +9,12 @@ namespace PrintMartic_DashBoard.Controllers
 	public class RoleController : Controller
 	{
 		private readonly RoleManager<IdentityRole> roleManager;
-        private readonly IMapper mapper;
+  
 
-        public RoleController(RoleManager<IdentityRole> roleManager,IMapper mapper)
+        public RoleController(RoleManager<IdentityRole> roleManager)
 		{
 			this.roleManager = roleManager;
-            this.mapper = mapper;
+          
         }
 		public async Task<IActionResult> Index()
 		{
@@ -32,23 +32,24 @@ namespace PrintMartic_DashBoard.Controllers
         // POST: RoleController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(RoleViewModel roleViewModel)
+        public async Task<IActionResult> Create(RoleFormViewModel roleViewModel)
         {
             if (ModelState.IsValid)
             {
-                var roleExist = await roleManager.RoleExistsAsync(roleViewModel.RoleName);
+                var roleExist = await roleManager.RoleExistsAsync(roleViewModel.Name);
                 try
                 {
                     if (!roleExist)
                     {
-                        var mappedrole = mapper.Map<RoleViewModel,IdentityRole>(roleViewModel);
-                        await roleManager.CreateAsync(mappedrole);
+                        
+                        await roleManager.CreateAsync(new IdentityRole(roleViewModel.Name.Trim()));
+                        return RedirectToAction(nameof(Index));
 
                     }
                     else
                     {
                         ModelState.AddModelError("Name", "Role Name Is Exist");
-                        return View(roleViewModel);
+                        return View("Index" ,await roleManager.Roles.ToListAsync());
                     }
 
                 }
@@ -57,7 +58,7 @@ namespace PrintMartic_DashBoard.Controllers
                     ModelState.AddModelError(string.Empty, ex.Message);
                 }
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
 
         }
 
@@ -68,15 +69,49 @@ namespace PrintMartic_DashBoard.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //public async Task<IActionResult> Edit(string id)
-        //{
-        //    var role = await roleManager.FindByIdAsync(id);
-        //    var mappedRole = new RoleViewModel()
-        //    {
-        //        Name = role.Name
-        //    };
-        //    return View(mappedRole);
-        //}
+        public async Task<IActionResult> Edit(string id)
+        {
+            var role = await roleManager.FindByIdAsync(id);
+            var mappedRole = new RoleViewModel()
+            {
+                RoleName = role.Name
+            };
+            return View(mappedRole);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(string id, RoleViewModel roleView)
+        {
+            if (ModelState.IsValid)
+            {
+                var roleExist = await roleManager.RoleExistsAsync(roleView.RoleName);
+                try
+                {
+                    if (!roleExist)
+                    {
+
+                        var role = await roleManager.FindByIdAsync(roleView.Id);
+                        role.Name = roleView.RoleName;
+                        await roleManager.UpdateAsync(role);
+                        return RedirectToAction(nameof(Index));
+
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Name", "Role Name Is Exist");
+                        return View("Index", await roleManager.Roles.ToListAsync());
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
+            }
+            return RedirectToAction("Index");
+
+        }
+
     }
 
 }
