@@ -12,6 +12,7 @@ namespace PrintMartic_DashBoard.ViewModels
         public string Location { get; set; }
         public string? Photo { get; set; }
         public IFormFile? PhotoFile { get; set; }
-       
+        public string Password { get; set; }
+
     }
 }

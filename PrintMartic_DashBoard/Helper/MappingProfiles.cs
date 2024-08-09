@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using PrintMartic_DashBoard.Helper.ViewModels;
 using PrintMartic_DashBoard.ViewModels;
 using PrintMatic.Core.Entities;
+using PrintMatic.Core.Entities.Identity;
 
 namespace PrintMartic_DashBoard.Helper
 {
@@ -20,7 +21,7 @@ namespace PrintMartic_DashBoard.Helper
 
             CreateMap<IdentityRole, RoleViewModel>().ReverseMap();
 
-
+            CreateMap<AddUserFormViewModel, AppUser>().ReverseMap();
 
         }
     }

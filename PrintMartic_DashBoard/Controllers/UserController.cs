@@ -6,6 +6,7 @@ using PrintMartic_DashBoard.Helper;
 using PrintMartic_DashBoard.ViewModels;
 using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
+using AutoMapper;
 
 namespace PrintMartic_DashBoard.Controllers
 {
@@ -13,11 +14,13 @@ namespace PrintMartic_DashBoard.Controllers
 	{
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IMapper _mapper;
 
-        public UserController(UserManager<AppUser> userManager,RoleManager<IdentityRole> roleManager)
+        public UserController(UserManager<AppUser> userManager,RoleManager<IdentityRole> roleManager,IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _mapper = mapper;
         }
         public async Task<IActionResult> Index()
 		{
@@ -68,11 +71,12 @@ namespace PrintMartic_DashBoard.Controllers
                     Email=addUser.Email,
                     PhoneNumber=addUser.PhoneNumber,
                     Location=addUser.Location,
+                   
                     Photo= $"images/user/{addUser.Photo}"
 
                     };
 
-                    await _userManager.CreateAsync(user);
+                    await _userManager.CreateAsync(user,addUser.Password);
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
@@ -83,6 +87,13 @@ namespace PrintMartic_DashBoard.Controllers
                
             }
             return View(addUser);
+        }
+
+        public async Task<IActionResult> Details(string id)
+        {
+            var user= await _userManager.FindByIdAsync(id);
+            var mappesuser=_mapper.Map<AppUser,AddUserFormViewModel>(user);
+            return View(mappesuser);
         }
 
         public async Task<IActionResult> Edit(string id)
