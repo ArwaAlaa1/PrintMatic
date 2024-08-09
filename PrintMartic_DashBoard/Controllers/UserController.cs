@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PrintMartic_DashBoard.Helper.ViewModels;
+using PrintMartic_DashBoard.Helper;
 using PrintMartic_DashBoard.ViewModels;
+using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
 
 namespace PrintMartic_DashBoard.Controllers
@@ -26,12 +29,61 @@ namespace PrintMartic_DashBoard.Controllers
                 DisplayName=u.DisplayName,
                 Email=u.Email,
                 PhoneNumber=u.PhoneNumber,
+                Location=u.Location,
                 Roles=_userManager.GetRolesAsync(u).Result
 
             }).ToListAsync();
 
 			return View(users);
 		}
+
+        public async Task<IActionResult> AddUser()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddUser(AddUserFormViewModel addUser)
+        {          
+            addUser.Photo = addUser.PhotoFile.FileName;
+           
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    
+
+                    if (addUser.PhotoFile != null)
+                    {
+                        addUser.Photo = DocumentSetting.UploadFile(addUser.PhotoFile, "user");
+                    }
+                  
+                   
+
+                    var user = new AppUser()
+                    {
+                   
+                    UserName=addUser.UserName,
+                    DisplayName=addUser.DisplayName,
+                    Email=addUser.Email,
+                    PhoneNumber=addUser.PhoneNumber,
+                    Location=addUser.Location,
+                    Photo= $"images/user/{addUser.Photo}"
+
+                    };
+
+                    await _userManager.CreateAsync(user);
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+
+                    ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                }
+               
+            }
+            return View(addUser);
+        }
 
         public async Task<IActionResult> Edit(string id)
         {
