@@ -24,7 +24,7 @@
                            
                             <th scope="col">Roles</th>
                             <th>Details</th>
-                            <th> Edit</th>
+                            
                             <th>Delete</th>
                             <th>Role</th>
                             <th>Active</th>
@@ -44,9 +44,7 @@
                                 <td>
                                     <a class="btn btn-outline-success" asp-action="Details" asp-route-id="@item.Id">Details</a>
                                 </td>
-                                <td>
-                                    <a class="btn btn-outline-warning" asp-action="EditUser" asp-route-id="@item.Id">Edit</a>
-                                </td>
+                                
                                 <td>
                                     <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                                 </td>
