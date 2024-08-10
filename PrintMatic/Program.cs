@@ -1,9 +1,12 @@
 
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PrintMatic.Core.Entities.Identity;
+using PrintMatic.Extensions;
 using PrintMatic.Repository.Data;
 using PrintMatic.Repository.Identity;
+using PrintMatic.Services;
 
 
 namespace PrintMatic
@@ -24,9 +27,11 @@ namespace PrintMatic
 			builder.Services.AddDbContext<PrintMaticContext>(
 				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 			
-			builder.Services.AddIdentity<AppUser,IdentityRole>()
-				.AddEntityFrameworkStores<PrintMaticContext>();
+			builder.Services.AddScoped<ITokenService, TokenService>();
 
+           
+      
+            builder.Services.AddIdentityServices(builder.Configuration);
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
