@@ -33,7 +33,7 @@ namespace PrintMatic.Core.Entities
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
 
-		public AppUser AppUser { get; set; }
+		public virtual AppUser AppUser { get; set; }
 
 		[ForeignKey(nameof(AppUser))]
 		public string UserId { get; set; }

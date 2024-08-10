@@ -1,6 +1,7 @@
 ﻿using PrintMatic.Core.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using PrintMatic.Core.Entities.Identity;
 
 namespace PrintMartic_DashBoard.Helper.ViewModels
 {
@@ -28,5 +29,9 @@ namespace PrintMartic_DashBoard.Helper.ViewModels
         public virtual Category? Category { get; set; }
         
         public int CategoryId { get; set; }
-    }
+
+		public virtual AppUser AppUser { get; set; }
+		public string UserId { get; set; }
+
+	}
 }
