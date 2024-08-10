@@ -21,7 +21,8 @@ namespace PrintMartic_DashBoard.Helper
 
             CreateMap<IdentityRole, RoleViewModel>().ReverseMap();
 
-            CreateMap<AddUserFormViewModel, AppUser>().ReverseMap();
+            CreateMap<UserFormViewModel, AppUser>().ReverseMap();
+            CreateMap<RoleUserViewModel, AppUser>().ReverseMap();
 
         }
     }

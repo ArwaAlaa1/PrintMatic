@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PrintMartic_DashBoard.Helper;
@@ -19,8 +20,22 @@ namespace PrintMartic_DashBoard
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
-			// Add services to the container.
-			builder.Services.AddControllersWithViews();
+
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+       .AddCookie(options =>
+       {
+           options.LoginPath = "/Admin/Login"; // Redirect to this path if not authenticated
+           options.AccessDeniedPath = "/Account/AccessDenied"; // Redirect here if the user is authenticated but not authorized
+           options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+           options.SlidingExpiration = true;
+       });
+
+            builder.Services.AddAuthorization();
+
+
+            // Add services to the container.
+            builder.Services.AddControllersWithViews();
 			//Add Context Services
 
 			#region Services

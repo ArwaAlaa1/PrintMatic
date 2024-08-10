@@ -2,9 +2,10 @@
 
 namespace PrintMartic_DashBoard.ViewModels
 {
-    public class AddUserFormViewModel
+    public class UserFormViewModel
     {
-       
+        public string? Id { get; set; }
+
         public string UserName { get; set; }
         public string DisplayName { get; set; }
         public string Email { get; set; }
@@ -13,6 +14,9 @@ namespace PrintMartic_DashBoard.ViewModels
         public string? Photo { get; set; }
         public IFormFile? PhotoFile { get; set; }
         public string Password { get; set; }
+
+        public string? RoleId { get; set; }
+        public IEnumerable<IdentityRole>? Roles { get; set; }
 
     }
 }

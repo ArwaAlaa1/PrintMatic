@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
 namespace PrintMatic.DTOS
+
 {
     public class LoginDto
     {
