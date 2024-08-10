@@ -8,50 +8,55 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>All Roles</h1>
-<a asp-controller="Role" asp-action="Create" class="btn btn-outline-primary"> Add New Role</a>
-<hr/>
+<div class="w-75 m-auto bg-white p-5">
 
-@if(Model.Count() > 0)
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Name</th>
-                <th scope="col">Actions</th>
-              
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var item in Model)
-            {
+    <partial name="Create" model="new RoleFormViewModel()"></partial>
+    <hr />
+    <h1 claas="mt-5 pt-5">All Roles</h1>
+   
+    <hr />
+
+    @if (Model.Count() > 0)
+    {
+        <table class="table table-striped p-5">
+            <thead>
                 <tr>
-                    <td scope="row">@item.Id</td>
-                    <td>@item.Name</td>
-                    <td>
-                        <a class="btn btn-outline-warning" asp-action="Edit" asp-asp-all-route-id="@item.Id">Edit</a>
-                        <a class="btn btn-outline-Danger" asp-action="Delete" asp-asp-all-route-id="@item.Id">Delete</a>
-                    </td>
-                   
-                    <td>
-                        <label class="switch switch-primary switch-pill form-control-label ">
-                            <input type="checkbox" class="switch-input form-check-input" value="on" checked>
-                            <span class="switch-label"></span>
-                            <span class="switch-handle"></span>
-                        </label>
-                    </td>
+                    <th scope="col">Id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Actions</th>
+
                 </tr>
-            }    
-            }
-           
-            
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td scope="row">@item.Id</td>
+                        <td>@item.Name</td>
+                        <td>
+                            <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+
+                        <td>
+                            <label class="switch switch-primary switch-pill form-control-label ">
+                                <input type="checkbox" class="switch-input form-check-input" value="on" checked>
+                                <span class="switch-label"></span>
+                                <span class="switch-handle"></span>
+                            </label>
+                        </td>
+                    </tr>
+                }
+                
 
 
-}
-else
-{
-    <div class="text-danger w-50 m-auto "> There is no roles</div>
-}
+            </tbody>
+        </table>
+
+
+    }
+    else
+    {
+        <div class="text-danger w-50 m-auto "> There is no roles</div>
+    }
+</div>
