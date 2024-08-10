@@ -234,5 +234,12 @@ namespace PrintMartic_DashBoard.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> Delete(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            await _userManager.DeleteAsync(user);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
