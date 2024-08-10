@@ -12,7 +12,7 @@ using PrintMatic.Repository.Data;
 namespace PrintMatic.Repository.Data.Migrations
 {
     [DbContext(typeof(PrintMaticContext))]
-    [Migration("20240808185355_init")]
+    [Migration("20240810162711_init")]
     partial class init
     {
         /// <inheritdoc />

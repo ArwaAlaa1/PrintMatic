@@ -5,6 +5,7 @@ namespace PrintMartic_DashBoard.Helper.ViewModels
 	public class ProductPhotosVM
 	{
 		public string? Photo { get; set; }
+		public string? PathPhoto { get; set; }
 		public IFormFile? PhotoFile { get; set; }
 
 		public Product? Product { get; set; }
