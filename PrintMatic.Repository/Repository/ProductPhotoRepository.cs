@@ -30,7 +30,7 @@ namespace PrintMatic.Repository.Repository
 
         public async Task<ProductPhotos> GetByIDAsync(int ProductId , string Photo)
         {
-            return await _context.Set<ProductPhotos>().FindAsync(ProductId,Photo);
+            return await _context.Set<ProductPhotos>().Include("Product").Where(x => x.ProductId == ProductId && x.Photo == Photo).FirstOrDefaultAsync();
         }
         public void Update(ProductPhotos entity)
         {

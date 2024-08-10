@@ -36,7 +36,7 @@ namespace PrintMatic.Repository.Repository
 
         public async Task<ProductSale> GetByIDAsync(int ProductId, int SaleId)
         {
-            return await _context.productSales.FindAsync(ProductId , SaleId);
+            return await _context.productSales.Include("Product").Include("Sale").Where(x => x.ProductId == ProductId && x.SaleId == SaleId).FirstOrDefaultAsync();
         }
 
         public void Update(ProductSale entity)
