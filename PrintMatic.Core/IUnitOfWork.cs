@@ -13,6 +13,8 @@ namespace PrintMatic.Core
 		public IGenericRepository<T> generic { get; set; }
 
 		public IReviewRepository review { get; set; }
+
+		public IProdduct prodduct { get; set; }
 		int Complet();
 	}
 }
