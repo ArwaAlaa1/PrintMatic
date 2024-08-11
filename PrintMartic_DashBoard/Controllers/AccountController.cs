@@ -9,14 +9,15 @@ using System.Security.Claims;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace PrintMartic_DashBoard.Controllers
 {
-    public class AdminController : Controller
+    public class AccountController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
 
-        public AdminController(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager)
+        public AccountController(UserManager<AppUser> userManager,SignInManager<AppUser> signInManager)
         {
             _userManager = userManager;
            _signInManager = signInManager;
@@ -53,6 +54,9 @@ namespace PrintMartic_DashBoard.Controllers
             }
             else
             {
+                
+                
+
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, login.UserName),
@@ -71,6 +75,8 @@ namespace PrintMartic_DashBoard.Controllers
                     new ClaimsPrincipal(claimsIdentity),
                     authProperties);
                 return RedirectToAction("Index", "Home");
+
+
             }
 
         }
@@ -80,5 +86,9 @@ namespace PrintMartic_DashBoard.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction(nameof(Login));
         }
+
+
+
+
     }
 }

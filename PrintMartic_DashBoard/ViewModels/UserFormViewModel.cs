@@ -14,7 +14,7 @@ namespace PrintMartic_DashBoard.ViewModels
         public string? Photo { get; set; }
         public IFormFile? PhotoFile { get; set; }
         public string Password { get; set; }
-
+        public bool IsCompany { get; set; }
         public string? RoleId { get; set; }
         public IEnumerable<IdentityRole>? Roles { get; set; }
 

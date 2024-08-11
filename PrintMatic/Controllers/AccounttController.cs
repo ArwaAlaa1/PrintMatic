@@ -14,14 +14,14 @@ using System.Security.Claims;
 namespace PrintMatic.Controllers
 {
 	
-        public class AccountController : BaseApiController
+        public class AccounttController : BaseApiController
         {
             private readonly UserManager<AppUser> _userManager;
             private readonly SignInManager<AppUser> _signInManger;
             private readonly ITokenService _tokenService;
             //private readonly IMapper _mapper;
 
-            public AccountController(
+            public AccounttController(
                 UserManager<AppUser> userManager,
                 SignInManager<AppUser> signInManger,
                 ITokenService tokenService
@@ -64,7 +64,7 @@ namespace PrintMatic.Controllers
                     Email = registerDto.Email,
                     UserName = registerDto.Email.Split('@')[0],
                     PhoneNumber = registerDto.PhoneNumber,
-
+                    IsCompany = false
                 };
 
                 var result = await _userManager.CreateAsync(user, registerDto.Password);

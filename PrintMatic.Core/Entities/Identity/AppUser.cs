@@ -14,5 +14,6 @@ namespace PrintMatic.Core.Entities.Identity
         public Address? Address { get; set; }
         public string? Location { get; set; }
         public string? Photo { get; set; }
+        public bool IsCompany { get; set; }
     }
 }
