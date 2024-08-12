@@ -41,33 +41,33 @@ namespace PrintMartic_DashBoard.Controllers
             return View(List);
         }
 
-        public async Task<IActionResult> WaitingProducts()
-        {
-            var List = await _unitOfWork.prodduct.GetWaitingProducts();
-             return View(List);
-        }
-        public async Task<IActionResult> Confirm(int id)
-        {
-            try
-            {
-                var item = await _unitOfWork.generic.GetByIdAsync(id);
-                item.Enter = true;
-                _unitOfWork.generic.Update(item);
-              var count =  _unitOfWork.Complet();
-                if (count > 0) 
-                {
-                    ViewData["Message"] = "Done";
-                }
-                else
-                    ViewData["Message"] = "Failed";
-            }
-            catch (Exception ex)
-            {
-                ViewData["Message"] = ex.Message;
-            }
-            return RedirectToAction(nameof(WaitingProducts));
+        //public async Task<IActionResult> WaitingProducts()
+        //{
+        //    var List = await _unitOfWork.prodduct.GetWaitingProducts();
+        //     return View(List);
+        //}
+        //public async Task<IActionResult> Confirm(int id)
+        //{
+        //    try
+        //    {
+        //        var item = await _unitOfWork.generic.GetByIdAsync(id);
+        //        item.Enter = true;
+        //        _unitOfWork.generic.Update(item);
+        //      var count =  _unitOfWork.Complet();
+        //        if (count > 0) 
+        //        {
+        //            ViewData["Message"] = "Done";
+        //        }
+        //        else
+        //            ViewData["Message"] = "Failed";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ViewData["Message"] = ex.Message;
+        //    }
+        //    return RedirectToAction(nameof(WaitingProducts));
 
-        }
+        //}
 
         public async Task<IActionResult> Details(int id)
         {
@@ -104,61 +104,55 @@ namespace PrintMartic_DashBoard.Controllers
             return View(ProductVM);
         }
 
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> 4bb818edce42725ca3f3283b967fe1fecca9e539
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProductVM productVM)
-        {
-<<<<<<< HEAD
-            
-            var itemMapped = _mapper.Map<ProductVM, Product> (productVM);
-            
-           _unitOfWork.generic.Add(itemMapped);
-            _unitOfWork.Complet();
-=======
->>>>>>> 4bb818edce42725ca3f3283b967fe1fecca9e539
+        //public async Task<IActionResult> Create(ProductVM productVM)
+        //{
 
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var itemMapped = _mapper.Map<ProductVM, Product>(productVM);
+        //    var itemMapped = _mapper.Map<ProductVM, Product> (productVM);
+
+        //   _unitOfWork.generic.Add(itemMapped);
+        //    _unitOfWork.Complet();
 
 
-                    _unitOfWork.generic.Add(itemMapped);
-                    var count = _unitOfWork.Complet();
-
-                    ViewData["Message"] = "Product Created Successfully";
-
-                    return RedirectToAction("Index");
-
-                }
-                catch (Exception ex)
-                {
-                    ViewData["Message"] = ex.InnerException.Message;
-                }
-                // var userid =userManager.Users.FirstAsync(n => n.UserName==user); 
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            var itemMapped = _mapper.Map<ProductVM, Product>(productVM);
 
 
-            }
-            var List = await _catUnitOfwork.generic.GetAllAsync();
-            productVM.Categories = List;
-            List<AppUser> users = new List<AppUser>();
-            foreach (var item in _userManager.Users)
-            {
-                if (item.IsCompany == true)
-                {
-                    users.Add(item);
-                }
-            }
-            productVM.Users = users;
-            return View(productVM);
-        }
+        //            _unitOfWork.generic.Add(itemMapped);
+        //            var count = _unitOfWork.Complet();
+
+        //            ViewData["Message"] = "Product Created Successfully";
+
+        //            return RedirectToAction("Index");
+
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            ViewData["Message"] = ex.InnerException.Message;
+        //        }
+        //        // var userid =userManager.Users.FirstAsync(n => n.UserName==user); 
+
+
+        //    }
+        //    var List = await _catUnitOfwork.generic.GetAllAsync();
+        //    productVM.Categories = List;
+        //    List<AppUser> users = new List<AppUser>();
+        //    foreach (var item in _userManager.Users)
+        //    {
+        //        if (item.IsCompany == true)
+        //        {
+        //            users.Add(item);
+        //        }
+        //    }
+        //    productVM.Users = users;
+        //    return View(productVM);
+        //}
 
 
         public async Task<IActionResult> Edit(int id)
@@ -236,7 +230,7 @@ namespace PrintMartic_DashBoard.Controllers
                 Product.IsDeleted = true;
                 _unitOfWork.generic.Update(Product);
                 var count = _unitOfWork.Complet();
-                if(count > 0)
+                if (count > 0)
                 {
                     ViewData["Message"] = "Deleted Successfully";
                     return RedirectToAction(nameof(Index));

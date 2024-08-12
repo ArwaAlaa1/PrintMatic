@@ -11,35 +11,35 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace PrintMartic_DashBoard.Controllers
 {
-	public class UserController : Controller
-	{
+    public class UserController : Controller
+    {
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
 
-        public UserController(UserManager<AppUser> userManager,RoleManager<IdentityRole> roleManager,IMapper mapper)
+        public UserController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
         }
         public async Task<IActionResult> Index()
-		{
-            var users = await _userManager.Users.Select( u => new UserViewModel()
+        {
+            var users = await _userManager.Users.Select(u => new UserViewModel()
             {
-                Id=u.Id,
-                Photo=u.Photo,
-                UserName=u.UserName,
-                DisplayName=u.DisplayName,
-                Email=u.Email,
-                PhoneNumber=u.PhoneNumber,
-                Location=u.Location,
-                Roles=_userManager.GetRolesAsync(u).Result
+                Id = u.Id,
+                Photo = u.Photo,
+                UserName = u.UserName,
+                DisplayName = u.DisplayName,
+                Email = u.Email,
+                PhoneNumber = u.PhoneNumber,
+                Location = u.Location,
+                Roles = _userManager.GetRolesAsync(u).Result
 
             }).ToListAsync();
 
-			return View(users);
-		}
+            return View(users);
+        }
 
         public async Task<IActionResult> AddUser()
         {
@@ -48,36 +48,36 @@ namespace PrintMartic_DashBoard.Controllers
 
         [HttpPost]
         public async Task<IActionResult> AddUser(UserFormViewModel addUser)
-        {          
+        {
             addUser.Photo = addUser.PhotoFile.FileName;
-           
+
             if (ModelState.IsValid)
             {
                 try
                 {
-                    
+
 
                     if (addUser.PhotoFile != null)
                     {
                         addUser.Photo = DocumentSetting.UploadFile(addUser.PhotoFile, "user");
                     }
-                  
-                   
+
+
 
                     var user = new AppUser()
                     {
-                   
-                    UserName=addUser.UserName,
-                    DisplayName=addUser.DisplayName,
-                    Email=addUser.Email,
-                    PhoneNumber=addUser.PhoneNumber,
-                    Location=addUser.Location,
-                    IsCompany = addUser.IsCompany,
-                    Photo= $"images/user/{addUser.Photo}"
+
+                        UserName = addUser.UserName,
+                        DisplayName = addUser.DisplayName,
+                        Email = addUser.Email,
+                        PhoneNumber = addUser.PhoneNumber,
+                        Location = addUser.Location,
+                        IsCompany = addUser.IsCompany,
+                        Photo = $"images/user/{addUser.Photo}"
 
                     };
 
-                    await _userManager.CreateAsync(user,addUser.Password);
+                    await _userManager.CreateAsync(user, addUser.Password);
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
@@ -85,7 +85,7 @@ namespace PrintMartic_DashBoard.Controllers
 
                     ModelState.AddModelError(string.Empty, ex.InnerException.Message);
                 }
-               
+
             }
             return View(addUser);
         }
@@ -96,55 +96,55 @@ namespace PrintMartic_DashBoard.Controllers
             var user = await _userManager.FindByIdAsync(id);
             var mappesuser = _mapper.Map<AppUser, UserFormViewModel>(user);
             return View(mappesuser);
-           
+
         }
 
         [HttpPost]
         public async Task<IActionResult> EditUser(UserFormViewModel editUser)
         {
-           
-                try
+
+            try
+            {
+
+
+                //if (editUser.PhotoFile != null)
+                //{
+                //    editUser.Photo = DocumentSetting.UploadFile(editUser.PhotoFile, "user");
+                //}
+
+
+
+                var user = new AppUser()
                 {
+                    Id = editUser.Id,
+
+                    UserName = editUser.UserName,
+                    DisplayName = editUser.DisplayName,
+                    Email = editUser.Email,
+                    PhoneNumber = editUser.PhoneNumber,
+                    Location = editUser.Location,
+
+                    //Photo = $"images/user/{editUser.Photo}"
+
+                };
+
+                await _userManager.UpdateAsync(user);
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+            }
 
 
-                    //if (editUser.PhotoFile != null)
-                    //{
-                    //    editUser.Photo = DocumentSetting.UploadFile(editUser.PhotoFile, "user");
-                    //}
-
-
-
-                    var user = new AppUser()
-                    {
-                        Id=editUser.Id,
-
-                        UserName = editUser.UserName,
-                        DisplayName = editUser.DisplayName,
-                        Email = editUser.Email,
-                        PhoneNumber = editUser.PhoneNumber,
-                        Location = editUser.Location,
-
-                        //Photo = $"images/user/{editUser.Photo}"
-
-                    };
-
-                    await _userManager.UpdateAsync(user);
-                    return RedirectToAction("Index");
-                }
-                catch (Exception ex)
-                {
-
-                    ModelState.AddModelError(string.Empty, ex.InnerException.Message);
-                }
-
-            
             return View(editUser);
         }
 
         public async Task<IActionResult> Details(string id)
         {
-            var user= await _userManager.FindByIdAsync(id);
-            var mappesuser=_mapper.Map<AppUser,UserFormViewModel>(user);
+            var user = await _userManager.FindByIdAsync(id);
+            var mappesuser = _mapper.Map<AppUser, UserFormViewModel>(user);
             return View(mappesuser);
         }
 
@@ -172,15 +172,15 @@ namespace PrintMartic_DashBoard.Controllers
         [HttpPost]
         //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddToRole(UserFormViewModel user)
-        {  
+        {
             var role = await _roleManager.FindByIdAsync(user.RoleId);
-            
-                
-             var result = await AddRoleAsync(user.Id,role.Name);
-            
+
+
+            var result = await AddRoleAsync(user.Id, role.Name);
+
             if (!result)
             {
-                return View("AddToRole") ;
+                return View("AddToRole");
             }
             return RedirectToAction("Index");
             //return Ok(new { message = $"User added to role '{role.Name}' successfully." });
@@ -191,14 +191,14 @@ namespace PrintMartic_DashBoard.Controllers
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             var roles = await _roleManager.Roles.ToListAsync();
-            
+
 
             var viewmodel = new RoleUserViewModel()
             {
                 Id = user.Id,
-               
+
                 DisplayName = user.DisplayName,
-              
+
                 Roles = roles.Select(roles => new RoleViewModel()
                 {
                     Id = roles.Id,
@@ -216,7 +216,7 @@ namespace PrintMartic_DashBoard.Controllers
         public async Task<IActionResult> EditRole(RoleUserViewModel userRoleView)
         {
             var user = await _userManager.FindByIdAsync(userRoleView.Id.ToString());
-       
+
             var rolesuser = await _userManager.GetRolesAsync(user);
             foreach (var role in userRoleView.Roles)
             {

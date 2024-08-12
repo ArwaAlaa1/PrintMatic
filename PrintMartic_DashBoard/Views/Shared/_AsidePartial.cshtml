@@ -206,60 +206,60 @@
             </li>
         </ul>
         <p class="text-muted nav-heading mt-4 mb-1">
-            <span>Extra</span>
+            <span>اعدادات</span>
         </p>
         <ul class="navbar-nav flex-fill w-100 mb-2">
             <li class="nav-item dropdown">
-                <a href="#pages" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
-                    <i class="fe fe-file fe-16"></i>
-                    <span class="ml-3 item-text">Pages</span>
+                <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link" onclick="toggleDropdown('use')">
+                    <i class="fe fe-shield fe-16"></i>
+                    <span class="ml-3 item-text">Authentication</span>
                 </a>
-                <ul class="collapse list-unstyled pl-4 w-100 w-100" id="pages">
-                    <li class="nav-item">
-                        <a class="nav-link pl-3" href="./page-orders.html">
-                            <span class="ml-1 item-text">Orders</span>
-                        </a>
+                <ul class="collapse list-unstyled pl-4 w-100" id="use">
+                    <li>
+                        <a class="nav-link pl-3" asp-controller="User" asp-action="AddUser"><span class="ml-1">ادخل مستخدم جديد</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link pl-3" href="./page-timeline.html">
-                            <span class="ml-1 item-text">Timeline</span>
-                        </a>
+                    <li>
+                        <a class="nav-link pl-3" asp-controller="User" asp-action="Index"><span class="ml-1">المستخدمين</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link pl-3" href="./page-invoice.html">
-                            <span class="ml-1 item-text">Invoice</span>
-                        </a>
+                    <li>
+                        <a class="nav-link pl-3" asp-controller="Role" asp-action="Index"><span class="ml-1">إداره الأدوار</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link pl-3" href="./page-404.html">
-                            <span class="ml-1 item-text">Page 404</span>
-                        </a>
+                    <li>
+                        <a class="nav-link pl-3" href="./auth-resetpw.html"><span class="ml-1">Reset Password</span></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link pl-3" href="./page-500.html">
-                            <span class="ml-1 item-text">Page 500</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link pl-3" href="./page-blank.html">
-                            <span class="ml-1 item-text">Blank</span>
-                        </a>
+                    <li>
+                        <a class="nav-link pl-3" href="./auth-confirm.html"><span class="ml-1">Confirm Password</span></a>
                     </li>
                 </ul>
             </li>
+
+
             <li class="nav-item dropdown">
-                <a href="#auth" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
+                <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link" onclick="toggleDropdown('auth')">
                     <i class="fe fe-shield fe-16"></i>
                     <span class="ml-3 item-text">Authentication</span>
                 </a>
                 <ul class="collapse list-unstyled pl-4 w-100" id="auth">
-                    <a class="nav-link pl-3" asp-action="" asp-controller=""><span class="ml-1">Login 1</span></a>
-                    <a class="nav-link pl-3" href="./auth-login-half.html"><span class="ml-1">Login 2</span></a>
-                    <a class="nav-link pl-3" href="./auth-register.html"><span class="ml-1">Register</span></a>
-                    <a class="nav-link pl-3" href="./auth-resetpw.html"><span class="ml-1">Reset Password</span></a>
-                    <a class="nav-link pl-3" href="./auth-confirm.html"><span class="ml-1">Confirm Password</span></a>
+                    <li>
+                        <a class="nav-link pl-3" asp-controller="User" asp-action="AddUser"><span class="ml-1">ادخل مستخدم جديد</span></a>
+                    </li>
+                    <li>
+                        <a class="nav-link pl-3" asp-controller="User" asp-action="Index"><span class="ml-1">المستخدمين</span></a>
+                    </li>
+                    <li>
+                        <a class="nav-link pl-3" asp-controller="Role" asp-action="Index"><span class="ml-1">إداره الأدوار</span></a>
+                    </li>
+                    <li>
+                        <a class="nav-link pl-3" href="./auth-resetpw.html"><span class="ml-1">Reset Password</span></a>
+                    </li>
+                    <li>
+                        <a class="nav-link pl-3" href="./auth-confirm.html"><span class="ml-1">Confirm Password</span></a>
+                    </li>
                 </ul>
             </li>
+
+
+        
             <li class="nav-item dropdown">
                 <a href="#layouts" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
                     <i class="fe fe-layout fe-16"></i>
