@@ -52,14 +52,12 @@ namespace PrintMartic_DashBoard.Controllers
             return View();
         }
 
-        [Authorize]
+    
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductVM productVM)
         {
-            var user = User.Identity.Name;
-            var userid =userManager.Users.FirstAsync(n => n.UserName==user); 
-           
+            
             var itemMapped = _mapper.Map<ProductVM, Product> (productVM);
             
            _unitOfWork.generic.Add(itemMapped);
