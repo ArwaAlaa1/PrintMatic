@@ -29,9 +29,11 @@ namespace PrintMatic.Repository.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("conn"));
-        }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+            optionsBuilder.UseSqlServer("Data source = .; Database = PtintMaticDB ; integrated security = true ;MultipleActiveResultSets=true;TrustServerCertificate=True");
+
+		   // optionsBuilder.UseSqlServer(configuration.GetConnectionString("conn"));
+		}
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using PrintMartic_DashBoard.Helper;
 using PrintMatic.Core;
@@ -11,6 +13,7 @@ using PrintMatic.Core.Repository.Contract;
 using PrintMatic.Repository;
 using PrintMatic.Repository.Data;
 using PrintMatic.Repository.Repository;
+using System.Globalization;
 
 namespace PrintMartic_DashBoard
 {
@@ -21,11 +24,31 @@ namespace PrintMartic_DashBoard
 			var builder = WebApplication.CreateBuilder(args);
 
 
+			//#region language services
+		//	builder.Services.AddControllersWithViews()
+		//.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+		//.AddDataAnnotationsLocalization();
 
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+		//	builder.Services.Configure<RequestLocalizationOptions>(options =>
+		//	{
+		//		var supportedCultures = new[]
+		//		{
+		//	new CultureInfo("en"),
+		//	new CultureInfo("ar-EG")
+		//};
+
+		//		options.DefaultRequestCulture = new RequestCulture("ar");
+		//		options.SupportedCultures = supportedCultures;
+		//		options.SupportedUICultures = supportedCultures;
+
+		//		options.RequestCultureProviders.Insert(0, new QueryStringRequestCultureProvider()); // Allows culture to be set via query string
+		//	});
+		//	#endregion
+
+			builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
        .AddCookie(options =>
        {
-           options.LoginPath = "/Admin/Login"; // Redirect to this path if not authenticated
+           options.LoginPath = "/Account/Login"; // Redirect to this path if not authenticated
            options.AccessDeniedPath = "/Account/AccessDenied"; // Redirect here if the user is authenticated but not authorized
            options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
            options.SlidingExpiration = true;
@@ -62,7 +85,7 @@ namespace PrintMartic_DashBoard
 
 			var app = builder.Build();
 
-			// Configure the HTTP request pipeline.
+			//Configure the HTTP request pipeline.
 			if (!app.Environment.IsDevelopment())
 			{
 				app.UseExceptionHandler("/Home/Error");
@@ -70,16 +93,20 @@ namespace PrintMartic_DashBoard
 				app.UseHsts();
 			}
 
-			app.UseHttpsRedirection();
+
 			app.UseStaticFiles();
 
 			app.UseRouting();
+			
+			
+			app.UseHttpsRedirection();
 
+		app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.MapControllerRoute(
 				name: "default",
-				pattern: "{controller=Admin}/{action=Login}/{id?}");
+				pattern: "{controller=Account}/{action=Login}/{id?}");
 
 			app.Run();
 		}

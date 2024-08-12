@@ -29,14 +29,15 @@ namespace PrintMatic.Core.Entities
         public bool Text { get; set; }
         public bool Date { get; set; }
         
+        public bool Enter { get; set; }
         public virtual Category Category { get; set; }
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
 
-		public AppUser AppUser { get; set; }
+		public virtual AppUser AppUser { get; set; }
 
 		[ForeignKey(nameof(AppUser))]
 		public string UserId { get; set; }
 
-	}
+    }
 }

@@ -1,10 +1,10 @@
-﻿@model Sale
+﻿@model ProductVM
 @{
     ViewData["Title"] = "Delete";
 }
-
+<h1>Delete</h1>
 <div class="m-auto w-75 bg-white p-5">
-    <h1>Delete Category</h1>
+    <h1>Delete Product</h1>
     @if (!string.IsNullOrEmpty(TempData["Message"] as string))
     {
         <div class="alert alert-primary mt-3 mb-2">
@@ -21,11 +21,6 @@
             <a asp-action="Index" class="btn btn-light">Back to List</a>
         </div>
     </form>
-
 </div>
-@* @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-} *@
-
 
 

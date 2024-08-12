@@ -12,12 +12,14 @@ namespace PrintMartic_DashBoard.Controllers
         private readonly IProductPhoto _productPhoto;
 		private readonly IMapper _mapper;
 		private readonly IUnitOfWork<Product> _unitOfWork;
+        private IWebHostEnvironment _environment;
 
-		public ProductPhotoController(IProductPhoto productPhoto, IMapper mapper,IUnitOfWork<Product> unitOfWork)
+		public ProductPhotoController(IProductPhoto productPhoto, IMapper mapper,IUnitOfWork<Product> unitOfWork,IWebHostEnvironment webHostEnvironment)
         {
             _productPhoto = productPhoto;
 			_mapper = mapper;
 			_unitOfWork = unitOfWork;
+            _environment = webHostEnvironment;
 		}
         public async Task<IActionResult> Index()
         {
@@ -57,7 +59,8 @@ namespace PrintMartic_DashBoard.Controllers
                 {
                     var ProMa= _mapper.Map<ProductPhotosVM,ProductPhotos>(product);
                     ProMa.Photo = $"images/product/{ProMa.Photo}";
-                    _productPhoto.Add(ProMa);
+                    //product.PathPhoto = Path.Combine(_environment.ContentRootPath, ProMa.Photo);
+                    //_productPhoto.Add(ProMa);
                    var count = _productPhoto.Complet();
                     if (count > 0) 
                     {
@@ -106,7 +109,7 @@ namespace PrintMartic_DashBoard.Controllers
                     var count = _unitOfWork.Complet();
                     if (count > 0)
                     {
-                        TempData["Message"] = $"Category Updated Successfully";
+                        TempData["Message"] = $"Photo Updated Successfully";
                     }
                     return RedirectToAction(nameof(Index));
                 }

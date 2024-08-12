@@ -72,7 +72,7 @@ namespace PrintMartic_DashBoard.Controllers
                     Email=addUser.Email,
                     PhoneNumber=addUser.PhoneNumber,
                     Location=addUser.Location,
-                   
+                    IsCompany = addUser.IsCompany,
                     Photo= $"images/user/{addUser.Photo}"
 
                     };

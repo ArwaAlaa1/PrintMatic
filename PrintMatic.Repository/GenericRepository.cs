@@ -18,9 +18,10 @@ namespace PrintMatic.Repository
         {
             _context = context;
         }
-
+        
         public async Task<IEnumerable<T>> GetAllAsync()
         {
+            
             return await _context.Set<T>().Where(z =>z.IsDeleted == false).ToListAsync();
         }
 
