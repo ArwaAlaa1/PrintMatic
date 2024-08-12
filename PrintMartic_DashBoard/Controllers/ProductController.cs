@@ -104,55 +104,50 @@ namespace PrintMartic_DashBoard.Controllers
             return View(ProductVM);
         }
 
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create(ProductVM productVM)
-        //{
+        public async Task<IActionResult> Create(ProductVM productVM)
+        {
 
 
-        //    var itemMapped = _mapper.Map<ProductVM, Product> (productVM);
-
-        //   _unitOfWork.generic.Add(itemMapped);
-        //    _unitOfWork.Complet();
-
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            var itemMapped = _mapper.Map<ProductVM, Product>(productVM);
+            
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var itemMapped = _mapper.Map<ProductVM, Product>(productVM);
 
 
-        //            _unitOfWork.generic.Add(itemMapped);
-        //            var count = _unitOfWork.Complet();
+                    _unitOfWork.generic.Add(itemMapped);
+                    var count = _unitOfWork.Complet();
 
-        //            ViewData["Message"] = "Product Created Successfully";
+                    ViewData["Message"] = "Product Created Successfully";
 
-        //            return RedirectToAction("Index");
+                    return RedirectToAction("Index");
 
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            ViewData["Message"] = ex.InnerException.Message;
-        //        }
-        //        // var userid =userManager.Users.FirstAsync(n => n.UserName==user); 
+                }
+                catch (Exception ex)
+                {
+                    ViewData["Message"] = ex.InnerException.Message;
+                }
+                // var userid =userManager.Users.FirstAsync(n => n.UserName==user); 
 
 
-        //    }
-        //    var List = await _catUnitOfwork.generic.GetAllAsync();
-        //    productVM.Categories = List;
-        //    List<AppUser> users = new List<AppUser>();
-        //    foreach (var item in _userManager.Users)
-        //    {
-        //        if (item.IsCompany == true)
-        //        {
-        //            users.Add(item);
-        //        }
-        //    }
-        //    productVM.Users = users;
-        //    return View(productVM);
-        //}
+            }
+            var List = await _catUnitOfwork.generic.GetAllAsync();
+            productVM.Categories = List;
+            List<AppUser> users = new List<AppUser>();
+            foreach (var item in _userManager.Users)
+            {
+                if (item.IsCompany == true)
+                {
+                    users.Add(item);
+                }
+            }
+            productVM.Users = users;
+            return View(productVM);
+        }
 
 
         public async Task<IActionResult> Edit(int id)
