@@ -80,14 +80,14 @@ namespace PrintMartic_DashBoard.Controllers
             var itemMapped = _mapper.Map<Product, ProductVM>(item);
             return View(itemMapped);
         }
-
+        [Authorize(AuthenticationSchemes = "Cookies")]
         public async Task<IActionResult> Create()
         {
 
             //var cookievalue = Request.Cookies["Id"];
             // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             // Get the current user's username
-            //  var userName = User.Identity.Name;
+          //   var userName = User.Identity.Name;
             ProductVM ProductVM = new ProductVM();
             var List = await _catUnitOfwork.generic.GetAllAsync();
             ProductVM.Categories = List;
