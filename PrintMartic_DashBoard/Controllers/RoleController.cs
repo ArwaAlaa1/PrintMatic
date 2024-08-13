@@ -8,7 +8,8 @@ using System.Security.Claims;
 
 namespace PrintMartic_DashBoard.Controllers
 {
-	public class RoleController : Controller
+    [Authorize(AuthenticationSchemes = "Cookies")]
+    public class RoleController : Controller
 	{
 		private readonly RoleManager<IdentityRole> roleManager;
   
@@ -26,13 +27,14 @@ namespace PrintMartic_DashBoard.Controllers
 
 
         // GET: RoleController/Create
+        
         public ActionResult Create()
         {
             return View();
         }
 
         // POST: RoleController/Create
-        [Authorize]
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RoleFormViewModel roleViewModel)

@@ -74,15 +74,18 @@ namespace PrintMartic_DashBoard
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
 			#endregion
-		builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+		builder.Services.AddAuthentication("Cookies")
        .AddCookie(options =>
        {
-           options.LoginPath = "/Account/Login"; // Redirect to this path if not authenticated
+           options.LoginPath = "/Account/Signin"; // Redirect to this path if not authenticated
           // options.AccessDeniedPath = "/Account/AccessDenied"; // Redirect here if the user is authenticated but not authorized
            options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
          
        });
-
+			builder.Services.ConfigureApplicationCookie(conf =>
+			{
+				conf.LoginPath = "/Account/Signin";
+			});
 			builder.Services.AddAuthorization();
             var app = builder.Build();
 
@@ -104,7 +107,7 @@ namespace PrintMartic_DashBoard
 			app.UseAuthorization();
             app.MapControllerRoute(
             name: "default",
-				pattern:  "{controller=Account}/{action=Login}/{id?}");
+				pattern:  "{controller=Home}/{action=Index}/{id?}");
 
 			app.Run();
 		}
