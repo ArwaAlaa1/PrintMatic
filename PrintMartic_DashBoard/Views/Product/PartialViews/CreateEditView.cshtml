@@ -42,135 +42,72 @@
     </div>
     </div>
 
-<div class="col">
+    <br />
     
-            <div class="form-group mb-3">
-                <label for="example-textarea">وصف المنتج</label>
-                <textarea class="form-control" asp-for="Description" id="example-textarea" rows="4"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-
-            </div>
       
-</div> <!-- /.col -->
-    
-  <div class="form-row">
+ <!-- /.col -->
+   
+  <div  class="form-row">
     <div class="col-md-3 mb-3">
         <label for="validationCustom05">الحد الأدنى للمده</label>
-        <input type="text" class="form-control is-valid" asp-for="NormalMinDate" required>
+        <input type="text" class="form-control " asp-for="NormalMinDate" required>
         <span asp-validation-for="NormalMinDate" class="text-danger"></span>
 
     </div>
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <label for="validationServer01">الحد الأعلى للمده</label>
-            <input type="text" class="form-control is-valid" asp-for="NormalMinDate" required>
+            <input type="text" class="form-control " asp-for="NormalMinDate" required>
             <span asp-validation-for="NormalMinDate" class="text-danger"></span>
 
         </div>
-        
+          <div class="col-md-3 mb-3">
+            <label for="validationServer01">الحد الأدنى لمده المنتج المستعجل </label>
+            <input type="text" class="form-control " asp-for="NormalMinDate" required>
+            <span asp-validation-for="NormalMinDate" class="text-danger"></span>
+
+        </div>
+
     <div class="col-md-3 mb-3">
+        <label for="validationServer01">الحد الأعلى  لمده المنتج المستعجل</label>
+        <input type="text" class="form-control " asp-for="NormalMinDate" required>
+        <span asp-validation-for="NormalMinDate" class="text-danger"></span>
+
+    </div>
+    <div class="form-group form-check">
+        <label class="form-check-label">
+            <input class="form-check-input" asp-for="Color" />اللون
+        </label>
+    </div>
+    <div class="form-group form-check">
+        <label class="form-check-label">
+            <input class="form-check-input" asp-for="Text" />النص
+        </label>
+    </div>
+    <div class="form-group form-check">
+        <label class="form-check-label">
+            <input class="form-check-input" asp-for="Date" />التاريخ
+        </label>
+    </div>
+    <div class="form-group form-check">
+        <label class="form-check-label">
+            <input class="form-check-input" asp-for="Enter" />يضاف الى قاعدة البيانات
+        </label>
+    </div>
+</div>
+<div class="form-group ">
+    <label for="example-textarea">وصف المنتج</label>
+    <textarea class="form-control" asp-for="Description" id="example-textarea" rows="4"></textarea>
+    <span asp-validation-for="Description" class="text-danger"></span>
+
+</div>
+  @*   <div class="col-md-3 mb-3">
       <label for="validationServer04">State</label>
       <input type="text" class="form-control is-invalid" id="validationServer04" placeholder="State" required>
       <div class="invalid-feedback">
         Please provide a valid state.
-      </div>
-    </div>
-    <div class="col-md-3 mb-3">
-      <label for="validationServer05">Zip</label>
-      <input type="text" class="form-control is-invalid" id="validationServer05" placeholder="Zip" required>
-      <div class="invalid-feedback">
-        Please provide a valid zip.
-      </div>
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="form-check">
-      <input class="form-check-input is-invalid" type="checkbox" value="" id="invalidCheck3" required>
-      <label class="form-check-label" for="invalidCheck3">
-        Agree to terms and conditions
-      </label>
-      <div class="invalid-feedback">
-        You must agree before submitting.
-      </div>
-    </div>
-  </div>
-  </div>
+      </div> *@
+    
+    
+  
 
-
-
-<div class="form-group">
-    <label asp-for="Name" class="control-label"></label>
-    <input asp-for="Name" class="form-control" />
-    <span asp-validation-for="Name" class="text-danger"></span>
-</div>
-<div class="form-group">
-    <label asp-for="Description" class="control-label"></label>
-    <input asp-for="Description" class="form-control" />
-    <span asp-validation-for="Description" class="text-danger"></span>
-</div>
-<div class="form-group">
-    <label asp-for="NumOfPhotos" class="control-label"></label>
-    <input asp-for="NumOfPhotos" class="form-control" />
-    <span asp-validation-for="NumOfPhotos" class="text-danger"></span>
-</div>
-<div class="form-group">
-    <label asp-for="NormalMinDate" class="control-label"></label>
-    <input asp-for="NormalMinDate" class="form-control" />
-    <span asp-validation-for="NormalMinDate" class="text-danger"></span>
-</div>
-<div class="form-group">
-    <label asp-for="NormalMaxDate" class="control-label"></label>
-    <input asp-for="NormalMaxDate" class="form-control" />
-    <span asp-validation-for="NormalMaxDate" class="text-danger"></span>
-</div>
-<div class="form-group">
-    <label asp-for="UrgentMinDate" class="control-label"></label>
-    <input asp-for="UrgentMinDate" class="form-control" />
-    <span asp-validation-for="UrgentMinDate" class="text-danger"></span>
-</div>
-<div class="form-group">
-    <label asp-for="UrgentMaxDate" class="control-label"></label>
-    <input asp-for="UrgentMaxDate" class="form-control" />
-    <span asp-validation-for="UrgentMaxDate" class="text-danger"></span>
-</div>
-<div class="form-group">
-    <label asp-for="NormalPrice" class="control-label"></label>
-    <input asp-for="NormalPrice" class="form-control" />
-    <span asp-validation-for="NormalPrice" class="text-danger"></span>
-</div>
-<div class="form-group">
-    <label asp-for="UrgentPrice" class="control-label"></label>
-    <input asp-for="UrgentPrice" class="form-control" />
-    <span asp-validation-for="UrgentPrice" class="text-danger"></span>
-</div>
-<div class="form-group form-check">
-    <label class="form-check-label">
-        <input class="form-check-input" asp-for="Color" /> @Html.DisplayNameFor(model => model.Color)
-    </label>
-</div>
-<div class="form-group form-check">
-    <label class="form-check-label">
-        <input class="form-check-input" asp-for="Text" /> @Html.DisplayNameFor(model => model.Text)
-    </label>
-</div>
-<div class="form-group form-check">
-    <label class="form-check-label">
-        <input class="form-check-input" asp-for="Date" /> @Html.DisplayNameFor(model => model.Date)
-    </label>
-</div>
-<div class="form-group form-check">
-    <label class="form-check-label">
-        <input class="form-check-input" asp-for="Enter" /> @Html.DisplayNameFor(model => model.Enter)
-    </label>
-</div>
-<div class="form-group">
-    <label class="col-form-label">Category</label>
-    <select asp-for="CategoryId" class="form-select  form-select-lg mb-3" aria-label="Large select example" asp-items="@(new SelectList(Model.Categories,"Id","Name"))">
-        <option value="0">select a Category</option>
-    </select>
-</div>
-<div class="form-group">
-    <label class="col-form-label">Company</label>
-    <select asp-for="UserId" class="form-select  form-select-lg mb-3" aria-label="Large select example" asp-items="@(new SelectList(Model.Users,"Id","DisplayName"))">
-        <option value="0">select a Company</option>
-    </select>
-</div>
+      

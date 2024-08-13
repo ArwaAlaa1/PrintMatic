@@ -43,6 +43,12 @@ namespace PrintMatic.Repository.Repository
         {
             _context.Update(entity);
         }
+        public decimal GetPrice(int discount , decimal price) 
+        {
+            decimal discountper = price * (discount / 100);
+            return price - discountper;
+        }
+
         public void Delete(ProductSale productSale)
         {
             _context.Remove(productSale);

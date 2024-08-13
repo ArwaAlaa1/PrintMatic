@@ -48,12 +48,6 @@ namespace PrintMartic_DashBoard.Controllers
                 try
                 {
 
-                    if (DateTime.Now >saleVM.SaleStartDate && DateTime.Now < saleVM.SaleEndDate)
-                    {
-                        saleVM.IsOnSale = true;
-                    }
-                    else
-                        saleVM.IsOnSale = false;
                     var sale = _mapper.Map<SaleVM, Sale>(saleVM);
                     _unitOfWork.generic.Add(sale);
                     var count = _unitOfWork.Complet();
@@ -89,12 +83,7 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
-                    if (DateTime.Now > saleVM.SaleStartDate && DateTime.Now < saleVM.SaleEndDate)
-                    {
-                        saleVM.IsOnSale = true;
-                    }
-                    else
-                        saleVM.IsOnSale = false;
+                    
                     var sale = _mapper.Map<SaleVM, Sale>(saleVM);
 
                     _unitOfWork.generic.Update(sale);
