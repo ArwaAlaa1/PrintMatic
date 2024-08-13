@@ -6,8 +6,7 @@ using PrintMartic_DashBoard.ViewModels;
 using PrintMatic.Core.Entities.Identity;
 using PrintMatic.DTOS;
 using System.Security.Claims;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
-using Microsoft.AspNetCore.Authorization;
+
 
 
 namespace PrintMartic_DashBoard.Controllers
@@ -29,12 +28,13 @@ namespace PrintMartic_DashBoard.Controllers
 
         public async Task<IActionResult> Login()
         {
+
+            ClaimsPrincipal claimsPrincipal =HttpContext.User;
+            if (claimsPrincipal.Identity.IsAuthenticated)
+                return RedirectToAction("Index", "Home");
             return View();
         }
 
-
-
-        //[Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel login)
         {
@@ -44,46 +44,49 @@ namespace PrintMartic_DashBoard.Controllers
                 ModelState.AddModelError("Email", "Email Is Invalid");
                 return RedirectToAction(nameof(Login));
             }
+
             var result = await _signInManager.CheckPasswordSignInAsync(user, login.Password, false);
-            if (!result.Succeeded)
+           
+                if (result.Succeeded)
             {
-                ModelState.AddModelError(string.Empty, "you Are Not Authorized");
-                return RedirectToAction(nameof(Login));
-            }
-            else
-            {
-
-
-
-                var claims = new List<Claim>
+                List<Claim> claims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.Name, login.UserName),
-                   // new Claim(ClaimTypes.Role, "Admin") // Example role
+                     new Claim(ClaimTypes.NameIdentifier, login.UserName),
                 };
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                var authProperties = new AuthenticationProperties
+                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,
+                    CookieAuthenticationDefaults.AuthenticationScheme);
+
+                AuthenticationProperties authenticationProperties = new AuthenticationProperties()
                 {
-                    IsPersistent = true, // Remember me
-                    ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(60)
+                    AllowRefresh =true,
+                    IsPersistent = login.RememberMe
                 };
 
                 await HttpContext.SignInAsync(
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     new ClaimsPrincipal(claimsIdentity),
-                    authProperties);
+                    authenticationProperties);
+
                 return RedirectToAction("Index", "Home");
-
-
             }
 
+            ViewData["ValidateMessage"] = "User Not Found";
+            return View();
         }
 
+        
         public async Task<IActionResult> Logout()
         {
-            await _signInManager.SignOutAsync();
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction(nameof(Login));
         }
+        //public async Task<IActionResult> Logout()
+        //{
+        //    await _signInManager.SignOutAsync();
+        //    return RedirectToAction(nameof(Login));
+        //}
 
 
 

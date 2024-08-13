@@ -292,9 +292,20 @@
             </li>
         </ul>
         <div class="btn-box w-100 mt-4 mb-1">
+            <a asp-action="Logout" asp-controller="Account" target="_blank" class="btn mb-2 btn-primary btn-lg btn-block">LogOut</a>
+        </div>
+        <div class="btn-box w-100 mt-4 mb-1">
             <a href="https://themeforest.net/item/tinydash-bootstrap-html-admin-dashboard-template/27511269" target="_blank" class="btn mb-2 btn-primary btn-lg btn-block">
                 <i class="fe fe-shopping-cart fe-12 mr-2"></i><span class="small">Buy now</span>
             </a>
         </div>
+
+        
     </nav>
 </aside>
+<script>
+    function toggleDropdown(id) {
+        var element = document.getElementById(id);
+        element.classList.toggle('show');
+    }
+</script>
