@@ -14,7 +14,8 @@ namespace PrintMartic_DashBoard.Controllers
 		private readonly IUnitOfWork<Product> _unitOfWork;
         private IWebHostEnvironment _environment;
 
-		public ProductPhotoController(IProductPhoto productPhoto, IMapper mapper,IUnitOfWork<Product> unitOfWork,IWebHostEnvironment webHostEnvironment)
+		public ProductPhotoController(IProductPhoto productPhoto, IMapper mapper
+            ,IUnitOfWork<Product> unitOfWork,IWebHostEnvironment webHostEnvironment)
         {
             _productPhoto = productPhoto;
 			_mapper = mapper;
