@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using PrintMartic_DashBoard.Helper;
 using PrintMatic.Core;
 
@@ -45,17 +46,8 @@ namespace PrintMartic_DashBoard
 		//	});
 		//	#endregion
 
-			builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-       .AddCookie(options =>
-       {
-           options.LoginPath = "/Account/Login"; // Redirect to this path if not authenticated
-           options.AccessDeniedPath = "/Account/AccessDenied"; // Redirect here if the user is authenticated but not authorized
-           options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-           options.SlidingExpiration = true;
-       });
-
-            builder.Services.AddAuthorization();
-
+	
+           
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -82,8 +74,17 @@ namespace PrintMartic_DashBoard
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
 			#endregion
+		builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+       .AddCookie(options =>
+       {
+           options.LoginPath = "/Account/Login"; // Redirect to this path if not authenticated
+          // options.AccessDeniedPath = "/Account/AccessDenied"; // Redirect here if the user is authenticated but not authorized
+           options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+         
+       });
 
-			var app = builder.Build();
+			builder.Services.AddAuthorization();
+            var app = builder.Build();
 
 			//Configure the HTTP request pipeline.
 			if (!app.Environment.IsDevelopment())
@@ -92,21 +93,18 @@ namespace PrintMartic_DashBoard
 				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
 			}
-
-
+           app.UseHttpsRedirection();
 			app.UseStaticFiles();
 
 			app.UseRouting();
 			
-			
-			app.UseHttpsRedirection();
+
 
 		app.UseAuthentication();
 			app.UseAuthorization();
-
-			app.MapControllerRoute(
-				name: "default",
-				pattern: "{controller=Account}/{action=Login}/{id?}");
+            app.MapControllerRoute(
+            name: "default",
+				pattern:  "{controller=Account}/{action=Login}/{id?}");
 
 			app.Run();
 		}

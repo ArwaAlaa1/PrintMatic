@@ -16,14 +16,14 @@ namespace PrintMatic.Repository
         public IGenericRepository<T> generic { get; set; }
         private readonly PrintMaticContext _Context;
         public IReviewRepository review {  get; set; }
-        public IProdduct product { get; set; }
-
+        public IProdduct prodduct { get; set; }
+        
         public UnitOfWork(PrintMaticContext Context)
         {
             _Context = Context;
             generic = new GenericRepository<T>(_Context);
             review = new ReviewRepository(_Context);
-            product = new ProductRepository(_Context);
+            prodduct = new ProductRepository(_Context);
         }
 
         public int Complet()

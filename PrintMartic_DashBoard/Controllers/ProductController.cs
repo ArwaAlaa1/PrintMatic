@@ -41,33 +41,33 @@ namespace PrintMartic_DashBoard.Controllers
             return View(List);
         }
 
-        public async Task<IActionResult> WaitingProducts()
-        {
-            var List = await _unitOfWork.prodduct.GetWaitingProducts();
-             return View(List);
-        }
-        public async Task<IActionResult> Confirm(int id)
-        {
-            try
-            {
-                var item = await _unitOfWork.generic.GetByIdAsync(id);
-                item.Enter = true;
-                _unitOfWork.generic.Update(item);
-              var count =  _unitOfWork.Complet();
-                if (count > 0) 
-                {
-                    ViewData["Message"] = "Done";
-                }
-                else
-                    ViewData["Message"] = "Failed";
-            }
-            catch (Exception ex)
-            {
-                ViewData["Message"] = ex.Message;
-            }
-            return RedirectToAction(nameof(WaitingProducts));
+        //public async Task<IActionResult> WaitingProducts()
+        //{
+        //    var List = await _unitOfWork.prodduct.GetWaitingProducts();
+        //     return View(List);
+        //}
+        //public async Task<IActionResult> Confirm(int id)
+        //{
+        //    try
+        //    {
+        //        var item = await _unitOfWork.generic.GetByIdAsync(id);
+        //        item.Enter = true;
+        //        _unitOfWork.generic.Update(item);
+        //      var count =  _unitOfWork.Complet();
+        //        if (count > 0) 
+        //        {
+        //            ViewData["Message"] = "Done";
+        //        }
+        //        else
+        //            ViewData["Message"] = "Failed";
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ViewData["Message"] = ex.Message;
+        //    }
+        //    return RedirectToAction(nameof(WaitingProducts));
 
-        }
+        //}
 
         public async Task<IActionResult> Details(int id)
         {
@@ -104,13 +104,14 @@ namespace PrintMartic_DashBoard.Controllers
             return View(ProductVM);
         }
 
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductVM productVM)
         {
 
 
+            
             if (ModelState.IsValid)
             {
                 try
@@ -224,7 +225,7 @@ namespace PrintMartic_DashBoard.Controllers
                 Product.IsDeleted = true;
                 _unitOfWork.generic.Update(Product);
                 var count = _unitOfWork.Complet();
-                if(count > 0)
+                if (count > 0)
                 {
                     ViewData["Message"] = "Deleted Successfully";
                     return RedirectToAction(nameof(Index));

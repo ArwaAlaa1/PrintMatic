@@ -13,6 +13,83 @@
     }
     <hr />
 <hr />
+<<<<<<< HEAD
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+           
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NumOfPhotos" class="control-label"></label>
+                <input asp-for="NumOfPhotos" class="form-control" />
+                <span asp-validation-for="NumOfPhotos" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NormalMinDate" class="control-label"></label>
+                <input asp-for="NormalMinDate" class="form-control" />
+                <span asp-validation-for="NormalMinDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NormalMaxDate" class="control-label"></label>
+                <input asp-for="NormalMaxDate" class="form-control" />
+                <span asp-validation-for="NormalMaxDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UrgentMinDate" class="control-label"></label>
+                <input asp-for="UrgentMinDate" class="form-control" />
+                <span asp-validation-for="UrgentMinDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UrgentMaxDate" class="control-label"></label>
+                <input asp-for="UrgentMaxDate" class="form-control" />
+                <span asp-validation-for="UrgentMaxDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NormalPrice" class="control-label"></label>
+                <input asp-for="NormalPrice" class="form-control" />
+                <span asp-validation-for="NormalPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UrgentPrice" class="control-label"></label>
+                <input asp-for="UrgentPrice" class="form-control" />
+                <span asp-validation-for="UrgentPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Color" /> @Html.DisplayNameFor(model => model.Color)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Text" /> @Html.DisplayNameFor(model => model.Text)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Date" /> @Html.DisplayNameFor(model => model.Date)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <input asp-for="CategoryId" class="form-control" />
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+=======
     <form asp-action="Create" method="post" >
 
 
@@ -24,6 +101,7 @@
         </div>
     </form>
 
+>>>>>>> 4bb818edce42725ca3f3283b967fe1fecca9e539
 </div>
 
 

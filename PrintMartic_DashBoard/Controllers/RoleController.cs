@@ -1,8 +1,10 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PrintMartic_DashBoard.ViewModels;
+using System.Security.Claims;
 
 namespace PrintMartic_DashBoard.Controllers
 {
@@ -30,10 +32,12 @@ namespace PrintMartic_DashBoard.Controllers
         }
 
         // POST: RoleController/Create
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(RoleFormViewModel roleViewModel)
         {
+            var user = User.FindFirstValue(ClaimTypes.Name);
             if (ModelState.IsValid)
             {
                 var roleExist = await roleManager.RoleExistsAsync(roleViewModel.Name);

@@ -22,16 +22,16 @@ namespace PrintMatic
 			// Add services to the container.
 
 			builder.Services.AddControllers();
-			
+
 			//Add Context Services
 			builder.Services.AddDbContext<PrintMaticContext>(
 				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
-			
+
 			builder.Services.AddScoped<ITokenService, TokenService>();
 
-           
-      
-            builder.Services.AddIdentityServices(builder.Configuration);
+
+
+			builder.Services.AddIdentityServices(builder.Configuration);
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
