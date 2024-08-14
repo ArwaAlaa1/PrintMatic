@@ -10,5 +10,6 @@ namespace PrintMatic.Core.Repository.Contract
     public interface IProdduct
     {
         Task<IEnumerable<Product>> GetWaitingProducts();
+        Task<IEnumerable<Product>> GetAllProducts();
     }
 }

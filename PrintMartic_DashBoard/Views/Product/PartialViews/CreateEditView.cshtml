@@ -34,11 +34,19 @@
         <span asp-validation-for="NormalPrice" class="text-danger"></span>
 
     </div>
+   
     <div class="col">
         <label for="validationServer01">السعر المستعجل</label>
 
         <input type="text" class="form-control " asp-for="UrgentPrice" required>
         <span asp-validation-for="UrgentPrice" class="text-danger"></span>
+    </div>
+    <div class="col">
+        <label for="validationServer01">عدد الصور</label>
+
+        <input type="text" class="form-control " asp-for="NumOfPhotos" required>
+        <span asp-validation-for="NumOfPhotos" class="text-danger"></span>
+
     </div>
     </div>
 
@@ -56,21 +64,21 @@
     </div>
         <div class="col-md-3 mb-3">
             <label for="validationServer01">الحد الأعلى للمده</label>
-            <input type="text" class="form-control " asp-for="NormalMinDate" required>
-            <span asp-validation-for="NormalMinDate" class="text-danger"></span>
+            <input type="text" class="form-control " asp-for="NormalMaxDate" required>
+            <span asp-validation-for="NormalMaxDate" class="text-danger"></span>
 
         </div>
           <div class="col-md-3 mb-3">
             <label for="validationServer01">الحد الأدنى لمده المنتج المستعجل </label>
-            <input type="text" class="form-control " asp-for="NormalMinDate" required>
-            <span asp-validation-for="NormalMinDate" class="text-danger"></span>
+            <input type="text" class="form-control " asp-for="UrgentMinDate" required>
+            <span asp-validation-for="UrgentMinDate" class="text-danger"></span>
 
         </div>
 
     <div class="col-md-3 mb-3">
         <label for="validationServer01">الحد الأعلى  لمده المنتج المستعجل</label>
-        <input type="text" class="form-control " asp-for="NormalMinDate" required>
-        <span asp-validation-for="NormalMinDate" class="text-danger"></span>
+        <input type="text" class="form-control " asp-for="UrgentMaxDate" required>
+        <span asp-validation-for="UrgentMaxDate" class="text-danger"></span>
 
     </div>
     <div class="form-group form-check">

@@ -61,7 +61,7 @@ namespace PrintMartic_DashBoard.Controllers
                     var ProMa = _mapper.Map<ProductPhotosVM, ProductPhotos>(product);
                     ProMa.Photo = $"images/product/{ProMa.Photo}";
                     //product.PathPhoto = Path.Combine(_environment.ContentRootPath, ProMa.Photo);
-                    //_productPhoto.Add(ProMa);
+                    _productPhoto.Add(ProMa);
                     var count = _productPhoto.Complet();
                     if (count > 0)
                     {
