@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrintMartic_DashBoard.Models;
@@ -6,8 +5,8 @@ using System.Diagnostics;
 
 namespace PrintMartic_DashBoard.Controllers
 {
-	[Authorize(AuthenticationSchemes ="Cookies")]
-	public class HomeController : Controller
+    [Authorize(AuthenticationSchemes = "Cookies")]
+    public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
 
