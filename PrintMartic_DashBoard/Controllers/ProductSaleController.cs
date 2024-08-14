@@ -60,8 +60,8 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
-
-
+                    var paS = _productSale.GetPrice(productSaleVM.Sale.SaleDiscountPercentage, productSaleVM.Product.NormalPrice);
+                    productSaleVM.PriceAfterSale = paS;
                     var ProSale = _mapper.Map<ProductSaleVM, ProductSale>(productSaleVM);
                     _productSale.Add(ProSale);
                     var count = _productSale.Complet();
@@ -111,6 +111,8 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
+                    var paS = _productSale.GetPrice(productSaleVM.Sale.SaleDiscountPercentage, productSaleVM.Product.NormalPrice);
+                    productSaleVM.PriceAfterSale = paS;
                     var ProSale = _mapper.Map<ProductSaleVM, ProductSale>(productSaleVM);
                     _productSale.Update(ProSale);
                     var count = _productSale.Complet();

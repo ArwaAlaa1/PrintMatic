@@ -14,7 +14,8 @@ namespace PrintMartic_DashBoard.Controllers
         private readonly IUnitOfWork<Product> _unitOfWork;
         private IWebHostEnvironment _environment;
 
-        public ProductPhotoController(IProductPhoto productPhoto, IMapper mapper, IUnitOfWork<Product> unitOfWork, IWebHostEnvironment webHostEnvironment)
+		public ProductPhotoController(IProductPhoto productPhoto, IMapper mapper
+            ,IUnitOfWork<Product> unitOfWork,IWebHostEnvironment webHostEnvironment)
         {
             _productPhoto = productPhoto;
             _mapper = mapper;
@@ -60,7 +61,7 @@ namespace PrintMartic_DashBoard.Controllers
                     var ProMa = _mapper.Map<ProductPhotosVM, ProductPhotos>(product);
                     ProMa.Photo = $"images/product/{ProMa.Photo}";
                     //product.PathPhoto = Path.Combine(_environment.ContentRootPath, ProMa.Photo);
-                    //_productPhoto.Add(ProMa);
+                    _productPhoto.Add(ProMa);
                     var count = _productPhoto.Complet();
                     if (count > 0)
                     {

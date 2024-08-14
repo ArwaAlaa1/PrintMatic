@@ -2,11 +2,6 @@
 
 <div >
 
-    <div class="form-group form-check">
-        <label class="form-check-label">
-            <input class="form-check-input" asp-for="IsOnSale" readonly /> @Html.DisplayNameFor(model => model.IsOnSale)
-        </label>
-    </div>
     <div class="form-group">
         <label asp-for="SaleStartDate" class="col-form-label"></label>
         <input asp-for="SaleStartDate" class="form-control" readonly />
@@ -15,13 +10,13 @@
     <div class="form-group">
         <label asp-for="SaleEndDate" class="col-form-label"></label>
         <input asp-for="SaleEndDate" class="form-control" readonly />
-
-    </div>  <div class="form-group">
+    </div>
+    @*   <div class="form-group">
         <label asp-for="PriceAfterSale" class="col-form-label"></label>
         <input asp-for="PriceAfterSale" class="form-control" readonly />
 
     
-</div>
+</div> *@
 <div class="form-group">
     <label asp-for="SaleDiscountPercentage" class="col-form-label"></label>
     <input asp-for="SaleDiscountPercentage" class="form-control" readonly />

@@ -3,25 +3,31 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
-
-<div class="m-auto w-75 bg-white p-5">
-    <h1>ProductSale Details </h1>
 
 
-    <hr />
+<hr />
 
-    <div>
+<main role="main" class="main-content">
 
-        <partial name="PartialViews/DeleteDetialsView" />
+    <div class="m-auto  bg-white p-5">
 
-        <div class=" mt-4">
-            <a href="~/ProductSale/Details?ProductId=@Model.ProductId&SaleId=@Model.SaleId" class="btn btn-primary">Edit</a>
+        <h1>تفاصيل الخصم </h1>
+        <div>
 
-            <a asp-action="Index" class="btn btn-light">Back to List</a>
+            <partial name="PartialViews/DeleteDetialsView" />
+
+            <div class=" mt-4">
+                <a href="~/ProductSale/Details?ProductId=@Model.ProductId&SaleId=@Model.SaleId" class="btn btn-primary">Edit</a>
+
+                <a asp-action="Index" class="btn btn-light">Back to List</a>
+            </div>
         </div>
     </div>
-</div>
+
+</main>
+
+
+
 
 
 

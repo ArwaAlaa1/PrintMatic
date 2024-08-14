@@ -78,8 +78,6 @@ namespace PrintMatic.Repository.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IsOnSale = table.Column<bool>(type: "bit", nullable: false),
-                    PriceAfterSale = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     SaleStartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SaleEndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SaleDiscountPercentage = table.Column<int>(type: "int", nullable: false),
@@ -294,6 +292,7 @@ namespace PrintMatic.Repository.Data.Migrations
                 {
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     SaleId = table.Column<int>(type: "int", nullable: false),
+                    PriceAfterSale = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false),

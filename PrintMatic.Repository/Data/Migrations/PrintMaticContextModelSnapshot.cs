@@ -430,6 +430,9 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal>("PriceAfterSale")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("ProductId", "SaleId");
 
                     b.HasIndex("SaleId");
@@ -491,14 +494,8 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsOnSale")
-                        .HasColumnType("bit");
-
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal>("PriceAfterSale")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("SaleDiscountPercentage")
                         .HasColumnType("int");

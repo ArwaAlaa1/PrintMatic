@@ -3,9 +3,11 @@
 @{
     ViewData["Title"] = "Create";
 }
+<main role="main" class="main-content">
 
-<div class="m-auto w-75 bg-white p-5">
-    <h1>Create New Category</h1>
+  
+        <div class="m-auto  bg-white p-5">
+    <h1>إضافة قسم جديد</h1>
     @if(!string.IsNullOrEmpty(TempData["Message"] as string))
     {
         <div class="alert alert-primary mt-3 mb-2">
@@ -27,6 +29,8 @@
     </form>
 
 </div>
+</div>
+</main>
 @* @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 

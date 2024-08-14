@@ -16,6 +16,7 @@ namespace PrintMatic.Core.Repository.Contract
 
         void Update(ProductSale entity);
         void Delete(ProductSale productSale);
+        decimal GetPrice(int discount , decimal price);
         int Complet();
     }
 }

@@ -12,5 +12,7 @@ namespace PrintMatic.Core.Entities
         public int ProductId { get; set; }
         public virtual Sale Sale { get; set; }
         public int SaleId { get; set; }
+        public decimal PriceAfterSale { get; set; }
+
     }
 }

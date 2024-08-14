@@ -34,6 +34,7 @@ namespace PrintMartic_DashBoard.Controllers
                 Email = u.Email,
                 PhoneNumber = u.PhoneNumber,
                 Location = u.Location,
+                IsCompany = u.IsCompany,
                 Roles = _userManager.GetRolesAsync(u).Result
 
             }).ToListAsync();
@@ -123,7 +124,7 @@ namespace PrintMartic_DashBoard.Controllers
                     Email = editUser.Email,
                     PhoneNumber = editUser.PhoneNumber,
                     Location = editUser.Location,
-
+                    IsCompany = editUser.IsCompany,
                     //Photo = $"images/user/{editUser.Photo}"
 
                 };

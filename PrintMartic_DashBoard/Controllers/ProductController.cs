@@ -34,40 +34,40 @@ namespace PrintMartic_DashBoard.Controllers
 
 
         //Get All Products    Get
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> AllProducts()
         {
-            var List = await _unitOfWork.generic.GetAllAsync();
+            var List = await _unitOfWork.prodduct.GetAllProducts();
 
-            return View(List);
+            return View("Index",List);
         }
+       
+        public async Task<IActionResult> WaitingProducts()
+        {
+            var List = await _unitOfWork.prodduct.GetWaitingProducts();
+            return View("Index",List);
+        }
+        public async Task<IActionResult> Confirm(int id)
+        {
+            try
+            {
+                var item = await _unitOfWork.generic.GetByIdAsync(id);
+                item.Enter = true;
+                _unitOfWork.generic.Update(item);
+                var count = _unitOfWork.Complet();
+                if (count > 0)
+                {
+                    ViewData["Message"] = "Done";
+                }
+                else
+                    ViewData["Message"] = "Failed";
+            }
+            catch (Exception ex)
+            {
+                ViewData["Message"] = ex.Message;
+            }
+            return RedirectToAction(nameof(WaitingProducts));
 
-        //public async Task<IActionResult> WaitingProducts()
-        //{
-        //    var List = await _unitOfWork.prodduct.GetWaitingProducts();
-        //     return View(List);
-        //}
-        //public async Task<IActionResult> Confirm(int id)
-        //{
-        //    try
-        //    {
-        //        var item = await _unitOfWork.generic.GetByIdAsync(id);
-        //        item.Enter = true;
-        //        _unitOfWork.generic.Update(item);
-        //      var count =  _unitOfWork.Complet();
-        //        if (count > 0) 
-        //        {
-        //            ViewData["Message"] = "Done";
-        //        }
-        //        else
-        //            ViewData["Message"] = "Failed";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        ViewData["Message"] = ex.Message;
-        //    }
-        //    return RedirectToAction(nameof(WaitingProducts));
-
-        //}
+        }
 
         public async Task<IActionResult> Details(int id)
         {
@@ -75,19 +75,19 @@ namespace PrintMartic_DashBoard.Controllers
             if (item == null)
             {
                 TempData["Message"] = "Not Found";
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             var itemMapped = _mapper.Map<Product, ProductVM>(item);
             return View(itemMapped);
         }
-
+        //[Authorize(AuthenticationSchemes = "Cookies")]
         public async Task<IActionResult> Create()
         {
 
             //var cookievalue = Request.Cookies["Id"];
             // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             // Get the current user's username
-            //  var userName = User.Identity.Name;
+          //   var userName = User.Identity.Name;
             ProductVM ProductVM = new ProductVM();
             var List = await _catUnitOfwork.generic.GetAllAsync();
             ProductVM.Categories = List;
@@ -124,7 +124,7 @@ namespace PrintMartic_DashBoard.Controllers
 
                     ViewData["Message"] = "Product Created Successfully";
 
-                    return RedirectToAction("Index");
+                    return RedirectToAction(nameof(Index));
 
                 }
                 catch (Exception ex)
@@ -156,7 +156,7 @@ namespace PrintMartic_DashBoard.Controllers
             if (item == null)
             {
                 ViewData["Message"] = "Not Found";
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             var itemMapped = _mapper.Map<Product, ProductVM>(item);
             var List = await _catUnitOfwork.generic.GetAllAsync();
