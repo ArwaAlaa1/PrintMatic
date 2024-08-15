@@ -1,3 +1,4 @@
+using Castle.Components.DictionaryAdapter.Xml;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
@@ -57,9 +58,10 @@ namespace PrintMartic_DashBoard
 
 			builder.Services.AddDbContext<PrintMaticContext>(
 
-				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
+				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")), ServiceLifetime.Transient);
 
-			builder.Services.AddIdentity<AppUser, IdentityRole>()
+           
+            builder.Services.AddIdentity<AppUser, IdentityRole>()
 				.AddEntityFrameworkStores<PrintMaticContext>();
 
 			builder.Services.AddScoped(typeof(IUnitOfWork<>),typeof(UnitOfWork<>));

@@ -8,6 +8,7 @@ using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Identity.Client;
 
 namespace PrintMartic_DashBoard.Controllers
 {
@@ -35,9 +36,14 @@ namespace PrintMartic_DashBoard.Controllers
                 PhoneNumber = u.PhoneNumber,
                 Location = u.Location,
                 IsCompany = u.IsCompany,
-                Roles = _userManager.GetRolesAsync(u).Result
-
+                Roles = new List<string>() 
             }).ToListAsync();
+
+
+            foreach (var user in users)
+            {
+                user.Roles = await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(user.Id));
+            }
 
             return View(users);
         }
@@ -50,7 +56,7 @@ namespace PrintMartic_DashBoard.Controllers
         [HttpPost]
         public async Task<IActionResult> AddUser(UserFormViewModel addUser)
         {
-            addUser.Photo = addUser.PhotoFile.FileName;
+            
 
             if (ModelState.IsValid)
             {
@@ -59,7 +65,7 @@ namespace PrintMartic_DashBoard.Controllers
 
 
                     if (addUser.PhotoFile != null)
-                    {
+                    {addUser.Photo = addUser.PhotoFile.FileName;
                         addUser.Photo = DocumentSetting.UploadFile(addUser.PhotoFile, "user");
                     }
 
@@ -242,5 +248,9 @@ namespace PrintMartic_DashBoard.Controllers
             await _userManager.DeleteAsync(user);
             return RedirectToAction(nameof(Index));
         }
+
+    
+
+
     }
 }

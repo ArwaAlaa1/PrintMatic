@@ -2,9 +2,6 @@
 @{
     ViewData["Title"] = "Delete";
 }
-<main role="main" class="main-content">
-
-
     <div class="m-auto  bg-white p-5">
     <h1>إزالة القسم</h1>
     @if (!string.IsNullOrEmpty(TempData["Message"] as string))
@@ -24,7 +21,7 @@
             <a asp-action="Index" class="btn btn-light">Back to List</a>
         </div>
     </form>
-    </div></main>
+    </div>
 @* </div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

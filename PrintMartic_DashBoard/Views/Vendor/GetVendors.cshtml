@@ -1,0 +1,130 @@
+﻿@model IEnumerable<UserViewModel>
+
+@{
+    ViewData["Title"] = "GetVendors";
+}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="row">
+                <!-- Small table -->
+                <div class="col-md-12 my-4">
+                    <h2 class="h4 mb-1">البائعين</h2>
+              
+                    <div class="card shadow">
+                        <div class="card-body">
+                            <div class="toolbar">
+                                <form class="form">
+                                    <div class="form-row">
+                                        <div class="form-group col-auto mr-auto">
+                                            <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref1">Show</label>
+                                            <select class="custom-select mr-sm-2" id="inlineFormCustomSelectPref1">
+                                                <option value="">...</option>
+                                                <option value="1">12</option>
+                                                <option value="2" selected>32</option>
+                                                <option value="3">64</option>
+                                                <option value="3">128</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-auto">
+                                            <label for="search" class="sr-only">Search</label>
+                                            <input type="text" class="form-control" id="search1" value="" placeholder="Search">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        <table class="table table-borderless table-hover">
+                            <thead>
+                                <tr>
+                                    <td>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="all2">
+                                            <label class="custom-control-label" for="all2"></label>
+                                        </div>
+                                    </td>
+                                    <th>معرف المستخدم</th>
+                                    <th>صوره اللوجو</th>
+                                    <th>اسم المستخدم</th>
+           
+                                    <th>الاسم الظاهر</th>
+                                    <th>البريد الالكترونى</th>
+                                    <th>رقم الموبايل</th>
+                                    <th >موقع الشركه</th>
+           
+                                    <th>صلاحيه المسخدم</th>
+                                    <th>العمليات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.Count() >0)
+                                {
+                                   @foreach (var item in Model)
+                                {
+                                     <tr>
+                                        <td>
+                                            <div class="custom-control custom-checkbox">
+                                                <input type="checkbox" class="custom-control-input" id="2474">
+                                                <label class="custom-control-label" for="2474"></label>
+                                            </div>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0 text-muted"><strong>@item.Id</strong></p>
+                                                </td>
+                                            <td>
+                                                <div class="avatar avatar-md">
+                                                    <img src="~/@item.Photo" class="w-25" class="avatar-img rounded-rounded">
+                                                </div>
+                                            </td>
+                                       
+                                        <td>
+                                                <p class="mb-0 text-muted"><strong>@item.UserName</strong></p>
+                                            
+                                        </td>
+                                        <td>
+                                            
+                                            <small class="mb-0 text-muted">@item.DisplayName</small>
+                                        </td>
+                                        <td>
+                                           
+                                            <small class="mb-0 text-muted">@item.Email</small>
+                                        </td>
+                                        <td ><small class="text-muted"> @item.PhoneNumber</small></td>
+                                            <td><small class="text-muted"> @item.Location</small></td>
+                                            <td>@string.Join(",", item.Roles.ToList())</td>
+                                            <td>
+                                            <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <span class="text-muted sr-only">Action</span>
+                                            </button>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a class="dropdown-item" asp-action="EditVendor" asp-route-id="@item.Id">تعديل</a>
+                                                        <a class="dropdown-item" asp-action="RemoveVendor" asp-route-id="@item.Id">حذف</a>
+                                                <a class="dropdown-item" asp-action="DetailsVendor" asp-route-id="@item.Id">تفاصيل</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }  
+                                }
+      
+           
+        
+      
+   
+                            </tbody>
+                        </table>
+                            <nav aria-label="Table Paging" class="mb-0 text-muted">
+                                <ul class="pagination justify-content-center mb-0">
+                                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div> <!-- customized table -->
+            </div> <!-- end section -->
+            </div>
+            </div>
+            </div>
+            

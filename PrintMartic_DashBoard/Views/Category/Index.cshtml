@@ -1,8 +1,6 @@
 ﻿@model IEnumerable<Category>
 
 
-<body class="vertical  light rtl ">
-    <main role="main" class="main-content">
         <div class="m-auto  bg-white p-5">
             <h1>جميع الأقسام </h1>
             @if (!string.IsNullOrEmpty(TempData["Message"] as string))
@@ -12,11 +10,7 @@
                 </div>
             }
             <hr />
-            <div class="row justify-content-center">
-                <div class="col-12">
-                    <div class="row">
-                        <!-- Small table -->
-                        <div class="col-md-12 my-4">
+   
                             @*  <h2 class="h4 mb-1">Customize table rendering</h2> *@
                             <div class="card shadow">
                                 <div class="card-body">
@@ -109,18 +103,9 @@
                                     </ul>
                                     </nav> *@
                                 </div>
-                            </div>
+                            
                         </div> <!-- customized table -->
                     </div> <!-- end section -->
-                </div>
-
-            </div>
-        </div>
-    </main> <!-- main -->
-
-
-</body>
-
-
-
-
+            
+                             
+                                    
