@@ -471,7 +471,6 @@ namespace PrintMatic.Repository.Data.Migrations
                         .HasColumnType("real");
 
                     b.Property<string>("UserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -636,9 +635,7 @@ namespace PrintMatic.Repository.Data.Migrations
 
                     b.HasOne("PrintMatic.Core.Entities.Identity.AppUser", "AppUser")
                         .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("AppUser");
 

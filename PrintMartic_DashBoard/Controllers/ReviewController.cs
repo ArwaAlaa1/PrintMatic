@@ -18,7 +18,7 @@ namespace PrintMartic_DashBoard.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var List =await _unitOfWork.generic.GetAllAsync();
+            var List =await _unitOfWork.review.GetAllIncludeProductAsync();
 
             return View(List);
         }

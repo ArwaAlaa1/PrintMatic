@@ -18,6 +18,13 @@ namespace PrintMatic.Repository.Repository
         {
             _context = context;
         }
+        public async Task<IEnumerable<Review>> GetAllIncludeProductAsync()
+        {
+            return await _context.Reviews.Include("Product").Where(x => x.IsDeleted == false).ToListAsync();
+        }
+        
+
+        
         public async Task<Review> GetIdIncludeProductAsync(int id)
         {
             return  _context.Reviews.Include("Product").Where(x => x.Id == id).FirstOrDefault();

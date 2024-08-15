@@ -54,7 +54,6 @@
                         <th>الرساله</th>
 						<th>التقييم</th>
                         <th>التفاصيل </th>
-
                         <th> تعديل</th>
                         <th> حذف</th>
                     </tr>
@@ -74,16 +73,18 @@
                             <td>
                                     @Html.DisplayFor(modelItem => item.Id)
                             </td>
-                           @*  <td>
-                                    @Html.DisplayFor(modelItem => item.SaleStartDate)
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.AppUser.DisplayName)
                             </td>
                             <td>
-                                    @Html.DisplayFor(modelItem => item.SaleEndDate)
+                                    @Html.DisplayFor(modelItem => item.Product.Name)
                             </td>
                             <td>
-                                    @Html.DisplayFor(modelItem => item.SaleDiscountPercentage)
-                            </td> *@
-                          
+                                    @Html.DisplayFor(modelItem => item.Message)
+                            </td>
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.Rating)
+                            </td>
                             <td>
                                 <a class="btn btn-outline-success" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
                             </td>
