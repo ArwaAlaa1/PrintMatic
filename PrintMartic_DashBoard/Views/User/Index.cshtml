@@ -5,7 +5,7 @@
 
 
     <div class="w-100 m-auto bg-white p-5">
-        <a class="btn  btn-primary" asp-action="AddUser">Add User</a>
+        <a class="btn  btn-primary" asp-controller="User" asp-action="AddUser">أضف مستخدم جديد</a>
         <h1 class="mt-5 pt-5">All Users</h1>
 
         <hr />
@@ -23,10 +23,8 @@
                             
                            
                             <th scope="col">Roles</th>
-                            <th>Details</th>
-                            
-                            <th>Delete</th>
-                            <th>Role</th>
+                            <th>Action</th>
+                          
                             <th>Active</th>
                         </tr>
                     </thead>
@@ -35,25 +33,24 @@
                         {
                             <tr>
                                 <td scope="row">@item.Id</td>
-                                <td>@item.Photo</td>
+                            <td class="avatar avatar-md"><img src="~/@item.Photo" style="width=70px" class="avatar-img rounded-rounded" /></td>
                                 <td>@item.UserName</td>
                                 <td>@item.DisplayName</td>
                                 
                                
                                 <td>@string.Join(",", item.Roles.ToList())</td>
-                                <td>
-                                    <a class="btn btn-outline-success" asp-action="Details" asp-route-id="@item.Id">Details</a>
-                                </td>
-                                
-                                <td>
-                                    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                                </td>
-                               @*  <td>
-                                    <a class="btn btn-outline-danger" asp-action="AddToRole" asp-route-id="@item.Id">Add Role</a>
-                                </td> *@
-                                <td>
-                                    <a class="btn btn-outline-warning" asp-action="EditRole" asp-route-id="@item.Id">Edit Role</a>
-                                </td>
+                            <td>
+                                <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="text-muted sr-only">Action</span>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" asp-action="EditVendor" asp-route-id="@item.Id">تعديل</a>
+                                    <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">حذف</a>
+                                    <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
+                                    @* <a class="nav-link pl-3" asp-controller="User" asp-action="AddToRole" asp-route-id="@item.Id"><span class="ml-1">اضف صلاحيه للمستخدم</span></a> *@
+                                   
+                                </div>
+                            </td>
                                 <td>
                                     <label class="switch switch-primary switch-pill form-control-label">
                                         <input type="checkbox" class="switch-input form-check-input" value="on" checked>

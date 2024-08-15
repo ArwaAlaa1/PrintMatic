@@ -186,40 +186,18 @@
                         <a class="nav-link pl-3" asp-controller="User" asp-action="Index"><span class="ml-1">العملاء</span></a>
                     </li>
                     <li>
-                        <a class="nav-link pl-3" asp-controller="Vendor" asp-action="GetVendors" asp-route-Name="بائع"><span class="ml-1">البائعين</span></a>
+                        <a class="nav-link pl-3" asp-controller="User" asp-action="GetVendors" asp-route-Name="بائع"><span class="ml-1">البائعين</span></a>
                     </li>
                     <li>
                         <a class="nav-link pl-3" asp-controller="Role" asp-action="Index"><span class="ml-1">صلاحيات المستخدمين</span></a>
                     </li>
                    
-
+                   
                 </ul>
             </li>
 
 
-            <li class="nav-item dropdown">
-                <a data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link" onclick="toggleDropdown('auth')">
-                    <i class="fe fe-shield fe-16"></i>
-                    <span class="ml-3 item-text">Authentication</span>
-                </a>
-                <ul class="collapse list-unstyled pl-4 w-100" id="auth">
-                    <li>
-                        <a class="nav-link pl-3" asp-controller="User" asp-action="AddUser"><span class="ml-1">ادخل مستخدم جديد</span></a>
-                    </li>
-                    <li>
-                        <a class="nav-link pl-3" asp-controller="User" asp-action="Index"><span class="ml-1">المستخدمين</span></a>
-                    </li>
-                    <li>
-                        <a class="nav-link pl-3" asp-controller="Role" asp-action="Index"><span class="ml-1">إداره الأدوار</span></a>
-                    </li>
-                    <li>
-                        <a class="nav-link pl-3" href="./auth-resetpw.html"><span class="ml-1">Reset Password</span></a>
-                    </li>
-                    <li>
-                        <a class="nav-link pl-3" href="./auth-confirm.html"><span class="ml-1">Confirm Password</span></a>
-                    </li>
-                </ul>
-            </li>
+           
 
 
 

@@ -53,6 +53,7 @@ namespace PrintMartic_DashBoard.Controllers
                 {
                     new Claim(ClaimTypes.Name, login.UserName),
                      new Claim(ClaimTypes.NameIdentifier, login.UserName),
+                     
                 };
 
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileSystemGlobbing.Internal;
+using PrintMartic_DashBoard.Controllers;
 using PrintMartic_DashBoard.Helper;
 using PrintMatic.Core;
 
@@ -58,7 +59,7 @@ namespace PrintMartic_DashBoard
 
 			builder.Services.AddDbContext<PrintMaticContext>(
 
-				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")), ServiceLifetime.Transient);
+				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
            
             builder.Services.AddIdentity<AppUser, IdentityRole>()
@@ -66,10 +67,10 @@ namespace PrintMartic_DashBoard
 
 			builder.Services.AddScoped(typeof(IUnitOfWork<>),typeof(UnitOfWork<>));
 			builder.Services.AddAutoMapper(typeof(MappingProfiles));
-			
 
-				
-			builder.Services.AddScoped(typeof(IUnitOfWork<>),typeof(UnitOfWork<>));
+            builder.Services.AddScoped(typeof(UserHelper), typeof(UserHelper));
+
+            builder.Services.AddScoped(typeof(IUnitOfWork<>),typeof(UnitOfWork<>));
 			builder.Services.AddScoped(typeof(IProductPhoto), typeof(ProductPhotoRepository));
             builder.Services.AddScoped(typeof(IProductSale), typeof(ProductSaleRepository));
 

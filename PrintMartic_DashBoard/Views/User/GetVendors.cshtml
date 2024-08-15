@@ -3,36 +3,30 @@
 @{
     ViewData["Title"] = "GetVendors";
 }
-<div class="container-fluid">
+
     <div class="row justify-content-center">
         <div class="col-12">
             <div class="row">
                 <!-- Small table -->
                 <div class="col-md-12 my-4">
                     <h2 class="h4 mb-1">البائعين</h2>
-              
+                    <div class="w-100 m-auto bg-white p-5">
+                    <div class="toolbar d-flex justify-content-between align-items-center">
+                        <!-- Add User Button aligned to the right -->
+                        <a class="btn btn-primary ms-auto" asp-controller="User" asp-action="AddUser">أضف مستخدم جديد</a>
+
+                        <!-- Search Form aligned to the left -->
+                        <form class="form d-flex align-items-center">
+                            <div class="form-group col-auto ms-2">
+                                <label for="search1" class="sr-only">Search</label>
+                                <input type="text" class="form-control" id="search1" value="" placeholder="Search">
+                            </div>
+                        </form>
+                    </div>
+
                     <div class="card shadow">
                         <div class="card-body">
-                            <div class="toolbar">
-                                <form class="form">
-                                    <div class="form-row">
-                                        <div class="form-group col-auto mr-auto">
-                                            <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref1">Show</label>
-                                            <select class="custom-select mr-sm-2" id="inlineFormCustomSelectPref1">
-                                                <option value="">...</option>
-                                                <option value="1">12</option>
-                                                <option value="2" selected>32</option>
-                                                <option value="3">64</option>
-                                                <option value="3">128</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-auto">
-                                            <label for="search" class="sr-only">Search</label>
-                                            <input type="text" class="form-control" id="search1" value="" placeholder="Search">
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
+                           
                         <table class="table table-borderless table-hover">
                             <thead>
                                 <tr>
@@ -66,13 +60,13 @@
                                                 <input type="checkbox" class="custom-control-input" id="2474">
                                                 <label class="custom-control-label" for="2474"></label>
                                             </div>
-                                                </td>
+                                           </td>
                                                 <td>
                                                     <p class="mb-0 text-muted"><strong>@item.Id</strong></p>
                                                 </td>
                                             <td>
                                                 <div class="avatar avatar-md">
-                                                    <img src="~/@item.Photo" class="w-25" class="avatar-img rounded-rounded">
+                                                    <img src="~/@item.Photo" style="width=70px" class="avatar-img rounded-rounded">
                                                 </div>
                                             </td>
                                        
@@ -82,23 +76,25 @@
                                         </td>
                                         <td>
                                             
-                                            <small class="mb-0 text-muted">@item.DisplayName</small>
+                                            <p class="mb-0 text-muted">@item.DisplayName</p>
                                         </td>
                                         <td>
                                            
-                                            <small class="mb-0 text-muted">@item.Email</small>
+                                            <p class="mb-0 text-muted">@item.Email</p>
                                         </td>
-                                        <td ><small class="text-muted"> @item.PhoneNumber</small></td>
-                                            <td><small class="text-muted"> @item.Location</small></td>
+                                        <td >
+                                            <p class="text-muted"> @item.PhoneNumber</p>
+                                            </td>
+                                            <td><p class="text-muted"> @item.Location</p></td>
                                             <td>@string.Join(",", item.Roles.ToList())</td>
                                             <td>
                                             <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                                 <span class="text-muted sr-only">Action</span>
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right">
-                                                <a class="dropdown-item" asp-action="EditVendor" asp-route-id="@item.Id">تعديل</a>
-                                                        <a class="dropdown-item" asp-action="RemoveVendor" asp-route-id="@item.Id">حذف</a>
-                                                <a class="dropdown-item" asp-action="DetailsVendor" asp-route-id="@item.Id">تفاصيل</a>
+                                                <a class="dropdown-item"  asp-action="EditVendor" asp-route-id="@item.Id">تعديل</a>
+                                                        <a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id">حذف</a>
+                                                <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -111,20 +107,12 @@
    
                             </tbody>
                         </table>
-                            <nav aria-label="Table Paging" class="mb-0 text-muted">
-                                <ul class="pagination justify-content-center mb-0">
-                                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div>
+                         
+                    
                 </div> <!-- customized table -->
             </div> <!-- end section -->
             </div>
             </div>
-            </div>
-            
+           </div>
+           </div>
+           

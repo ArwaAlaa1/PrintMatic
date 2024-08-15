@@ -14,12 +14,14 @@ namespace PrintMartic_DashBoard.Controllers
 {
     public class UserController : Controller
     {
+        private readonly UserHelper userHelper;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
 
-        public UserController(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
+        public UserController(UserHelper userHelper,UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
+            this.userHelper = userHelper;
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
@@ -37,7 +39,7 @@ namespace PrintMartic_DashBoard.Controllers
                 Location = u.Location,
                 IsCompany = u.IsCompany,
                 Roles = new List<string>() 
-            }).ToListAsync();
+            }).Where(u=>u.IsCompany==false).ToListAsync();
 
 
             foreach (var user in users)
@@ -50,59 +52,88 @@ namespace PrintMartic_DashBoard.Controllers
 
         public async Task<IActionResult> AddUser()
         {
-            return View();
+
+            UserFormViewModel user = new UserFormViewModel();
+            var roles = await _roleManager.Roles.ToListAsync();
+            user.Roles = roles;
+            return View(user);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddUser(UserFormViewModel addUser)
         {
-            
-
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (addUser.PhotoFile != null)
                 {
+                    addUser.Photo = DocumentSetting.UploadFile(addUser.PhotoFile, "user");
+                }
 
+                // Create a new AppUser object
+                var user = new AppUser()
+                {
+                    UserName = addUser.UserName,
+                    DisplayName = addUser.DisplayName,
+                    Email = addUser.Email,
+                    PhoneNumber = addUser.PhoneNumber,
+                    Location = addUser.Location,
+                    IsCompany = addUser.IsCompany,
+                    Photo = $"images/user/{addUser.Photo}"
+                };
 
-                    if (addUser.PhotoFile != null)
-                    {addUser.Photo = addUser.PhotoFile.FileName;
-                        addUser.Photo = DocumentSetting.UploadFile(addUser.PhotoFile, "user");
-                    }
+                // Create the user in the system
+                var createUserResult = await _userManager.CreateAsync(user, addUser.Password);
 
+                if (createUserResult.Succeeded)
+                {
+                    // Add the role to the user after the user has been successfully created
+                    var role = await _roleManager.FindByIdAsync(addUser.RoleId);
 
-
-                    var user = new AppUser()
+                    if (role != null)
                     {
+                        var addRoleResult = await _userManager.AddToRoleAsync(user, role.Name);
 
-                        UserName = addUser.UserName,
-                        DisplayName = addUser.DisplayName,
-                        Email = addUser.Email,
-                        PhoneNumber = addUser.PhoneNumber,
-                        Location = addUser.Location,
-                        IsCompany = addUser.IsCompany,
-                        Photo = $"images/user/{addUser.Photo}"
-
-                    };
-
-                    await _userManager.CreateAsync(user, addUser.Password);
-                    return RedirectToAction("Index");
+                        if (!addRoleResult.Succeeded)
+                        {
+                            ModelState.AddModelError(string.Empty, "Failed to add role to the user.");
+                            return View(addUser);
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Role not found.");
+                        return View(addUser);
+                    }
+                    if (addUser.IsCompany=true)
+                    {
+                        return RedirectToAction("GetVendors");
+                    }else
+                     return RedirectToAction("Index");
                 }
-                catch (Exception ex)
+                else
                 {
-
-                    ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                    // If user creation failed, add the errors to the ModelState
+                    foreach (var error in createUserResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
                 }
-
             }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+
             return View(addUser);
         }
 
-
         public async Task<IActionResult> EditUser(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            var mappesuser = _mapper.Map<AppUser, UserFormViewModel>(user);
-            return View(mappesuser);
+
+
+            var user = await userHelper.Edit(id);
+            ViewData["ActionOne"] = "EditUser";
+            return View(user);
 
         }
 
@@ -136,6 +167,7 @@ namespace PrintMartic_DashBoard.Controllers
                 };
 
                 await _userManager.UpdateAsync(user);
+               
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
@@ -155,52 +187,27 @@ namespace PrintMartic_DashBoard.Controllers
             return View(mappesuser);
         }
 
-        public async Task<bool> AddRoleAsync(string userId, string roleName)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                throw new ApplicationException($"User with ID '{userId}' not found.");
-            }
+     
 
-            var result = await _userManager.AddToRoleAsync(user, roleName);
-            return result.Succeeded;
-        }
-
-        public async Task<IActionResult> AddToRole(string id)
+       
+        
+        public async Task<IActionResult> Delete(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
-            var mappesuser = _mapper.Map<AppUser, UserFormViewModel>(user);
-            var roles = await _roleManager.Roles.ToListAsync();
-            mappesuser.Roles = roles;
-            return View(mappesuser);
-        }
-
-        [HttpPost]
-        //[Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddToRole(UserFormViewModel user)
-        {
-            var role = await _roleManager.FindByIdAsync(user.RoleId);
-
-
-            var result = await AddRoleAsync(user.Id, role.Name);
-
-            if (!result)
-            {
-                return View("AddToRole");
-            }
-            return RedirectToAction("Index");
-            //return Ok(new { message = $"User added to role '{role.Name}' successfully." });
+            await _userManager.DeleteAsync(user);
+            return RedirectToAction(nameof(Index));
         }
 
 
-        public async Task<IActionResult> EditRole(string id)
+        public async Task<IActionResult> EditVendor(string id)
         {
+            var user2 = await userHelper.Edit(id);
+            ViewData["ActionTwo"] = "EditVendor";
             var user = await _userManager.FindByIdAsync(id.ToString());
             var roles = await _roleManager.Roles.ToListAsync();
 
 
-            var viewmodel = new RoleUserViewModel()
+            var RoleVM = new RoleUserViewModel()
             {
                 Id = user.Id,
 
@@ -215,42 +222,89 @@ namespace PrintMartic_DashBoard.Controllers
                 }).ToList(),
 
             };
-            return View(viewmodel);
+            var UserRolemodel = new UserRoleEdit()
+            {
+                UserForm=user2,
+                RoleForm=RoleVM
+
+            };
+           
+            return View("Edit", UserRolemodel);
+
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditRole(RoleUserViewModel userRoleView)
+        public async Task<IActionResult> EditVendor(UserRoleEdit userRoleEdit)
         {
-            var user = await _userManager.FindByIdAsync(userRoleView.Id.ToString());
-
-            var rolesuser = await _userManager.GetRolesAsync(user);
-            foreach (var role in userRoleView.Roles)
+            try
             {
-                if (rolesuser.Any(r => r == role.RoleName) && !role.IsSelected)
-                {
-                    await _userManager.RemoveFromRoleAsync(user, role.RoleName);
+                // Fetch the existing user from the UserManager
+                var user = await _userManager.FindByIdAsync(userRoleEdit.UserForm.Id.ToString());
 
-                }
-                if (!rolesuser.Any(r => r == role.RoleName) && role.IsSelected)
+                if (user == null)
                 {
-                    await _userManager.AddToRoleAsync(user, role.RoleName);
-
+                    return NotFound();
                 }
 
+                // Update roles
+                var rolesuser = await _userManager.GetRolesAsync(user);
+                foreach (var role in userRoleEdit.RoleForm.Roles)
+                {
+                    if (rolesuser.Contains(role.RoleName) && !role.IsSelected)
+                    {
+                        await _userManager.RemoveFromRoleAsync(user, role.RoleName);
+                    }
+                    else if (!rolesuser.Contains(role.RoleName) && role.IsSelected)
+                    {
+                        await _userManager.AddToRoleAsync(user, role.RoleName);
+                    }
+                }
+
+
+                user.UserName = userRoleEdit.UserForm.UserName;
+                user.DisplayName = userRoleEdit.UserForm.DisplayName;
+                user.Email = userRoleEdit.UserForm.Email;
+                user.PhoneNumber = userRoleEdit.UserForm.PhoneNumber;
+                user.Location = userRoleEdit.UserForm.Location;
+                user.IsCompany = userRoleEdit.UserForm.IsCompany;
+                user.Photo = $"images/user/{userRoleEdit.UserForm.Photo}";
+
+
+                await _userManager.UpdateAsync(user);
+
+                return RedirectToAction("Index");
             }
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                // Log exception or handle it accordingly
+                return StatusCode(500, "Internal server error");
+            }
         }
 
-        public async Task<IActionResult> Delete(string id)
+       
+        public async Task<IActionResult> GetVendors(string Name)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            await _userManager.DeleteAsync(user);
-            return RedirectToAction(nameof(Index));
+            var allUsers = await _userManager.Users.Select(u => new UserViewModel()
+            {
+                Id = u.Id,
+                Photo = u.Photo,
+                UserName = u.UserName,
+                DisplayName = u.DisplayName,
+                Email = u.Email,
+                PhoneNumber = u.PhoneNumber,
+                Location = u.Location,
+                IsCompany = u.IsCompany,
+                Roles = new List<string>()
+            }).ToListAsync();
+            foreach (var user in allUsers)
+            {
+                user.Roles = await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(user.Id));
+            }
+
+
+            var usersWithRole = allUsers.Where(u => u.Roles.Contains(Name)).ToList();
+            var users = usersWithRole.Where(u => u.IsCompany == true);
+            return View(users);
         }
-
-    
-
-
     }
 }
