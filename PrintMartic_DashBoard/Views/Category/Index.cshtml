@@ -1,111 +1,121 @@
 ﻿@model IEnumerable<Category>
 
 
-        <div class="m-auto  bg-white p-5">
-            <h1>جميع الأقسام </h1>
-            @if (!string.IsNullOrEmpty(TempData["Message"] as string))
-            {
-                <div class="alert alert-primary mt-3 mb-2">
-                    @TempData["message"]
-                </div>
-            }
-            <hr />
-   
-                            @*  <h2 class="h4 mb-1">Customize table rendering</h2> *@
-                            <div class="card shadow">
-                                <div class="card-body">
-                                    <div class="toolbar">
-                                        <form class="form">
-                                            <div class="form-row">
-                                                <div class="form-group col-auto mr-auto">
-                                                    <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref1">Show</label>
-                                                    @* <select class="custom-select mr-sm-2" id="inlineFormCustomSelectPref1">
-                                                    <option value="">...</option>
-                                                    <option value="1">12</option>
-                                                    <option value="2" selected>32</option>
-                                                    <option value="3">64</option>
-                                                    <option value="3">128</option>
-                                                    </select> *@
-                                                </div>
-                                                <div class="form-group col-auto">
-                                                    <label for="search" class="sr-only">Search</label>
-                                                    <input type="text" class="form-control" id="search1" value="" placeholder="Search">
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <!-- table -->
-                                    <table class="table table-borderless table-hover">
-                                        <thead>
-                                            <tr>
-                                                <td>
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input" id="all2">
-                                                        <label class="custom-control-label" for="all2"></label>
-                                                    </div>
-                                                </td>
-                                                <th>معرف القسم</th>
-                                                <th>اسم القسم</th>
-                                                <th> الصوره</th>
-                                                <th> العمليات</th>
+<div class="m-auto  bg-white p-5">
+@*     <button type="button" class="btn btn-outline-secondary" style="float: left;">Secondary</button>
+    *@
+    <a class="btn btn-outline-secondary " style="float: left; width: 170px; asp-controller="Category" asp-action="Create">
+            إضافة قسم جديد
+        </a>
 
 
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
+    <h1>جميع الأقسام </h1>
 
-                                                @foreach (var item in Model)
-                                                {
-                                                <tr>
+    @if (!string.IsNullOrEmpty(TempData["Message"] as string))
+    {
+        <div class="alert alert-primary mt-3 mb-2">
+            @TempData["message"]
+        </div>
+    }
+    <hr />
 
+    @*  <h2 class="h4 mb-1">Customize table rendering</h2> *@
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="toolbar">
+                <form class="form">
+                    <div class="form-row">
+                        <div class="form-group col-auto mr-auto">
+                            <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref1">Show</label>
+                            @* <select class="custom-select mr-sm-2" id="inlineFormCustomSelectPref1">
+                            <option value="">...</option>
+                            <option value="1">12</option>
+                            <option value="2" selected>32</option>
+                            <option value="3">64</option>
+                            <option value="3">128</option>
+                            </select> *@
+                        </div>
+                        <div class="form-group col-auto">
+                            <label for="search" class="sr-only">Search</label>
+                            <input type="text" class="form-control" id="search1" value="" placeholder="بحث">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- table -->
+            <table class="table table-borderless table-hover">
+                <thead>
+                    <tr>
+                        <td>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="all2">
+                                <label class="custom-control-label" for="all2"></label>
+                            </div>
+                        </td>
+                        <th>معرف القسم</th>
+                        <th>اسم القسم</th>
+                        <th> الصوره</th>
+                        <th> التفاصيل</th>
+                        <th> تعديل</th>
+                        <th> حذف</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
 
-
-                                                    <td>
-                                                            @Html.DisplayFor(modelItem => item.Id)
-                                                    </td>
-                                                    <td>
-                                                            @Html.DisplayFor(modelItem => item.Name)
-                                                    </td>
-                                                    <td>
-														<img src="~/@item.PhotoURL" width="90" height="90" class="rounded-2 img-fluid" />
-
-                                                    </td>
-                                                   
-             
-
-                                                    <td>
-                                                        <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                            <span class="text-muted sr-only">Action</span>
-                                                        </button>
-                                                        <div class="dropdown-menu dropdown-menu-right">
-                                                            <a class="dropdown-item" asp-controller="Product" asp-action="Edit">Edit</a>
-                                                            <a class="dropdown-item" asp-controller="Product" asp-action="Delete">Remove</a>
-                                                            <a class="dropdown-item" asp-controller="Product" asp-action="Details">Assign</a>
-                                                        </div>
-                                                    </td>
-
-                                                </tr>
-                                                }
-
-
-
-                                        </tbody>
-
-                                    </table>
-                                    @* <nav aria-label="Table Paging" class="mb-0 text-muted">
-                                    <ul class="pagination justify-content-center mb-0">
-                                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item active"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                                    </ul>
-                                    </nav> *@
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+                            <td>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="all2">
+                                    <label class="custom-control-label" for="all2"></label>
                                 </div>
-                            
-                        </div> <!-- customized table -->
-                    </div> <!-- end section -->
-            
-                             
-                                    
+                            </td>
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                            </td>
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                <img src="~/@item.PhotoURL" width="90" height="90" class="rounded-2 img-fluid" />
+
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-success" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
+                            </td>
+
+
+                            <td>
+                                <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@item.Id">تعديل</a>
+                            </td>
+
+                            <td>
+                                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">حذف</a>
+                            </td>
+
+
+                           
+
+                        </tr>
+                        }
+
+
+
+                </tbody>
+
+            </table>
+            @* <nav aria-label="Table Paging" class="mb-0 text-muted">
+            <ul class="pagination justify-content-center mb-0">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item active"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+            </nav> *@
+        </div>
+
+    </div> <!-- customized table -->
+</div> <!-- end section -->

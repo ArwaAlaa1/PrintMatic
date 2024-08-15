@@ -18,6 +18,11 @@ namespace PrintMatic.Repository.Repository
         {
             _context = context;
         }
+        public async Task<Product> GetIDProducts(int id)
+        {
+            return  _context.Products.Include("Category").Include("AppUser").Where(x => x.Id == id && x.IsDeleted == false).FirstOrDefault();
+
+        }
         public async Task<IEnumerable<Product>> GetWaitingProducts()
         {
             return await _context.Products.Include("Category").Include("AppUser").Where(x => x.Enter == false && x.IsDeleted == false).ToListAsync();
@@ -26,6 +31,17 @@ namespace PrintMatic.Repository.Repository
         public async Task<IEnumerable<Product>> GetAllProducts()
         {
             return await _context.Products.Include("Category").Include("AppUser").Where(x => x.Enter == true && x.IsDeleted == false).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Product>> GetYourProducts(string userName)
+        {
+            return await _context.Products.Include("Category").Include("AppUser").Where(x => x.AppUser.UserName == userName && x.IsDeleted == false).ToListAsync();
+
+        }
+        public async Task<IEnumerable<Product>> GetInActiveProducts()
+        {
+            return await _context.Products.Include("Category").Include("AppUser").Where(x=> x.IsDeleted == true).ToListAsync();
+
         }
     }
 }

@@ -45,7 +45,8 @@ namespace PrintMatic.Repository.Repository
         }
         public decimal GetPrice(int discount , decimal price) 
         {
-            decimal discountper = price * (discount / 100);
+            decimal dis = discount / 100m;
+            decimal discountper = price * dis;
             return price - discountper;
         }
 

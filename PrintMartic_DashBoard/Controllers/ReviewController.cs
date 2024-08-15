@@ -49,14 +49,14 @@ namespace PrintMartic_DashBoard.Controllers
 
                 if (count> 0)
             {
-                TempData["Message"] = "Review Deleted Successfully";
+                TempData["Message"] = "تم إضافة حذف التعليق بنجاح";
             }
             return RedirectToAction(nameof(Index));
 
             }
             catch 
             {
-                TempData["Message"] = "Deletion operation failed";
+                TempData["Message"] = "فشلت عملية الحذف ";
                 return View(reviewVM);
             }
         }

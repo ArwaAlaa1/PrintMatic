@@ -15,8 +15,8 @@ namespace PrintMartic_DashBoard.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-
-        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+      
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager )
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -44,17 +44,25 @@ namespace PrintMartic_DashBoard.Controllers
                 ModelState.AddModelError("Email", "Email Is Invalid");
                 return RedirectToAction(nameof(Signin));
             }
-
+           
             var result = await _signInManager.CheckPasswordSignInAsync(user, login.Password, false);
            
                 if (result.Succeeded)
             {
-                List<Claim> claims = new List<Claim>()
+                
+
+
+                    List<Claim> claims = new List<Claim>()
                 {
                     new Claim(ClaimTypes.Name, login.UserName),
                      new Claim(ClaimTypes.NameIdentifier, login.UserName),
+<<<<<<< HEAD
                      
+=======
+
+>>>>>>> 24c23926872efd050ee16f6d0e58d51ce895b258
                 };
+                
 
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,
                     CookieAuthenticationDefaults.AuthenticationScheme);

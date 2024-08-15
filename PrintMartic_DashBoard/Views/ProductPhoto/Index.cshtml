@@ -14,11 +14,11 @@
                 </div>
             }
             <hr />
-            <div class="row justify-content-center">
+           @*  <div class="row justify-content-center">
                 <div class="col-12">
                     <div class="row">
                         <!-- Small table -->
-                        <div class="col-md-12 my-4">
+                        <div class="col-md-12 my-4"> *@
                             @*  <h2 class="h4 mb-1">Customize table rendering</h2> *@
                             <div class="card shadow">
                                 <div class="card-body">
@@ -37,7 +37,7 @@
                                                 </div>
                                                 <div class="form-group col-auto">
                                                     <label for="search" class="sr-only">Search</label>
-                                                    <input type="text" class="form-control" id="search1" value="" placeholder="Search">
+                                                    <input type="text" class="form-control" id="search1" value="" placeholder="بحث">
                                                 </div>
                                             </div>
                                         </form>
@@ -54,7 +54,9 @@
                                                 </td>
                                                 <th>اسم المنتج</th>
                                                 <th>الصوره</th>
-                                                <th>العمليات</th>
+                        <th> التفاصيل</th>
+                        <th> تعديل</th>
+                        <th> حذف</th>
 
 
                                             </tr>
@@ -80,17 +82,21 @@
 														<img src="@item.Photo" width="90" height="90" class="rounded-2 img-fluid" />
 
                                                     </td>
-                                                   
-                                                    <td>
-                                                        <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                            <span class="text-muted sr-only">Action</span>
-                                                        </button>
-                                                        <div class="dropdown-menu dropdown-menu-right">
-                                                            <a class="dropdown-item" asp-controller="Product" asp-action="Edit">Edit</a>
-                                                            <a class="dropdown-item" asp-controller="Product" asp-action="Delete">Remove</a>
-                                                            <a class="dropdown-item" asp-controller="Product" asp-action="Details">Assign</a>
-                                                        </div>
-                                                    </td>
+
+                            <td>
+                                <a class="btn btn-outline-success" href="~/ProductPhoto/Details?ProductId=@item.ProductId&Photo=@item.Photo">تفاصيل</a>
+                            </td>
+
+
+                            <td>
+                                <a class="btn btn-outline-warning" href="~/ProductPhoto/Edit?ProductId=@item.ProductId&Photo=@item.Photo">تعديل</a>
+                            </td>
+
+                            <td>
+                                <a class="btn btn-outline-danger" href="~/ProductPhoto/Delete?ProductId=@item.ProductId&Photo=@item.Photo">حذف</a>
+                            </td>
+
+
 
                                                 </tr>
                                                 }

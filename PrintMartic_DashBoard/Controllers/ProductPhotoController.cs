@@ -33,7 +33,7 @@ namespace PrintMartic_DashBoard.Controllers
             var item = await _productPhoto.GetByIDAsync(ProductId, Photo);
             if (item == null)
             {
-                TempData["Message"] = "Not Found";
+                TempData["Message"] = "لم يتم العثور على هذا العنصر";
                 return RedirectToAction("Index");
 
             }
@@ -65,7 +65,7 @@ namespace PrintMartic_DashBoard.Controllers
                     var count = _productPhoto.Complet();
                     if (count > 0)
                     {
-                        TempData["Message"] = "Photo added successfully";
+                        TempData["Message"] = "تم إضافة صورة المنتج بنجاح";
                     }
                     return RedirectToAction("Index");
 
@@ -86,7 +86,7 @@ namespace PrintMartic_DashBoard.Controllers
             var item = await _productPhoto.GetByIDAsync(ProductId, Photo);
             if (item == null)
             {
-                TempData["Message"] = "Not Found";
+                TempData["Message"] = "لم يتم العثور على هذا العنصر";
                 return RedirectToAction("Index");
 
             }
@@ -110,7 +110,7 @@ namespace PrintMartic_DashBoard.Controllers
                     var count = _unitOfWork.Complet();
                     if (count > 0)
                     {
-                        TempData["Message"] = $"Photo Updated Successfully";
+                        TempData["Message"] = $"تم تعديل صورة المنتج بنجاح";
                     }
                     return RedirectToAction(nameof(Index));
                 }
@@ -142,13 +142,13 @@ namespace PrintMartic_DashBoard.Controllers
                 if (count > 0)
                 {
                     // DocumentSetting.DeleteFile("category", category.PhotoURL);
-                    TempData["Message"] = "Photo Deleted Successfully";
+                    TempData["Message"] = "تم حذف صورة المنتج بنجاح";
                 }
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                TempData["Message"] = "Deletion operation failed";
+                TempData["Message"] = "فشلت عملية الحذف";
                 return View(photosVM);
             }
 

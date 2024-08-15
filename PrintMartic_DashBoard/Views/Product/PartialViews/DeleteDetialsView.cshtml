@@ -2,82 +2,110 @@
 
 <div >
    
-    <div class="form-group" >
-        <label asp-for="Id" class="col-form-label"></label>
-        <input asp-for="Id" class="form-control" readonly />
 
-    </div>
-    <div class="form-group">
-        <label asp-for="Name" class="col-form-label"></label>
-        <input asp-for="Name" class="form-control" readonly />
-
+    <div class="form-group" hidden>
+        <label asp-for="Id" class="control-label"></label>
+        <input asp-for="Id" class="form-control" />
+        
     </div>
 
-       <div class="form-group">
-        <label asp-for="Description" class="col-form-label"></label>
-        <input asp-for="Description" class="form-control" readonly />
 
-    </div>   <div class="form-group">
-        <label asp-for="NumOfPhotos" class="col-form-label"></label>
-        <input asp-for="NumOfPhotos" class="form-control" readonly />
+    <div class="form-row">
+        <div class="col-md-4 mb-3">
+            <label>اسم المنتج</label>
+            <input type="text" class="form-control" asp-for="Name" readonly>
+
+        </div>
+        <div class="form-group col-md-4" hidden>
+            <label asp-for="CategoryId"></label>
+            <input type="text" class="form-control" asp-for="CategoryId" readonly>
+
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="Category.Name" for="inputState">اسم القسم</label>
+            <input type="text" class="form-control" value="@Model.Category.Name" readonly>
+
+        </div>
+        <div class="form-group col-md-4" hidden>
+            <label asp-for="UserId"></label>
+            <input type="text" class="form-control" asp-for="UserId" readonly>
+
+        </div>
+        <div class="form-group col-md-4">
+            <label asp-for="AppUser.DisplayName" >اسم البائع</label>
+            <input type="text" class="form-control" value="@Model.AppUser.DisplayName" readonly>
+
+        </div>
+        <div class="col">
+            <label for="validationServer01">السعر العادي</label>
+
+            <input type="text" class="form-control " asp-for="NormalPrice" readonly>
+
+        </div>
+
+        <div class="col">
+            <label for="validationServer01">السعر المستعجل</label>
+
+            <input type="text" class="form-control " asp-for="UrgentPrice" readonly>
+        </div>
+        <div class="col">
+            <label for="validationServer01">عدد الصور</label>
+
+            <input type="text" class="form-control " asp-for="NumOfPhotos" readonly>
+
+        </div>
+    </div>
+
+    <br />
+
+
+    <!-- /.col -->
+
+    <div class="form-row">
+        <div class="col-md-3 mb-3">
+            <label for="validationCustom05">الحد الأدنى للمده</label>
+            <input type="text" class="form-control " asp-for="NormalMinDate" readonly>
+
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="validationServer01">الحد الأعلى للمده</label>
+            <input type="text" class="form-control " asp-for="NormalMaxDate" readonly>
+
+        </div>
+        <div class="col-md-3 mb-3">
+            <label for="validationServer01">الحد الأدنى لمده المنتج المستعجل </label>
+            <input type="text" class="form-control " asp-for="UrgentMinDate" readonly>
+
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <label for="validationServer01">الحد الأعلى  لمده المنتج المستعجل</label>
+            <input type="text" class="form-control " asp-for="UrgentMaxDate" readonly>
+
+        </div>
+        <div class="form-group form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" asp-for="Color" readonly />اللون
+            </label>
+        </div>
+        <div class="form-group form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" asp-for="Text" readonly/>النص
+            </label>
+        </div>
+        <div class="form-group form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" asp-for="Date" readonly />التاريخ
+            </label>
+        </div>
+        <div class="form-group form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" asp-for="Enter" readonly/>يضاف الى قاعدة البيانات
+            </label>
+        </div>
+    </div>
+    <div class="form-group ">
+        <label for="example-textarea">وصف المنتج</label>
+        <textarea class="form-control" asp-for="Description" id="example-textarea" rows="4" readonly></textarea>
 
     </div>
-    <div class="form-group">
-        <label asp-for="NormalMinDate" class="col-form-label"></label>
-        <input asp-for="NormalMinDate" class="form-control" readonly />
-
-
-    </div> 
-    <div class="form-group">
-        <label asp-for="NormalMaxDate" class="col-form-label"></label>
-        <input asp-for="NormalMaxDate" class="form-control" readonly />
-
-
-    </div>
-    <div class="form-group">
-        <label asp-for="UrgentMinDate" class="col-form-label"></label>
-        <input asp-for="UrgentMinDate" class="form-control" readonly />
-
-
-    </div>
-    <div class="form-group">
-        <label asp-for="UrgentMaxDate" class="col-form-label"></label>
-        <input asp-for="UrgentMaxDate" class="form-control" readonly />
-
-    </div>
-    <div class="form-group">
-        <label asp-for="NormalPrice" class="col-form-label"></label>
-        <input asp-for="NormalPrice" class="form-control" readonly />
-
-    </div>
-    <div class="form-group">
-        <label asp-for="UrgentPrice" class="col-form-label"></label>
-        <input asp-for="UrgentPrice" class="form-control" readonly />
-
-    </div>
-    <div class="form-group">
-        <label asp-for="NormalPrice" class="col-form-label"></label>
-        <input asp-for="NormalPrice" class="form-control" readonly />
-
-    </div>
-    <div class="form-group form-check">
-        <label class="form-check-label">
-            <input class="form-check-input" asp-for="Color" readonly /> @Html.DisplayNameFor(model => model.Color)
-        </label>
-    </div>
-    <div class="form-group form-check">
-        <label class="form-check-label">
-            <input class="form-check-input" asp-for="Text" readonly /> @Html.DisplayNameFor(model => model.Text)
-        </label>
-    </div>
-    <div class="form-group form-check">
-        <label class="form-check-label">
-            <input class="form-check-input" asp-for="Date" readonly /> @Html.DisplayNameFor(model => model.Date)
-        </label>
-    </div>
-    <div class="form-group form-check">
-        <label class="form-check-label">
-            <input class="form-check-input" asp-for="Enter" readonly /> @Html.DisplayNameFor(model => model.Enter)
-        </label>
-    </div>
-</div>

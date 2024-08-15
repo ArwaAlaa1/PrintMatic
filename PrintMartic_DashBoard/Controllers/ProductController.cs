@@ -34,17 +34,47 @@ namespace PrintMartic_DashBoard.Controllers
 
 
         //Get All Products    Get
-        public async Task<IActionResult> AllProducts()
+        public async Task<IActionResult> Index()
         {
             var List = await _unitOfWork.prodduct.GetAllProducts();
 
-            return View("Index",List);
+            return View(List);
         }
-       
+        
         public async Task<IActionResult> WaitingProducts()
         {
             var List = await _unitOfWork.prodduct.GetWaitingProducts();
             return View("Index",List);
+        }
+     //   [Authorize(AuthenticationSchemes = "Cookies",Roles ="Company,Admin")]
+        public async Task<IActionResult> YourProducts()
+        {
+            try
+            {
+                var user = User.Identity.Name;
+                var product = await _unitOfWork.prodduct.GetYourProducts(user);
+                return View(nameof(Index),product);
+            }
+            catch (Exception ex) 
+            {
+                ViewData["Message"] = ex.Message;
+                return View("Error");
+            }
+        }
+
+        public async Task<IActionResult> InActiveProducts()
+        {
+       
+            try
+            {
+                var product = await _unitOfWork.prodduct.GetInActiveProducts();
+                return View(nameof(Index), product);
+            }
+            catch (Exception ex)
+            {
+                ViewData["Message"] = ex.Message;
+                return View("Error");
+            }
         }
         public async Task<IActionResult> Confirm(int id)
         {
@@ -56,10 +86,10 @@ namespace PrintMartic_DashBoard.Controllers
                 var count = _unitOfWork.Complet();
                 if (count > 0)
                 {
-                    ViewData["Message"] = "Done";
+                    ViewData["Message"] = "تم التأكيد";
                 }
                 else
-                    ViewData["Message"] = "Failed";
+                    ViewData["Message"] = "فشلت العمليه";
             }
             catch (Exception ex)
             {
@@ -71,10 +101,10 @@ namespace PrintMartic_DashBoard.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var item = await _unitOfWork.generic.GetByIdAsync(id);
+            var item = await _unitOfWork.prodduct.GetIDProducts(id);
             if (item == null)
             {
-                TempData["Message"] = "Not Found";
+                TempData["Message"] = "لم يتم العثور على هذا العنصر";
                 return RedirectToAction(nameof(Index));
             }
             var itemMapped = _mapper.Map<Product, ProductVM>(item);
@@ -109,9 +139,6 @@ namespace PrintMartic_DashBoard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductVM productVM)
         {
-
-
-            
             if (ModelState.IsValid)
             {
                 try
@@ -122,7 +149,7 @@ namespace PrintMartic_DashBoard.Controllers
                     _unitOfWork.generic.Add(itemMapped);
                     var count = _unitOfWork.Complet();
 
-                    ViewData["Message"] = "Product Created Successfully";
+                    ViewData["Message"] = "تم إضافة تفاصيل المنتج بنجاح";
 
                     return RedirectToAction(nameof(Index));
 
@@ -132,7 +159,6 @@ namespace PrintMartic_DashBoard.Controllers
                     ViewData["Message"] = ex.InnerException.Message;
                 }
                 // var userid =userManager.Users.FirstAsync(n => n.UserName==user); 
-
 
             }
             var List = await _catUnitOfwork.generic.GetAllAsync();
@@ -155,7 +181,7 @@ namespace PrintMartic_DashBoard.Controllers
             var item = await _unitOfWork.generic.GetByIdAsync(id);
             if (item == null)
             {
-                ViewData["Message"] = "Not Found";
+                ViewData["Message"] = "لم يتم العثور على هذا العنصر";
                 return RedirectToAction(nameof(Index));
             }
             var itemMapped = _mapper.Map<Product, ProductVM>(item);
@@ -186,7 +212,7 @@ namespace PrintMartic_DashBoard.Controllers
                     var count = _unitOfWork.Complet();
                     if (count > 0)
                     {
-                        ViewData["Message"] = "Product Updated Successfully";
+                        ViewData["Message"] = "تم تعديل تفاصيل المنتج بنجاح";
                     }
                     return RedirectToAction(nameof(Index));
                 }
@@ -227,7 +253,7 @@ namespace PrintMartic_DashBoard.Controllers
                 var count = _unitOfWork.Complet();
                 if (count > 0)
                 {
-                    ViewData["Message"] = "Deleted Successfully";
+                    ViewData["Message"] = "تم حذف تفاصيل المنتج بنجاح";
                     return RedirectToAction(nameof(Index));
                 }
             }
