@@ -72,9 +72,9 @@ namespace PrintMartic_DashBoard.Controllers
                     var count = _unitOfWork.Complet();
 
                     if (count > 0)
-                        TempData["message"] = "Category Added Successfully";
+                        TempData["message"] = "تم إضافة تفاصيل القسم بنجاح";
                     else
-                        TempData["message"] = "Category Failed";
+                        TempData["message"] = "فشلت عملية الإضافه";
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -115,7 +115,7 @@ namespace PrintMartic_DashBoard.Controllers
                     var count = _unitOfWork.Complet();
                     if (count > 0)
                     {
-                        TempData["Message"] = $"Category Updated Successfully";
+                        TempData["Message"] = $"تم تعديل تفاصيل القسم بنجاح";
                     }
                     return RedirectToAction(nameof(Index));
                 }catch(Exception e)
@@ -148,13 +148,13 @@ namespace PrintMartic_DashBoard.Controllers
                 if (count > 0)
                 {
                    // DocumentSetting.DeleteFile("category", category.PhotoURL);
-                    TempData["Message"] = "Category Deleted Successfully";
+                    TempData["Message"] = "تم حذف تفاصيل القسم بنجاح";
                 }
                 return RedirectToAction(nameof(Index));
             }
             catch  
             {
-                TempData["Message"] = "Deletion operation failed";
+                TempData["Message"] = "فشلت عملية الحذف";
                 return View(categoryVM);
             }
         }

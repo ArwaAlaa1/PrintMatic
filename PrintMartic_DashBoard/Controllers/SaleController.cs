@@ -53,7 +53,7 @@ namespace PrintMartic_DashBoard.Controllers
                     var count = _unitOfWork.Complet();
                     if (count > 0)
                     {
-                        TempData["Message"] = "Sale Created Successfully";
+                        TempData["Message"] = "تم إضافة تفاصيل الخصم بنجاح";
                     }
                     return RedirectToAction(nameof(Index));
                 }
@@ -90,7 +90,7 @@ namespace PrintMartic_DashBoard.Controllers
                     var count = _unitOfWork.Complet();
                     if (count > 0)
                     {
-                        TempData["Message"] = "Sale Updated Successfully";
+                        TempData["Message"] = "تم تعديل تفاصيل الخصم بنجاح";
                     }
 
                     return RedirectToAction(nameof(Index));
@@ -100,7 +100,7 @@ namespace PrintMartic_DashBoard.Controllers
                     ModelState.AddModelError(string.Empty , ex.InnerException.Message);
                 }
             }
-            TempData["Message"] = "The modification operation failed";
+            TempData["Message"] = "فشلت عملية التعديل";
             return View(saleVM);
         }
 
@@ -123,14 +123,14 @@ namespace PrintMartic_DashBoard.Controllers
                 
                 if (count > 0)
                 {
-                    TempData["Message"] = "Sale Deleted Successfully";
+                    TempData["Message"] = "تم حذف تفاصيل الخصم بنجاح";
                 }
                 return RedirectToAction(nameof(Index));
 
             }
             catch 
             {
-                TempData["Message"] = "Deletion operation failed";
+                TempData["Message"] = "فشلت عملية الحذف";
                 return View(sale);
             }
         }

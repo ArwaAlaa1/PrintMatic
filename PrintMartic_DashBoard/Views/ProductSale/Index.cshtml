@@ -3,9 +3,11 @@
 
 
 
-<body class="vertical  light rtl ">
-    <main role="main" class="main-content">
+
         <div class="m-auto  bg-white p-5">
+    <a class="btn btn-outline-secondary " style="float: left; width: 170px; " asp-controller="ProductSale" asp-action="Create">
+        إضافة خصم جديد
+    </a>
             <h1>جميع الخصومات على المنتجات </h1>
             @if (!string.IsNullOrEmpty(TempData["Message"] as string))
             {
@@ -14,12 +16,7 @@
                 </div>
             }
             <hr />
-            <div class="row justify-content-center">
-                <div class="col-12">
-                    <div class="row">
-                        <!-- Small table -->
-                        <div class="col-md-12 my-4">
-                            @*  <h2 class="h4 mb-1">Customize table rendering</h2> *@
+           
                             <div class="card shadow">
                                 <div class="card-body">
                                     <div class="toolbar">
@@ -68,7 +65,12 @@
                                                 <tr>
 
 
-
+                            <td>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="all2">
+                                    <label class="custom-control-label" for="all2"></label>
+                                </div>
+                            </td>
                                                     <td>
                                                             @Html.DisplayFor(modelItem => item.Product.Name)
                                                     </td>
@@ -84,8 +86,8 @@
                                                             <span class="text-muted sr-only">Action</span>
                                                         </button>
                                                         <div class="dropdown-menu dropdown-menu-right">
-                                                            <a class="dropdown-item" asp-controller="ProductSale" asp-action="Edit">Edit</a>
-															<a class="dropdown-item" asp-controller="ProductSale" asp-action="Delete">Remove</a>
+                                    <a class="dropdown-item" href="~/ProductSale/Edit?ProductId=@item.ProductId&SaleId=@item.SaleId">Edit</a>
+                                    <a class="dropdown-item" href="~/ProductSale/Delete?ProductId=@item.ProductId&SaleId=@item.SaleId">Remove</a>
 															<a class="dropdown-item" asp-controller="ProductSale" asp-action="Details">Assign</a>
                                                         </div>
                                                     </td>
@@ -115,13 +117,7 @@
 
             </div>
         </div>
-    </main> <!-- main -->
-
-
-</body>
-
-</html>
-
+   
 
 
 

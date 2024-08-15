@@ -1,14 +1,14 @@
 ﻿@model CategoryVM
 
-<div >
-   
-    <div class="form-group">
-    <label asp-for="Name" class="col-form-label"></label>
-        <input asp-for="Name" class="form-control" readonly/>
+  <div >
+        <div class="col-md-4 mb-3">
+            <label>اسم المنتج</label>
+            <input type="text" class="form-control" asp-for="Name" readonly>
+            <span asp-validation-for="Name" class="text-danger"></span>
 
-    </div>
-    <div class="form-group pb-3">
-        <label class="col-form-label fw-bold fs-4">Image</label>
+        </div>
+    <div class="col-md-4 mb-3">
+        <label class="col-form-label fw-bold fs-4">الصوره  </label>
         <img src="~/@Model.PhotoURL" width="100" height="100" class="rounded-2 img-fluid" />
     </div>
 </div>

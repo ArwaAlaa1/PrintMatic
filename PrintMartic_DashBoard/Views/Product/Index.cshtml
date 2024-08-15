@@ -12,11 +12,11 @@
             }
             <hr />
 
-            <div class="row justify-content-center">
+           @*  <div class="row justify-content-center">
                 <div class="col-12">
                     <div class="row">
                         <!-- Small table -->
-                        <div class="col-md-12 my-4">
+                        <div class="col-md-12 my-4"> *@
                             @*  <h2 class="h4 mb-1">Customize table rendering</h2> *@
                             <div class="card shadow">
                                 <div class="card-body">
@@ -35,7 +35,7 @@
                                                 </div>
                                                 <div class="form-group col-auto">
                                                     <label for="search" class="sr-only">Search</label>
-                                                    <input type="text" class="form-control" id="search1" value="" placeholder="Search">
+                                                    <input type="text" class="form-control" id="search1" value="" placeholder="بجث">
                                                 </div>
                                             </div>
                                         </form>
@@ -120,9 +120,9 @@
                                                             <span class="text-muted sr-only">Action</span>
                                                         </button>
                                                         <div class="dropdown-menu dropdown-menu-right">
-                                                            <a class="dropdown-item" asp-controller="Product" asp-action="Edit">Edit</a>
-                                                            <a class="dropdown-item" asp-controller="Product" asp-action="Delete">Remove</a>
-                                                            <a class="dropdown-item" asp-controller="Product" asp-action="Details">Assign</a>
+                                                            <a class="dropdown-item" asp-controller="Product" asp-action="Edit" asp-route-id ="@item.Id">تعديل</a>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id">حذف</a>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
                                                         </div>
                                                     </td>
 
