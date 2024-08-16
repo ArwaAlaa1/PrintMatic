@@ -39,6 +39,7 @@ namespace PrintMartic_DashBoard.Controllers
         public async Task<IActionResult> Signin(LoginViewModel login)
         {
             var user = await _userManager.FindByNameAsync(login.UserName);
+            var role=await _userManager.GetRolesAsync(user);
             if (user == null)
             {
                 ModelState.AddModelError("Email", "Email Is Invalid");
@@ -56,6 +57,7 @@ namespace PrintMartic_DashBoard.Controllers
                 {
                     new Claim(ClaimTypes.Name, login.UserName),
                      new Claim(ClaimTypes.NameIdentifier, login.UserName),
+                     new Claim(ClaimTypes.Role,role.First())
 
                 };
                 
@@ -84,7 +86,7 @@ namespace PrintMartic_DashBoard.Controllers
         
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync("Cookies");
             return RedirectToAction(nameof(Signin));
         }
         //public async Task<IActionResult> Logout()

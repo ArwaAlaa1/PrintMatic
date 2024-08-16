@@ -104,10 +104,7 @@ namespace PrintMartic_DashBoard.Controllers
                         ModelState.AddModelError(string.Empty, "Role not found.");
                         return View(addUser);
                     }
-                    if (addUser.IsCompany=true)
-                    {
-                        return RedirectToAction("GetVendors");
-                    }else
+                  
                      return RedirectToAction("Index");
                 }
                 else
