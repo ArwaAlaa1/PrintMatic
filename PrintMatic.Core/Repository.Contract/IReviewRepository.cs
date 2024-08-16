@@ -9,6 +9,7 @@ namespace PrintMatic.Core.Repository.Contract
 {
     public interface IReviewRepository:IGenericRepository<Review>
     {
+        Task<IEnumerable<Review>> GetAllIncludeProductAsync();
         Task<Review> GetIdIncludeProductAsync(int id);
     }
 }
