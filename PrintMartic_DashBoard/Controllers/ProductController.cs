@@ -46,11 +46,12 @@ namespace PrintMartic_DashBoard.Controllers
             var List = await _unitOfWork.prodduct.GetWaitingProducts();
             return View("Index",List);
         }
-     //   [Authorize(AuthenticationSchemes = "Cookies",Roles ="Company,Admin")]
+       [Authorize(AuthenticationSchemes = "Cookies",Roles ="بائع,Admin")]
         public async Task<IActionResult> YourProducts()
         {
             try
             {
+                var com = User.IsInRole("بائع");
                 var user = User.Identity.Name;
                 var product = await _unitOfWork.prodduct.GetYourProducts(user);
                 return View(nameof(Index),product);
