@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Identity.Client;
 using PrintMartic_DashBoard.Helper;
 using PrintMartic_DashBoard.Helper.ViewModels;
 using PrintMatic.Core;
@@ -13,12 +14,16 @@ namespace PrintMartic_DashBoard.Controllers
     {
         private readonly IUnitOfWork<Category> _unitOfWork;
 		private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _environment;
 
-		public CategoryController(IUnitOfWork<Category> unitOfWork, IMapper mapper)
+        public CategoryController(IUnitOfWork<Category> unitOfWork, IMapper mapper
+            , IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
 			_mapper = mapper;
-		}
+            _environment = webHostEnvironment;
+           
+        }
         // Get All Categories --GET
         public async Task<IActionResult> Index()
         {
@@ -54,7 +59,7 @@ namespace PrintMartic_DashBoard.Controllers
         //Create New Category --post  Category/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CategoryVM categoryVM)
+        public async Task< IActionResult> Create(CategoryVM categoryVM)
         {
             if (ModelState.IsValid)
             {
@@ -64,10 +69,11 @@ namespace PrintMartic_DashBoard.Controllers
 
                     if (categoryVM.PhotoFile != null)
                     {
-                        categoryVM.PhotoURL = DocumentSetting.UploadFile(categoryVM.PhotoFile, "category");
+                        categoryVM.PhotoURL =  DocumentSetting.UploadFile(categoryVM.PhotoFile, "category");
                     }
                     var CatMapped = _mapper.Map<CategoryVM, Category>(categoryVM);
-                    CatMapped.PhotoURL = $"images/category/{CatMapped.PhotoURL}";
+                    CatMapped.FilePath = Path.Combine(_environment.ContentRootPath,"wwwroot\\Uploads\\category", CatMapped.PhotoURL);
+
                     _unitOfWork.generic.Add(CatMapped);
                     var count = _unitOfWork.Complet();
 
@@ -90,7 +96,7 @@ namespace PrintMartic_DashBoard.Controllers
         //Open the form of edit --get
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
-        { 
+        {
             return await Details(id);
         }
 
@@ -103,14 +109,17 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
+                   // var item = await _unitOfWork.generic.GetByIdAsync(categoryVM.Id);
                     if (categoryVM.PhotoFile != null)
                     {
-                        //categoryVM.PhotoURL = categoryVM.PhotoFile.FileName;
-                        //DocumentSetting.DeleteFile("category", categoryVM.PhotoURL);
-                        categoryVM.PhotoURL = DocumentSetting.UploadFile(categoryVM.PhotoFile, "category");
+                        if(System.IO.File.Exists(categoryVM.FilePath))
+                        {
+                            System.IO.File.Delete(categoryVM.FilePath);
+                        }
+                        categoryVM.PhotoURL =  DocumentSetting.UploadFile(categoryVM.PhotoFile, "category");
                     }
-                    var catMapped = _mapper.Map<CategoryVM, Category>(categoryVM);
-                    catMapped.PhotoURL = $"images/category/{catMapped.PhotoURL}";
+                   var catMapped = _mapper.Map<CategoryVM, Category>(   categoryVM );
+                    catMapped.FilePath = Path.Combine(_environment.ContentRootPath, "wwwroot\\Uploads\\category", catMapped.PhotoURL);
                     _unitOfWork.generic.Update(catMapped);
                     var count = _unitOfWork.Complet();
                     if (count > 0)
@@ -142,6 +151,10 @@ namespace PrintMartic_DashBoard.Controllers
             try
             {
                 var category = _mapper.Map<CategoryVM, Category>(categoryVM);
+                if (System.IO.File.Exists(category.FilePath))
+                {
+                    System.IO.File.Delete(category.FilePath);
+                }
                 category.IsDeleted = true;
                 _unitOfWork.generic.Update(category);
                 var count = _unitOfWork.Complet();

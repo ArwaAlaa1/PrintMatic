@@ -13,5 +13,7 @@ namespace PrintMatic.Core.Entities
         public string Name { get; set; }
 
         public string PhotoURL { get; set; }
+        public string FilePath { get; set; }
+
     }
 }

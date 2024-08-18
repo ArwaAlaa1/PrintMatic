@@ -9,6 +9,7 @@ using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
 using PrintMatic.DTOS;
 using PrintMatic.Repository;
+using System.Data;
 using System.Security.Claims;
 using System.Text.Json;
 
@@ -51,7 +52,6 @@ namespace PrintMartic_DashBoard.Controllers
         {
             try
             {
-                var com = User.IsInRole("بائع");
                 var user = User.Identity.Name;
                 var product = await _unitOfWork.prodduct.GetYourProducts(user);
                 return View(nameof(Index),product);
@@ -111,7 +111,7 @@ namespace PrintMartic_DashBoard.Controllers
             var itemMapped = _mapper.Map<Product, ProductVM>(item);
             return View(itemMapped);
         }
-        //[Authorize(AuthenticationSchemes = "Cookies")]
+        [Authorize(AuthenticationSchemes = "Cookies")]
         public async Task<IActionResult> Create()
         {
 
@@ -135,15 +135,87 @@ namespace PrintMartic_DashBoard.Controllers
             return View(ProductVM);
         }
 
-        
+        [Authorize(AuthenticationSchemes = "Cookies",Roles =("بائع"))]
+        public async Task<IActionResult> CreateForCompany()
+        {
+
+            //   var userName = User.Identity.Name;
+            ProductVM ProductVM = new ProductVM();
+            var List = await _catUnitOfwork.generic.GetAllAsync();
+            ProductVM.Categories = List;
+            var Username = User.Identity.Name;
+            var user = await _userManager.FindByNameAsync(Username);
+            ProductVM.UserId = user.Id;
+            return View("CreateForCompany",ProductVM);
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = ("بائع"))]
+        public async Task<IActionResult> SaveCreate(ProductVM productVM)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if(productVM.NormalPrice <= 500)
+                    {
+                        productVM.TotalPrice = productVM.NormalPrice * 1.7m;
+                    }
+                    else
+                    {
+                        productVM.TotalPrice = productVM.NormalPrice * 2m;
+                    }
+                    productVM.Enter = false;
+                    var itemMapped = _mapper.Map<ProductVM, Product>(productVM);
+
+
+                    _unitOfWork.generic.Add(itemMapped);
+                    var count = _unitOfWork.Complet();
+
+                    ViewData["Message"] = "سيتم التأكيد من بيانات المنتج ثم إضافته";
+
+                    return RedirectToAction(nameof(YourProducts));
+
+                }
+                catch (Exception ex)
+                {
+                    ViewData["Message"] = ex.InnerException.Message;
+                }
+                // var userid =userManager.Users.FirstAsync(n => n.UserName==user); 
+
+            }
+            var List = await _catUnitOfwork.generic.GetAllAsync();
+            productVM.Categories = List;
+            List<AppUser> users = new List<AppUser>();
+            foreach (var item in _userManager.Users)
+            {
+                if (item.IsCompany == true)
+                {
+                    users.Add(item);
+                }
+            }
+            productVM.Users = users;
+            return View(productVM);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = ("Admin"))]
         public async Task<IActionResult> Create(ProductVM productVM)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if (productVM.NormalPrice <= 500)
+                    {
+                        productVM.TotalPrice = productVM.NormalPrice * 1.7m;
+                    }
+                    else
+                    {
+                        productVM.TotalPrice = productVM.NormalPrice * 2m;
+                    }
+                    productVM.Enter = true;
                     var itemMapped = _mapper.Map<ProductVM, Product>(productVM);
 
 
@@ -175,8 +247,6 @@ namespace PrintMartic_DashBoard.Controllers
             productVM.Users = users;
             return View(productVM);
         }
-
-
         public async Task<IActionResult> Edit(int id)
         {
             var item = await _unitOfWork.generic.GetByIdAsync(id);

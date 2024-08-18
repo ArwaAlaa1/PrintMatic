@@ -29,11 +29,12 @@ namespace PrintMatic.Repository.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-           optionsBuilder.UseSqlServer("server =ARWA-ALAA\\ARWAALAA; DataBase = PrintMatic; Trusted_Connection= True;TrustServerCertificate=True");
+           //optionsBuilder.UseSqlServer("server =ARWA-ALAA\\ARWAALAA; DataBase = PrintMatic; Trusted_Connection= True;TrustServerCertificate=True");
+            optionsBuilder.UseSqlServer("Data source =DESKTOP-9IISLS5; DataBase = PrintMaticDB; Trusted_Connection= True;TrustServerCertificate=True");
 
-           //  optionsBuilder.UseSqlServer(configuration.GetConnectionString("conn"));
+            //  optionsBuilder.UseSqlServer(configuration.GetConnectionString("conn"));
         }
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

@@ -6,6 +6,9 @@
 		public string Name { get; set; }
 		public IFormFile? PhotoFile { get; set; }
 		public string? PhotoURL { get; set; }
+        public string? FilePath { get; set; }
 
-	}
+
+
+    }
 }

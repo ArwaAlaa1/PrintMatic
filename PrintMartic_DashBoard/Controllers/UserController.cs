@@ -18,13 +18,17 @@ namespace PrintMartic_DashBoard.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _environment;
 
-        public UserController(UserHelper userHelper,UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IMapper mapper)
+        public UserController(UserHelper userHelper,UserManager<AppUser> userManager, 
+            RoleManager<IdentityRole> roleManager, IMapper mapper,IWebHostEnvironment environment)
         {
             this.userHelper = userHelper;
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
+            _environment = environment;
+          
         }
         public async Task<IActionResult> Index()
         {
@@ -66,7 +70,7 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 if (addUser.PhotoFile != null)
                 {
-                    addUser.Photo = DocumentSetting.UploadFile(addUser.PhotoFile, "user");
+                    addUser.Photo =  DocumentSetting.UploadFile(addUser.PhotoFile, "user",_environment.WebRootPath);
                 }
 
                 // Create a new AppUser object

@@ -12,8 +12,8 @@ using PrintMatic.Repository.Data;
 namespace PrintMatic.Repository.Data.Migrations
 {
     [DbContext(typeof(PrintMaticContext))]
-    [Migration("20240815193928_initial")]
-    partial class initial
+    [Migration("20240818144248_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -169,6 +169,10 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -254,6 +258,9 @@ namespace PrintMatic.Repository.Data.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FilePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsCompany")
                         .HasColumnType("bit");
@@ -366,6 +373,9 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.Property<bool>("Text")
                         .HasColumnType("bit");
 
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("UrgentMaxDate")
                         .HasColumnType("int");
 
@@ -398,6 +408,10 @@ namespace PrintMatic.Repository.Data.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("FilePath")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
