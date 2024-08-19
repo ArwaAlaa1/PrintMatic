@@ -3,10 +3,14 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PrintMatic.Core.Entities.Identity;
+using PrintMatic.Core.Repository.Contract;
 using PrintMatic.Extensions;
+using PrintMatic.Extentions;
 using PrintMatic.Repository.Data;
 using PrintMatic.Repository.Identity;
+using PrintMatic.Repository.Repository;
 using PrintMatic.Services;
+using StackExchange.Redis;
 
 
 namespace PrintMatic
@@ -27,9 +31,15 @@ namespace PrintMatic
 			builder.Services.AddDbContext<PrintMaticContext>(
 				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
-			builder.Services.AddScoped<ITokenService, TokenService>();
+			
 
+			builder.Services.AddSingleton<IConnectionMultiplexer>((serverprovider) =>
+			{
+				var connectionredis = builder.Configuration.GetConnectionString("Redis");
+				return ConnectionMultiplexer.Connect(connectionredis);
+			});
 
+			builder.Services.AddApplicationServices();	
 
 			builder.Services.AddIdentityServices(builder.Configuration);
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

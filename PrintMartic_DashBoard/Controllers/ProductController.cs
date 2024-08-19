@@ -51,7 +51,8 @@ namespace PrintMartic_DashBoard.Controllers
         {
             try
             {
-                var com = User.IsInRole("بائع");
+              
+                
                 var user = User.Identity.Name;
                 var product = await _unitOfWork.prodduct.GetYourProducts(user);
                 return View(nameof(Index),product);
