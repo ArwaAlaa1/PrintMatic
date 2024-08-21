@@ -11,26 +11,30 @@ namespace PrintMartic_DashBoard.Helper
         {
             var PSVM = (ProductSaleVM)validationContext.ObjectInstance;
 
-            PrintMaticContext context = new PrintMaticContext();
-
-            if(value != null && PSVM.SaleId != null)
+            using (PrintMaticContext context = new PrintMaticContext())
             {
-                var newValue = (int)value;
-                var Ps = context.productSales.Where(x => x.ProductId== newValue &&  x.SaleId== PSVM.SaleId && x.IsDeleted== false).FirstOrDefault();
 
-                if (Ps == null)
+                if (value != null && PSVM.SaleId != null)
                 {
-                return ValidationResult.Success;
+                    var newValue = (int)value;
+                    var Ps = context.productSales.Where(x => x.ProductId == newValue && x.SaleId == PSVM.SaleId && x.IsDeleted == false).FirstOrDefault();
+
+                    if (Ps == null)
+                    {
+                        return ValidationResult.Success;
+                    }
+                    else
+                        return new ValidationResult("Choose Unique Product & Sale");
+
                 }
+
                 else
-                    return new ValidationResult("Choose Unique Product & Sale");
+                {
+                    return new ValidationResult("The Product & Photo is required");
+                }
+            } 
 
-            }
-
-            else
-            {
-                return new ValidationResult("The Product & Photo is required");
-            }
+           
         }
     }
 }

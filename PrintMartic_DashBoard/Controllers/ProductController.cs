@@ -35,17 +35,19 @@ namespace PrintMartic_DashBoard.Controllers
 
 
         //Get All Products    Get
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var List = await _unitOfWork.prodduct.GetAllProducts();
 
             return View(List);
         }
-        
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
+
         public async Task<IActionResult> WaitingProducts()
         {
             var List = await _unitOfWork.prodduct.GetWaitingProducts();
-            return View("Index",List);
+            return View(List);
         }
        [Authorize(AuthenticationSchemes = "Cookies",Roles ="بائع,Admin")]
         public async Task<IActionResult> YourProducts()
@@ -62,6 +64,7 @@ namespace PrintMartic_DashBoard.Controllers
                 return View("Error");
             }
         }
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
 
         public async Task<IActionResult> InActiveProducts()
         {
@@ -77,6 +80,8 @@ namespace PrintMartic_DashBoard.Controllers
                 return View("Error");
             }
         }
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
+
         public async Task<IActionResult> Confirm(int id)
         {
             try
@@ -111,7 +116,8 @@ namespace PrintMartic_DashBoard.Controllers
             var itemMapped = _mapper.Map<Product, ProductVM>(item);
             return View(itemMapped);
         }
-        [Authorize(AuthenticationSchemes = "Cookies")]
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
+
         public async Task<IActionResult> Create()
         {
 

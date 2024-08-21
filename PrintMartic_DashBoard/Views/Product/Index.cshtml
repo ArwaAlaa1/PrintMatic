@@ -44,12 +44,12 @@
                                     <table class="table table-borderless table-hover">
                                         <thead>
                                             <tr>
-                                                <td>
+                                                @* <td>
                                                     <div class="custom-control custom-checkbox">
                                                         <input type="checkbox" class="custom-control-input" id="all2">
                                                         <label class="custom-control-label" for="all2"></label>
                                                     </div>
-                                                </td>
+                                                </td> *@
                                                 <th>معرف المنتج</th>
                                                 <th>اسم القسم</th>
                                                 <th>اسم المنتج</th>
@@ -57,8 +57,9 @@
                                                 <th>عدد الصور</th>
                                                 <th>فترة التوصيل</th>
                                                 <th>فترة التوصيل المستعجل</th>
-                                                <th>السعرالعادي</th>
+                                                <th> السعر للبائع</th>
                                                 <th>السعرالمستعجل</th>
+                                                <th> السعر الكلي</th>
                                                 <th>اسم البائع</th>
                                                 <th>العمليات</th>
 
@@ -74,14 +75,8 @@
                                                 <tr>
 
 
-                                                    <td>
-                                                        <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="all2">
-                                                            <label class="custom-control-label" for="all2"></label>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                            @Html.DisplayFor(modelItem => item.Id)
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Id)
                                                     </td>
                                                     <td>
                                                             @Html.DisplayFor(modelItem => item.Category.Name)
@@ -110,7 +105,9 @@
                                                     <td>
                                                             @Html.DisplayFor(modelItem => item.UrgentPrice)
                                                     </td>
-
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                            </td>
                                                     <td>
                                                             @Html.DisplayFor(modelItem => item.AppUser.DisplayName)
                                                     </td>
@@ -125,6 +122,10 @@
                                     <a class="dropdown-item" asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
                                                         </div>
                                                     </td>
+
+
+                                 
+                               
 
                                                 </tr>
                                                 }
@@ -146,10 +147,5 @@
                                 </div>
                             </div>
                         </div> <!-- customized table -->
-                    </div> <!-- end section -->
-                </div>
-
-            </div>
-        </div>
- 
+                   
 

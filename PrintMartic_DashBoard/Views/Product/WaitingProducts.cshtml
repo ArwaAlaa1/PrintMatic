@@ -1,0 +1,156 @@
+﻿@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "WaitingProducts";
+}
+
+<div class="m-auto  bg-white p-5">
+    <h1> جميع المنتجات قيد الإنتظار </h1>
+    @if (!string.IsNullOrEmpty(TempData["Message"] as string))
+    {
+        <div class="alert alert-primary mt-3 mb-2">
+            @TempData["message"]
+        </div>
+    }
+    <hr />
+
+    @*  <div class="row justify-content-center">
+    <div class="col-12">
+    <div class="row">
+    <!-- Small table -->
+    <div class="col-md-12 my-4"> *@
+    @*  <h2 class="h4 mb-1">Customize table rendering</h2> *@
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="toolbar">
+                <form class="form">
+                    <div class="form-row">
+                        <div class="form-group col-auto mr-auto">
+                            <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref1">Show</label>
+                            @* <select class="custom-select mr-sm-2" id="inlineFormCustomSelectPref1">
+                            <option value="">...</option>
+                            <option value="1">12</option>
+                            <option value="2" selected>32</option>
+                            <option value="3">64</option>
+                            <option value="3">128</option>
+                            </select> *@
+                        </div>
+                        <div class="form-group col-auto">
+                            <label for="search" class="sr-only">Search</label>
+                            <input type="text" class="form-control" id="search1" value="" placeholder="بجث">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- table -->
+            <table class="table table-borderless table-hover">
+                <thead>
+                    <tr>
+                        @* <td>
+                        <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="all2">
+                        <label class="custom-control-label" for="all2"></label>
+                        </div>
+                        </td> *@
+                        <th>اسم القسم</th>
+                        <th>اسم المنتج</th>
+                       
+                        <th>الوصف</th>
+                        <th>عدد الصور</th>
+                        <th>فترة التوصيل</th>
+                        <th>فترة التوصيل المستعجل</th>
+                        <th> السعر للبائع</th>
+                        <th>السعرالمستعجل</th>
+                        <th> السعر الكلي</th>
+                        <th>اسم البائع</th>
+                        <th>تأكيد</th>
+
+                        <th>العمليات</th>
+
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+
+
+                           @*  <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                            </td> *@
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.Category.Name)
+                            </td>
+                           
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                            </td>
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.NumOfPhotos)
+                            </td>
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.NormalMinDate)-@Html.DisplayFor(modelItem => item.NormalMaxDate)
+
+                            </td>
+
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.UrgentMinDate)-@Html.DisplayFor(modelItem => item.UrgentMaxDate)
+                            </td>
+
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.NormalPrice)
+                            </td>
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.UrgentPrice)
+                            </td>
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                            </td>
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.AppUser.UserName)
+                            </td>
+
+                            <td>
+                                <a class="btn btn-outline-success" asp-action="Confirm" asp-route-id ="@item.Id" asp-controller="Product">Confirm</a>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="text-muted sr-only">Action</span>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Edit" asp-route-id="@item.Id">تعديل</a>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id">حذف</a>
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
+                                </div>
+                            </td>
+
+
+
+
+
+                        </tr>
+                        }
+
+
+
+                </tbody>
+
+            </table>
+            @* <nav aria-label="Table Paging" class="mb-0 text-muted">
+            <ul class="pagination justify-content-center mb-0">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item active"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+            </nav> *@
+        </div>
+    </div>
+</div> <!-- customized table -->
