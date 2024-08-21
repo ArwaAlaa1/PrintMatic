@@ -82,6 +82,8 @@
                     <span class="badge badge-pill badge-primary">New</span>
                 </a>
             </li> *@
+            @if (User.IsInRole("Admin"))
+            {
             <li class="nav-item dropdown">
                 <a  data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link" onclick="toggleDropdown('product')">
                   @*   <i class="fe fe-credit-card fe-16"></i> *@
