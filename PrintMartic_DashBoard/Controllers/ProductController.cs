@@ -15,7 +15,7 @@ using System.Text.Json;
 
 namespace PrintMartic_DashBoard.Controllers
 {
-
+    [Authorize(AuthenticationSchemes = "Cookies")]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork<Product> _unitOfWork;
@@ -177,9 +177,10 @@ namespace PrintMartic_DashBoard.Controllers
 
                     _unitOfWork.generic.Add(itemMapped);
                     var count = _unitOfWork.Complet();
-
-                    ViewData["Message"] = "سيتم التأكيد من بيانات المنتج ثم إضافته";
-
+                    if (count > 0)
+                    {
+                        ViewData["Message"] = "سيتم التأكيد من بيانات المنتج ثم إضافته";
+                    }
                     return RedirectToAction(nameof(YourProducts));
 
                 }
@@ -227,9 +228,10 @@ namespace PrintMartic_DashBoard.Controllers
 
                     _unitOfWork.generic.Add(itemMapped);
                     var count = _unitOfWork.Complet();
-
-                    ViewData["Message"] = "تم إضافة تفاصيل المنتج بنجاح";
-
+                    if (count > 0)
+                    {
+                        ViewData["Message"] = "تم إضافة تفاصيل المنتج بنجاح";
+                    }
                     return RedirectToAction(nameof(Index));
 
                 }

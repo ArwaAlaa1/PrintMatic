@@ -12,7 +12,7 @@ using PrintMatic.Repository.Data;
 namespace PrintMatic.Repository.Data.Migrations
 {
     [DbContext(typeof(PrintMaticContext))]
-    [Migration("20240818144248_init")]
+    [Migration("20240822104417_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -408,6 +408,9 @@ namespace PrintMatic.Repository.Data.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("Enter")
+                        .HasColumnType("bit");
 
                     b.Property<string>("FilePath")
                         .IsRequired()

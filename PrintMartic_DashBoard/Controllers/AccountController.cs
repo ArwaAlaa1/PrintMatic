@@ -57,7 +57,7 @@ namespace PrintMartic_DashBoard.Controllers
                 {
                     new Claim(ClaimTypes.Name, login.UserName),
                      new Claim(ClaimTypes.NameIdentifier, login.UserName),
-                   new Claim(ClaimTypes.Role,role.First())
+                  new Claim(ClaimTypes.Role,role.First())
 
                 };
                 

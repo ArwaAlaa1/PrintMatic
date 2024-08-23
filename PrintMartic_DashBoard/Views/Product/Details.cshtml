@@ -17,7 +17,16 @@
         <div class=" mt-4">
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">تعديل</a>
 
-            <a asp-action="Index" class="btn btn-light">العوده</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Index" class="btn btn-light">العوده</a>
+
+            }
+            else if (User.IsInRole("بائع"))
+            {
+                <a asp-action="YourProducts" class="btn btn-light">العوده</a>
+
+            }
         </div>
     </div>
 </div>

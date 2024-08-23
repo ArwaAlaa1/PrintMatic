@@ -64,6 +64,7 @@ namespace PrintMartic_DashBoard.Controllers
         }
 
         [HttpPost]
+
         public async Task<IActionResult> AddUser(UserFormViewModel addUser)
         {
             try

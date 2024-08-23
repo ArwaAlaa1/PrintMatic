@@ -17,8 +17,16 @@
 
         <div class=" mt-4">
             <a href="~/ProductPhoto/Edit?ProductId=@Model.ProductId&Photo=@Model.Photo"  class="btn btn-primary">تعديل</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Index" class="btn btn-light">العوده</a>
 
-            <a asp-action="Index" class="btn btn-light">العوده</a>
+            }
+            else if (User.IsInRole("بائع"))
+            {
+                <a asp-action="YourProductPhotos" class="btn btn-light">العوده</a>
+
+            }
         </div>
     </div>
 </div>

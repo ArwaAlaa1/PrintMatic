@@ -20,7 +20,16 @@
         <input type="hidden" asp-for="Photo" />
         <div class="form-group mt-4">
             <input type="submit" value="حذف" class="btn btn-danger " />
-            <a asp-action="Index" class="btn btn-light">العوده</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Index" class="btn btn-light">العوده</a>
+
+            }
+            else if (User.IsInRole("بائع"))
+            {
+                <a asp-action="YourProductPhotos" class="btn btn-light">العوده</a>
+
+            }
         </div>
     </form>
 

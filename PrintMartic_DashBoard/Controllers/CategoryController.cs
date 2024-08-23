@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -10,6 +11,7 @@ using PrintMatic.Core.Entities;
 
 namespace PrintMartic_DashBoard.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork<Category> _unitOfWork;

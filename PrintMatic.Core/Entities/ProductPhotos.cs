@@ -16,6 +16,6 @@ namespace PrintMatic.Core.Entities
 
         public string FilePath { get; set; }
 
-       
+       public bool Enter { get; set; }
     }
 }

@@ -1,0 +1,127 @@
+﻿@model IEnumerable<ProductPhotos>
+@{
+    ViewData["Title"] = "WaitingProductPhotos";
+}
+
+
+<div class="m-auto  bg-white p-5">
+    <h1>جميع صور المنتجات قيد الإنتظار </h1>
+    @if (!string.IsNullOrEmpty(TempData["Message"] as string))
+    {
+        <div class="alert alert-primary mt-3 mb-2">
+            @TempData["message"]
+        </div>
+    }
+    <hr />
+    @*  <div class="row justify-content-center">
+    <div class="col-12">
+    <div class="row">
+    <!-- Small table -->
+    <div class="col-md-12 my-4"> *@
+    @*  <h2 class="h4 mb-1">Customize table rendering</h2> *@
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="toolbar">
+                <form class="form">
+                    <div class="form-row">
+                        <div class="form-group col-auto mr-auto">
+                            <label class="my-1 mr-2 sr-only" for="inlineFormCustomSelectPref1">Show</label>
+                            @* <select class="custom-select mr-sm-2" id="inlineFormCustomSelectPref1">
+                            <option value="">...</option>
+                            <option value="1">12</option>
+                            <option value="2" selected>32</option>
+                            <option value="3">64</option>
+                            <option value="3">128</option>
+                            </select> *@
+                        </div>
+                        <div class="form-group col-auto">
+                            <label for="search" class="sr-only">Search</label>
+                            <input type="text" class="form-control" id="search1" value="" placeholder="بحث">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- table -->
+            <table class="table table-borderless table-hover">
+                <thead>
+                    <tr>
+                        <td>
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="all2">
+                                <label class="custom-control-label" for="all2"></label>
+                            </div>
+                        </td>
+                        <th>اسم المنتج</th>
+                        <th>الصوره</th>
+                        <th>تأكيد</th>
+                        <th> التفاصيل</th>
+                        <th> تعديل</th>
+                        <th> حذف</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+
+
+                            <td>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="all2">
+                                    <label class="custom-control-label" for="all2"></label>
+                                </div>
+                            </td>
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.Product.Name)
+                            </td>
+                            <td>
+                                <img src="~/Uploads/products/@item.Photo" width="90" height="90" class="rounded-2 img-fluid" />
+
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-success" href="~/ProductPhoto/Confirm?ProductId=@item.ProductId&Photo=@item.Photo">تأكيد</a>
+                            </td>
+                            <td>
+                                <a class="btn btn-outline-success" href="~/ProductPhoto/Details?ProductId=@item.ProductId&Photo=@item.Photo">تفاصيل</a>
+                            </td>
+
+
+                            <td>
+                                <a class="btn btn-outline-warning" href="~/ProductPhoto/Edit?ProductId=@item.ProductId&Photo=@item.Photo">تعديل</a>
+                            </td>
+
+                            <td>
+                                <a class="btn btn-outline-danger" href="~/ProductPhoto/Delete?ProductId=@item.ProductId&Photo=@item.Photo">حذف</a>
+                            </td>
+
+
+
+                        </tr>
+                        }
+
+
+
+                </tbody>
+
+            </table>
+            @* <nav aria-label="Table Paging" class="mb-0 text-muted">
+            <ul class="pagination justify-content-center mb-0">
+            <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item active"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+            </ul>
+            </nav> *@
+        </div>
+    </div>
+</div> <!-- customized table -->
+                    </div> <!-- end section -->
+                </div>
+
+            </div>
+        </div>

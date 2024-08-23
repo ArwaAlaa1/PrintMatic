@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrintMartic_DashBoard.Helper.ViewModels;
 using PrintMatic.Core;
@@ -7,6 +8,7 @@ using PrintMatic.Core.Repository.Contract;
 
 namespace PrintMartic_DashBoard.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Cookies", Roles = "بائع,Admin")]
     public class ProductSaleController : Controller
     {
         private readonly IProductSale _productSale;
