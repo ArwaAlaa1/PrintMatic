@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Completion;
 using Microsoft.EntityFrameworkCore;
 using PrintMartic_DashBoard.Helper.ViewModels;
 using PrintMatic.Core;
@@ -255,6 +256,7 @@ namespace PrintMartic_DashBoard.Controllers
             productVM.Users = users;
             return View(productVM);
         }
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = ("بائع,Admin"))]
         public async Task<IActionResult> Edit(int id)
         {
             var item = await _unitOfWork.generic.GetByIdAsync(id);
@@ -280,12 +282,25 @@ namespace PrintMartic_DashBoard.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = ("بائع,Admin"))]
         public async Task<IActionResult> Edit(ProductVM productVM)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if (User.IsInRole("Admin"))
+                    {
+                        productVM.Enter = true;
+                    }
+                    if (productVM.NormalPrice <= 500)
+                    {
+                        productVM.TotalPrice = productVM.NormalPrice * 1.7m;
+                    }
+                    else
+                    {
+                        productVM.TotalPrice = productVM.NormalPrice * 2m;
+                    }
                     var ProMapped = _mapper.Map<ProductVM, Product>(productVM);
                     _unitOfWork.generic.Update(ProMapped);
                     var count = _unitOfWork.Complet();

@@ -48,12 +48,22 @@
 
             <input type="text" class="form-control " asp-for="UrgentPrice" readonly>
         </div>
+        @if (User.IsInRole("Admin"))
+        {
+            <div class="col">
+                <label for="validationServer01">السعر الكلي</label>
+
+                <input type="text" class="form-control " asp-for="TotalPrice" readonly>
+
+            </div>
+        }
         <div class="col">
             <label for="validationServer01">عدد الصور</label>
 
             <input type="text" class="form-control " asp-for="NumOfPhotos" readonly>
 
         </div>
+       
     </div>
 
     <br />
@@ -98,11 +108,7 @@
                 <input class="form-check-input" asp-for="Date" readonly />التاريخ
             </label>
         </div>
-        <div class="form-group form-check">
-            <label class="form-check-label">
-                <input class="form-check-input" asp-for="Enter" readonly/>يضاف الى قاعدة البيانات
-            </label>
-        </div>
+     
     </div>
     <div class="form-group ">
         <label for="example-textarea">وصف المنتج</label>

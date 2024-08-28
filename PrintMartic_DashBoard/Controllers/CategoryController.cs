@@ -111,6 +111,11 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
+                    //var item = await _unitOfWork.generic.GetByIdAsync(id);
+                    //if (item.Name == categoryVM.Name && item.PhotoURL == categoryVM.PhotoURL)
+                    //{
+                    //    return RedirectToAction(nameof(Index));
+                    //}
                    // var item = await _unitOfWork.generic.GetByIdAsync(categoryVM.Id);
                     if (categoryVM.PhotoFile != null)
                     {

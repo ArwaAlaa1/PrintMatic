@@ -61,8 +61,8 @@
                                                 <th>السعرالمستعجل</th>
                                                 <th> السعر الكلي</th>
                                                 <th>اسم البائع</th>
-                                                <th>العمليات</th>
-
+                                                
+                        
 
 
                                             </tr>
@@ -112,20 +112,22 @@
                                                             @Html.DisplayFor(modelItem => item.AppUser.DisplayName)
                                                     </td>
 
-                                                    <td>
-                                                        <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                            <span class="text-muted sr-only">Action</span>
-                                                        </button>
-                                                        <div class="dropdown-menu dropdown-menu-right">
-                                                            <a class="dropdown-item" asp-controller="Product" asp-action="Edit" asp-route-id ="@item.Id">تعديل</a>
-                                    <a class="dropdown-item" asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id">حذف</a>
-                                    <a class="dropdown-item" asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
-                                                        </div>
-                                                    </td>
+                                @if (item.IsDeleted == false)
+                                {
+                                    <td>
+                                        <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="text-muted sr-only">Action</span>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" asp-controller="Product" asp-action="Edit" asp-route-id ="@item.Id">تعديل</a>
+                                            <a class="dropdown-item" asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id">حذف</a>
+                                            <a class="dropdown-item" asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
+                                        </div>
+                                    </td>
 
 
-                                 
-                               
+                                }
+
 
                                                 </tr>
                                                 }

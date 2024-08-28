@@ -229,6 +229,7 @@ namespace PrintMartic_DashBoard.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "بائع,Admin")]
         public async Task<IActionResult> Edit(ProductPhotosVM photosVM)
         {
             if (ModelState.IsValid)
@@ -248,11 +249,16 @@ namespace PrintMartic_DashBoard.Controllers
 
                     _productPhoto.Update(ProMapped);
                     var count = _unitOfWork.Complet();
-                    if (count > 0)
+                    if (count > 0 )
                     {
                         TempData["Message"] = $"تم تعديل صورة المنتج بنجاح";
                     }
-                    return RedirectToAction(nameof(Index));
+                    if (User.IsInRole("Admin"))
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                        return RedirectToAction(nameof(YourProductPhotos));
                 }
                 catch (Exception ex)
                 {
@@ -276,6 +282,10 @@ namespace PrintMartic_DashBoard.Controllers
         {
             try
             {
+                if (System.IO.File.Exists(photosVM.FilePath))
+                {
+                    System.IO.File.Delete(photosVM.FilePath);
+                }
                 var photoMap = _mapper.Map<ProductPhotosVM, ProductPhotos>(photosVM);
 
                 _productPhoto.Delete(photoMap);
