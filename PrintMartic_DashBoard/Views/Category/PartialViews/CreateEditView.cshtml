@@ -1,16 +1,16 @@
 ﻿@model CategoryVM
 
-<div class="form-group  ">
+<div class="form-row  ">
     <div asp-validation-summary="All"></div>
-    <div class="form-group">
-        <label  class="col-form-label">اسم القسم</label>
-        <input asp-for="Name" class="form-control" />
+    <div class="col">
+       
+        <input asp-for="Name" class="form-control" placeholder="اسم القسم"/>
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label  class="control-label fw-bold fs-4">صوره</label>
-        <input asp-for="PhotoFile" class="form-control form-control-lg" type="file" id="formFile" />
+    <div class="col">
+        @* <label  class="control-label fw-bold fs-4">صوره</label> *@
+        <input asp-for="PhotoFile" class="form-control form-control-lg" type="file" placeholder="صوره" id="formFile" />
     </div>
 
 

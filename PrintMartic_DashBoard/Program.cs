@@ -59,7 +59,14 @@ namespace PrintMartic_DashBoard
 
 			builder.Services.AddDbContext<PrintMaticContext>(
 
-				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
+				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn"),
+            sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(10),
+                    errorNumbersToAdd: null);
+            }));
 
            
             builder.Services.AddIdentity<AppUser, IdentityRole>()

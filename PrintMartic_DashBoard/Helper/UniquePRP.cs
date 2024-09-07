@@ -1,4 +1,5 @@
 ﻿using PrintMartic_DashBoard.Helper.ViewModels;
+using PrintMatic.Core.Entities;
 using PrintMatic.Repository.Data;
 using System.ComponentModel.DataAnnotations;
 
@@ -6,16 +7,18 @@ namespace PrintMartic_DashBoard.Helper
 {
 	public class UniquePRP : ValidationAttribute
 	{
-		protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
+       
+
+
+        protected override ValidationResult? IsValid(object? value, ValidationContext validationContext)
 		{
 			var ProdPh = (ProductPhotosVM)validationContext.ObjectInstance;
-			if (ProdPh.PhotoFile != null)
-			{
-				ProdPh.Photo = DocumentSetting.UploadFile(ProdPh.PhotoFile, "product");
-
-			}
-
-			PrintMaticContext context = new PrintMaticContext();
+		
+            if (ProdPh.PhotoFile != null)
+            {
+                ProdPh.Photo = DocumentSetting.UploadFile(ProdPh.PhotoFile, "products");
+            }
+            PrintMaticContext context = new PrintMaticContext();
 
 			if (value != null && ProdPh.Photo != null)
 			{
@@ -30,7 +33,7 @@ namespace PrintMartic_DashBoard.Helper
 				}
 				else
 				{
-					return new ValidationResult("Choose Unique Product & Photo");
+					return  new ValidationResult("Choose Unique Product & Photo");
 				}
 
 

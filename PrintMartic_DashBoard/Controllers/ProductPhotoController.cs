@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Identity.Client;
+using PrintMartic_DashBoard.Helper;
 using PrintMartic_DashBoard.Helper.ViewModels;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities;
 using PrintMatic.Core.Repository.Contract;
+using System;
 
 namespace PrintMartic_DashBoard.Controllers
 {
@@ -22,6 +26,7 @@ namespace PrintMartic_DashBoard.Controllers
             _unitOfWork = unitOfWork;
             _environment = webHostEnvironment;
         }
+
         public async Task<IActionResult> Index()
         {
             var List = await _productPhoto.GetAllAsync();
@@ -58,9 +63,13 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
+                    product.Photo = product.PhotoFile.FileName;
+                    if (product.PhotoFile != null)
+                    {
+                        product.Photo = DocumentSetting.UploadFile(product.PhotoFile, "products");
+                    }
                     var ProMa = _mapper.Map<ProductPhotosVM, ProductPhotos>(product);
-                    ProMa.Photo = $"images/product/{ProMa.Photo}";
-                    //product.PathPhoto = Path.Combine(_environment.ContentRootPath, ProMa.Photo);
+                    ProMa.FilePath = Path.Combine(_environment.ContentRootPath, "wwwroot\\Uploads\\products", ProMa.Photo);
                     _productPhoto.Add(ProMa);
                     var count = _productPhoto.Complet();
                     if (count > 0)
@@ -104,8 +113,17 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
+                    if (photosVM.PhotoFile != null)
+                    {
+                        if (System.IO.File.Exists(photosVM.FilePath))
+                        {
+                            System.IO.File.Delete(photosVM.FilePath);
+                        }
+                            photosVM.Photo = DocumentSetting.UploadFile(photosVM.PhotoFile, "products", _environment.WebRootPath);
+                    }
                     var ProMapped = _mapper.Map<ProductPhotosVM, ProductPhotos>(photosVM);
-                    ProMapped.Photo = $"images/product/{ProMapped.Photo}";
+                    ProMapped.FilePath = Path.Combine(_environment.ContentRootPath, "wwwroot\\Uploads\\products", ProMapped.Photo);
+
                     _productPhoto.Update(ProMapped);
                     var count = _unitOfWork.Complet();
                     if (count > 0)

@@ -16,8 +16,19 @@
 
 
     <partial name="PartialViews/CreateEditView" />
+    <br />
+        
+        <div class="col-md-4 mb-3">
+            <label class="col-form-label fw-bold fs-4">الصوره  </label>
+            <input type="hidden" asp-for="PhotoURL" />
+            <img src="~/Uploads/category/@Model.PhotoURL" width="100" height="100" class="rounded-2 img-fluid" />
+        </div>
+        <div class="col" hidden>
 
-    <div class="form-group mt-4">
+            <input asp-for="FilePath" class="form-control" placeholder="مكان الصوره" />
+        </div>
+        <br />
+        <div class="form-group mt-4">
             <input type="submit" value="حفظ" class="btn btn-primary" />
             <a asp-action="Index" class="btn btn-light">العوده</a>
     </div>

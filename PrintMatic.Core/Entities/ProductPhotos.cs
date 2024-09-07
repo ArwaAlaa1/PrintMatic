@@ -14,6 +14,8 @@ namespace PrintMatic.Core.Entities
 
         public int ProductId { get; set; }
 
+        public string FilePath { get; set; }
+
        
     }
 }

@@ -30,6 +30,7 @@ namespace PrintMatic.Core.Entities
         public bool Date { get; set; }
         
         public bool Enter { get; set; }
+        public decimal TotalPrice { get; set; }
         public virtual Category Category { get; set; }
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }

@@ -35,7 +35,7 @@ namespace PrintMatic.Repository.Repository
 
         public async Task<IEnumerable<Product>> GetYourProducts(string userName)
         {
-            return await _context.Products.Include("Category").Include("AppUser").Where(x => x.AppUser.UserName == userName && x.IsDeleted == false).ToListAsync();
+            return await _context.Products.Include("Category").Include("AppUser").Where(x => x.AppUser.UserName == userName&& x.Enter == true && x.IsDeleted == false).ToListAsync();
 
         }
         public async Task<IEnumerable<Product>> GetInActiveProducts()
