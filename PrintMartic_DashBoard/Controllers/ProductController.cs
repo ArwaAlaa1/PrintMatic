@@ -41,27 +41,23 @@ namespace PrintMartic_DashBoard.Controllers
 
             return View(List);
         }
-        
+
         public async Task<IActionResult> WaitingProducts()
         {
             var List = await _unitOfWork.prodduct.GetWaitingProducts();
-            return View("Index",List);
+            return View("Index", List);
         }
-       [Authorize(AuthenticationSchemes = "Cookies",Roles ="بائع,Admin")]
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "بائع,Admin")]
         public async Task<IActionResult> YourProducts()
         {
             try
             {
-<<<<<<< HEAD
-              
-                
-=======
->>>>>>> df989794094c01a7566cd7c64100b76b96890a2b
+
                 var user = User.Identity.Name;
                 var product = await _unitOfWork.prodduct.GetYourProducts(user);
-                return View(nameof(Index),product);
+                return View(nameof(Index), product);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 ViewData["Message"] = ex.Message;
                 return View("Error");
@@ -70,7 +66,7 @@ namespace PrintMartic_DashBoard.Controllers
 
         public async Task<IActionResult> InActiveProducts()
         {
-       
+
             try
             {
                 var product = await _unitOfWork.prodduct.GetInActiveProducts();
@@ -123,7 +119,7 @@ namespace PrintMartic_DashBoard.Controllers
             //var cookievalue = Request.Cookies["Id"];
             // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             // Get the current user's username
-          //   var userName = User.Identity.Name;
+            //   var userName = User.Identity.Name;
             ProductVM ProductVM = new ProductVM();
             var List = await _catUnitOfwork.generic.GetAllAsync();
             ProductVM.Categories = List;
@@ -140,7 +136,7 @@ namespace PrintMartic_DashBoard.Controllers
             return View(ProductVM);
         }
 
-        [Authorize(AuthenticationSchemes = "Cookies",Roles =("بائع"))]
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = ("بائع"))]
         public async Task<IActionResult> CreateForCompany()
         {
 
@@ -151,7 +147,7 @@ namespace PrintMartic_DashBoard.Controllers
             var Username = User.Identity.Name;
             var user = await _userManager.FindByNameAsync(Username);
             ProductVM.UserId = user.Id;
-            return View("CreateForCompany",ProductVM);
+            return View("CreateForCompany", ProductVM);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -162,7 +158,7 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
-                    if(productVM.NormalPrice <= 500)
+                    if (productVM.NormalPrice <= 500)
                     {
                         productVM.TotalPrice = productVM.NormalPrice * 1.7m;
                     }
