@@ -5,7 +5,7 @@ namespace PrintMatic.DTOS
 	public class SignUPDto
 	{
         [Required]
-        public string DisplayName { get; set; }
+        public string UserName { get; set; }
 
         [Required]
         [EmailAddress]

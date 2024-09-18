@@ -23,7 +23,7 @@
     </div>
     @if (User.IsInRole("بائع"))
     {
-        <div class="col-md-4 mb-3">
+        <div class="col-md-4 mb-3" hidden>
             <label asp-for="UserId" >اسم البائع</label>
             <input type="text" class="form-control" asp-for="UserId" readonly>
 

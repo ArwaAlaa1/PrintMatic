@@ -21,7 +21,16 @@
 
         <div class="form-group mt-4">
             <input type="submit" value="حفظ" class="btn btn-primary" />
-            <a asp-action="Index" class="btn btn-light">العوده</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Index" class="btn btn-light">العوده</a>
+
+            }
+            else if (User.IsInRole("بائع"))
+            {
+                <a asp-action="YourProducts" class="btn btn-light">العوده</a>
+
+            }
         </div>
     </form>
 

@@ -37,15 +37,16 @@ namespace PrintMatic.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var user = await _userManager.FindByEmailAsync(loginDto.Email);
+            var user = await _userManager.FindByEmailAsync(loginDto.EmailOrUserName);
             if (user == null) return Unauthorized(new ApiResponse(401));
             var result = await _signInManger.CheckPasswordSignInAsync(user, loginDto.Password, false);
-            if (!result.Succeeded) return Unauthorized(new ApiResponse(401));
+            if (!result.Succeeded) 
+                return Unauthorized(new ApiResponse(401));
 
 
             return Ok(new UserDto()
             {
-                DisplayName = user.DisplayName,
+                
                 Email = user.Email,
                 Token = await _tokenService.CreateToken(user, _userManager)
             });
@@ -60,7 +61,7 @@ namespace PrintMatic.Controllers
             }
             var user = new AppUser()
             {
-                DisplayName = registerDto.DisplayName,
+                
                 Email = registerDto.Email,
                 UserName = registerDto.Email.Split('@')[0],
                 PhoneNumber = registerDto.PhoneNumber,
@@ -73,7 +74,7 @@ namespace PrintMatic.Controllers
 
             return Ok(new UserDto()
             {
-                DisplayName = user.DisplayName,
+                
                 Email = user.Email,
                 Token = await _tokenService.CreateToken(user, _userManager)
             });
@@ -94,7 +95,7 @@ namespace PrintMatic.Controllers
             return Ok(new UserDto()
             {
                 Email = email,
-                DisplayName = user.DisplayName,
+                
                 Token = await _tokenService.CreateToken(user, _userManager)
             });
         }

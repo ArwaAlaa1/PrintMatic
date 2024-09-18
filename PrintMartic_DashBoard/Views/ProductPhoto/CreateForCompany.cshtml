@@ -1,10 +1,13 @@
-﻿@model ProductVM
+﻿@model ProductPhotosVM
+
 @{
     ViewData["Title"] = "CreateForCompany";
 }
 
+
+
 <div class="m-auto  bg-white p-5">
-    <h1>إضافة منتج جديد</h1>
+    <h1>إضافة صوره للمنتج</h1>
     @if (!string.IsNullOrEmpty(TempData["Message"] as string))
     {
         <div class="alert alert-primary mt-3 mb-2">
@@ -13,16 +16,20 @@
     }
     <hr />
 
-    <form asp-action="SaveCreate" method="post">
+
+    <form asp-action="SaveCreate" method="post" enctype="multipart/form-data">
 
 
         <partial name="PartialViews/CreateEditView" />
+
         <div class="form-group mt-4">
             <input type="submit" value="إضافه" class="btn btn-primary" />
-            <a asp-action="YourProducts" class="btn btn-light">العوده</a>
+            <a asp-action="Index" class="btn btn-light">العوده</a>
         </div>
     </form>
+
 </div>
+@* @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 
-
-
+} *@

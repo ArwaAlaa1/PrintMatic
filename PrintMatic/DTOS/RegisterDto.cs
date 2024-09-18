@@ -5,7 +5,7 @@ namespace PrintMatic.DTOS
     public class RegisterDto
     {
         [Required]
-        public string DisplayName { get; set; }
+        public string UserName { get; set; }
 
         [Required]
         [EmailAddress]

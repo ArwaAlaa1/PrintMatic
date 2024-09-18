@@ -25,12 +25,22 @@ namespace PrintMatic.Repository.Repository
 
         public async Task<IEnumerable<ProductPhotos>> GetAllAsync()
         {
-            return await _context.Set<ProductPhotos>().Where(x => x.IsDeleted == false).Include("Product").ToListAsync();
+            return await _context.Set<ProductPhotos>().Where( x => x.Enter == true && x.IsDeleted == false).Include("Product").ToListAsync();
         }
 
         public async Task<ProductPhotos> GetByIDAsync(int ProductId , string Photo)
         {
             return await _context.Set<ProductPhotos>().Include("Product").Where(x => x.ProductId == ProductId && x.Photo == Photo).FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<ProductPhotos>> GetYourProductPhotos(string userName)
+        {
+            return await _context.ProductPhotos.Include("Product").Where(x => x.Product.AppUser.UserName == userName && x.Enter == true && x.IsDeleted == false).ToListAsync();
+
+        }
+        public async Task<IEnumerable<ProductPhotos>> GetWaitingProducts()
+        {
+            return await _context.ProductPhotos.Include("Product").Where(x => x.Enter == false && x.IsDeleted == false).ToListAsync();
         }
         public void Update(ProductPhotos entity)
         {
@@ -44,5 +54,6 @@ namespace PrintMatic.Repository.Repository
         {
            return _context.SaveChanges();
         }
+
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Completion;
 using Microsoft.EntityFrameworkCore;
 using PrintMartic_DashBoard.Helper.ViewModels;
 using PrintMatic.Core;
@@ -15,7 +16,7 @@ using System.Text.Json;
 
 namespace PrintMartic_DashBoard.Controllers
 {
-
+    [Authorize(AuthenticationSchemes = "Cookies")]
     public class ProductController : Controller
     {
         private readonly IUnitOfWork<Product> _unitOfWork;
@@ -35,24 +36,25 @@ namespace PrintMartic_DashBoard.Controllers
 
 
         //Get All Products    Get
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             var List = await _unitOfWork.prodduct.GetAllProducts();
 
             return View(List);
         }
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
 
         public async Task<IActionResult> WaitingProducts()
         {
             var List = await _unitOfWork.prodduct.GetWaitingProducts();
-            return View("Index", List);
+            return View(List);
         }
         [Authorize(AuthenticationSchemes = "Cookies", Roles = "بائع,Admin")]
         public async Task<IActionResult> YourProducts()
         {
             try
             {
-
                 var user = User.Identity.Name;
                 var product = await _unitOfWork.prodduct.GetYourProducts(user);
                 return View(nameof(Index), product);
@@ -63,6 +65,7 @@ namespace PrintMartic_DashBoard.Controllers
                 return View("Error");
             }
         }
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
 
         public async Task<IActionResult> InActiveProducts()
         {
@@ -78,6 +81,8 @@ namespace PrintMartic_DashBoard.Controllers
                 return View("Error");
             }
         }
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
+
         public async Task<IActionResult> Confirm(int id)
         {
             try
@@ -112,7 +117,8 @@ namespace PrintMartic_DashBoard.Controllers
             var itemMapped = _mapper.Map<Product, ProductVM>(item);
             return View(itemMapped);
         }
-        [Authorize(AuthenticationSchemes = "Cookies")]
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
+
         public async Task<IActionResult> Create()
         {
 
@@ -172,9 +178,10 @@ namespace PrintMartic_DashBoard.Controllers
 
                     _unitOfWork.generic.Add(itemMapped);
                     var count = _unitOfWork.Complet();
-
-                    ViewData["Message"] = "سيتم التأكيد من بيانات المنتج ثم إضافته";
-
+                    if (count > 0)
+                    {
+                        ViewData["Message"] = "سيتم التأكيد من بيانات المنتج ثم إضافته";
+                    }
                     return RedirectToAction(nameof(YourProducts));
 
                 }
@@ -222,9 +229,10 @@ namespace PrintMartic_DashBoard.Controllers
 
                     _unitOfWork.generic.Add(itemMapped);
                     var count = _unitOfWork.Complet();
-
-                    ViewData["Message"] = "تم إضافة تفاصيل المنتج بنجاح";
-
+                    if (count > 0)
+                    {
+                        ViewData["Message"] = "تم إضافة تفاصيل المنتج بنجاح";
+                    }
                     return RedirectToAction(nameof(Index));
 
                 }
@@ -248,6 +256,7 @@ namespace PrintMartic_DashBoard.Controllers
             productVM.Users = users;
             return View(productVM);
         }
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = ("بائع,Admin"))]
         public async Task<IActionResult> Edit(int id)
         {
             var item = await _unitOfWork.generic.GetByIdAsync(id);
@@ -273,12 +282,25 @@ namespace PrintMartic_DashBoard.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = ("بائع,Admin"))]
         public async Task<IActionResult> Edit(ProductVM productVM)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    if (User.IsInRole("Admin"))
+                    {
+                        productVM.Enter = true;
+                    }
+                    if (productVM.NormalPrice <= 500)
+                    {
+                        productVM.TotalPrice = productVM.NormalPrice * 1.7m;
+                    }
+                    else
+                    {
+                        productVM.TotalPrice = productVM.NormalPrice * 2m;
+                    }
                     var ProMapped = _mapper.Map<ProductVM, Product>(productVM);
                     _unitOfWork.generic.Update(ProMapped);
                     var count = _unitOfWork.Complet();

@@ -1,12 +1,11 @@
-﻿@model IEnumerable<Review>
-
-
+﻿@model IEnumerable<ProductPhotos>
+@{
+    ViewData["Title"] = "WaitingProductPhotos";
+}
 
 
 <div class="m-auto  bg-white p-5">
-   
-    <h1>آراء العملاء </h1>
-
+    <h1>جميع صور المنتجات قيد الإنتظار </h1>
     @if (!string.IsNullOrEmpty(TempData["Message"] as string))
     {
         <div class="alert alert-primary mt-3 mb-2">
@@ -14,7 +13,11 @@
         </div>
     }
     <hr />
-
+    @*  <div class="row justify-content-center">
+    <div class="col-12">
+    <div class="row">
+    <!-- Small table -->
+    <div class="col-md-12 my-4"> *@
     @*  <h2 class="h4 mb-1">Customize table rendering</h2> *@
     <div class="card shadow">
         <div class="card-body">
@@ -48,14 +51,14 @@
                                 <label class="custom-control-label" for="all2"></label>
                             </div>
                         </td>
-                        <th>معرف الرأي</th>
-                        <th>اسم المستخدم</th>
                         <th>اسم المنتج</th>
-                        <th>الرساله</th>
-						<th>التقييم</th>
-                        <th>التفاصيل </th>
+                        <th>الصوره</th>
+                        <th>تأكيد</th>
+                        <th> التفاصيل</th>
                         <th> تعديل</th>
                         <th> حذف</th>
+
+
                     </tr>
                 </thead>
                 <tbody>
@@ -64,6 +67,8 @@
                         @foreach (var item in Model)
                         {
                         <tr>
+
+
                             <td>
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" class="custom-control-input" id="all2">
@@ -71,33 +76,27 @@
                                 </div>
                             </td>
                             <td>
-                                    @Html.DisplayFor(modelItem => item.Id)
-                            </td>
-                            <td>
-                                    @Html.DisplayFor(modelItem => item.AppUser.UserName)
-                            </td>
-                            <td>
                                     @Html.DisplayFor(modelItem => item.Product.Name)
                             </td>
                             <td>
-                                    @Html.DisplayFor(modelItem => item.Message)
+                                <img src="~/Uploads/products/@item.Photo" width="90" height="90" class="rounded-2 img-fluid" />
+
                             </td>
                             <td>
-                                    @Html.DisplayFor(modelItem => item.Rating)
+                                <a class="btn btn-outline-success" href="~/ProductPhoto/Confirm?ProductId=@item.ProductId&Photo=@item.Photo">تأكيد</a>
                             </td>
                             <td>
-                                <a class="btn btn-outline-success" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
+                                <a class="btn btn-outline-success" href="~/ProductPhoto/Details?ProductId=@item.ProductId&Photo=@item.Photo">تفاصيل</a>
                             </td>
 
 
                             <td>
-                                <a class="btn btn-outline-warning" asp-action="Edit" asp-route-id="@item.Id">تعديل</a>
+                                <a class="btn btn-outline-warning" href="~/ProductPhoto/Edit?ProductId=@item.ProductId&Photo=@item.Photo">تعديل</a>
                             </td>
 
                             <td>
-                                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@item.Id">حذف</a>
+                                <a class="btn btn-outline-danger" href="~/ProductPhoto/Delete?ProductId=@item.ProductId&Photo=@item.Photo">حذف</a>
                             </td>
-
 
 
 
@@ -119,9 +118,10 @@
             </ul>
             </nav> *@
         </div>
+    </div>
+</div> <!-- customized table -->
+                    </div> <!-- end section -->
+                </div>
 
-    </div> <!-- customized table -->
-</div> <!-- end section -->
-
-
-
+            </div>
+        </div>

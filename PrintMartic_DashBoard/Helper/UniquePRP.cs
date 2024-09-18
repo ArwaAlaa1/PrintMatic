@@ -18,32 +18,35 @@ namespace PrintMartic_DashBoard.Helper
             {
                 ProdPh.Photo = DocumentSetting.UploadFile(ProdPh.PhotoFile, "products");
             }
-            PrintMaticContext context = new PrintMaticContext();
-
-			if (value != null && ProdPh.Photo != null)
+			using (PrintMaticContext context = new PrintMaticContext())
 			{
+                if (value != null && ProdPh.Photo != null)
+                {
 
 
-				int Prophvalue = (int)value;
+                    int Prophvalue = (int)value;
 
-				var placePhoto = context.ProductPhotos.Where(x => x.ProductId == Prophvalue && x.Photo == ProdPh.Photo).FirstOrDefault();
-				if (placePhoto == null)
-				{
-					return ValidationResult.Success;
-				}
-				else
-				{
-					return  new ValidationResult("Choose Unique Product & Photo");
-				}
+                    var placePhoto = context.ProductPhotos.Where(x => x.ProductId == Prophvalue && x.Photo == ProdPh.Photo).FirstOrDefault();
+                    if (placePhoto == null)
+                    {
+                        return ValidationResult.Success;
+                    }
+                    else
+                    {
+                        return new ValidationResult("Choose Unique Product & Photo");
+                    }
 
 
 
-			}
+                }
 
-			else
-			{
-				return new ValidationResult("The Product & Photo is required");
-			}
+                else
+                {
+                    return new ValidationResult("The Product & Photo is required");
+                }
+            }
+
+				
 
 		}
 

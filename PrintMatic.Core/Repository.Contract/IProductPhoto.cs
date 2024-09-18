@@ -16,7 +16,8 @@ namespace PrintMatic.Core.Repository.Contract
 
         void Update(ProductPhotos entity);
         void Delete(ProductPhotos entity);
-
+        Task<IEnumerable<ProductPhotos>> GetWaitingProducts();
+        Task<IEnumerable<ProductPhotos>> GetYourProductPhotos(string userName);
         int Complet();
 
 	}

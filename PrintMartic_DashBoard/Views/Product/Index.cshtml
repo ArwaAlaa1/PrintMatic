@@ -44,24 +44,25 @@
                                     <table class="table table-borderless table-hover">
                                         <thead>
                                             <tr>
-                                                <td>
+                                                @* <td>
                                                     <div class="custom-control custom-checkbox">
                                                         <input type="checkbox" class="custom-control-input" id="all2">
                                                         <label class="custom-control-label" for="all2"></label>
                                                     </div>
-                                                </td>
+                                                </td> *@
                                                 <th>معرف المنتج</th>
                                                 <th>اسم القسم</th>
                                                 <th>اسم المنتج</th>
-                                                <th>الوصف</th>
+                                              @*   <th>الوصف</th> *@
                                                 <th>عدد الصور</th>
                                                 <th>فترة التوصيل</th>
                                                 <th>فترة التوصيل المستعجل</th>
-                                                <th>السعرالعادي</th>
+                                                <th> السعر للبائع</th>
                                                 <th>السعرالمستعجل</th>
+                                                <th> السعر الكلي</th>
                                                 <th>اسم البائع</th>
-                                                <th>العمليات</th>
-
+                                                
+                        
 
 
                                             </tr>
@@ -74,14 +75,8 @@
                                                 <tr>
 
 
-                                                    <td>
-                                                        <div class="custom-control custom-checkbox">
-                                                            <input type="checkbox" class="custom-control-input" id="all2">
-                                                            <label class="custom-control-label" for="all2"></label>
-                                                        </div>
-                                                    </td>
-                                                    <td>
-                                                            @Html.DisplayFor(modelItem => item.Id)
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Id)
                                                     </td>
                                                     <td>
                                                             @Html.DisplayFor(modelItem => item.Category.Name)
@@ -89,9 +84,9 @@
                                                     <td>
                                                             @Html.DisplayFor(modelItem => item.Name)
                                                     </td>
-                                                    <td>
+                                                  @*   <td>
                                                             @Html.DisplayFor(modelItem => item.Description)
-                                                    </td>
+                                                    </td> *@
                                                     <td>
                                                             @Html.DisplayFor(modelItem => item.NumOfPhotos)
                                                     </td>
@@ -110,21 +105,29 @@
                                                     <td>
                                                             @Html.DisplayFor(modelItem => item.UrgentPrice)
                                                     </td>
-
+                            <td>
+                                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                            </td>
                                                     <td>
-                                                            @Html.DisplayFor(modelItem => item.AppUser.DisplayName)
+                                                            @Html.DisplayFor(modelItem => item.AppUser.UserName)
                                                     </td>
 
-                                                    <td>
-                                                        <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                            <span class="text-muted sr-only">Action</span>
-                                                        </button>
-                                                        <div class="dropdown-menu dropdown-menu-right">
-                                                            <a class="dropdown-item" asp-controller="Product" asp-action="Edit" asp-route-id ="@item.Id">تعديل</a>
-                                    <a class="dropdown-item" asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id">حذف</a>
-                                    <a class="dropdown-item" asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
-                                                        </div>
-                                                    </td>
+                                @if (item.IsDeleted == false)
+                                {
+                                    <td>
+                                        <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="text-muted sr-only">Action</span>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            <a class="dropdown-item" asp-controller="Product" asp-action="Edit" asp-route-id ="@item.Id">تعديل</a>
+                                            <a class="dropdown-item" asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id">حذف</a>
+                                            <a class="dropdown-item" asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
+                                        </div>
+                                    </td>
+
+
+                                }
+
 
                                                 </tr>
                                                 }
@@ -146,10 +149,5 @@
                                 </div>
                             </div>
                         </div> <!-- customized table -->
-                    </div> <!-- end section -->
-                </div>
-
-            </div>
-        </div>
- 
+                   
 

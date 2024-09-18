@@ -27,30 +27,6 @@ namespace PrintMartic_DashBoard
 			var builder = WebApplication.CreateBuilder(args);
 
 
-			//#region language services
-		//	builder.Services.AddControllersWithViews()
-		//.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
-		//.AddDataAnnotationsLocalization();
-
-		//	builder.Services.Configure<RequestLocalizationOptions>(options =>
-		//	{
-		//		var supportedCultures = new[]
-		//		{
-		//	new CultureInfo("en"),
-		//	new CultureInfo("ar-EG")
-		//};
-
-		//		options.DefaultRequestCulture = new RequestCulture("ar");
-		//		options.SupportedCultures = supportedCultures;
-		//		options.SupportedUICultures = supportedCultures;
-
-		//		options.RequestCultureProviders.Insert(0, new QueryStringRequestCultureProvider()); // Allows culture to be set via query string
-		//	});
-		//	#endregion
-
-	
-           
-
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 			//Add Context Services

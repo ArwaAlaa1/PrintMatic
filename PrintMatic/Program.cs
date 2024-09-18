@@ -7,7 +7,7 @@ using PrintMatic.Core.Repository.Contract;
 using PrintMatic.Extensions;
 using PrintMatic.Extentions;
 using PrintMatic.Repository.Data;
-using PrintMatic.Repository.Identity;
+
 using PrintMatic.Repository.Repository;
 using PrintMatic.Services;
 using StackExchange.Redis;
@@ -66,8 +66,8 @@ namespace PrintMatic
 
 				await dbcontext.Database.MigrateAsync();
 
-				var usermanager = services.GetRequiredService<UserManager<AppUser>>();
-				await AppSeed.UserSeedAsync(usermanager);
+				//var usermanager = services.GetRequiredService<UserManager<AppUser>>();
+				//await AppSeed.UserSeedAsync(usermanager);
 
 			}
 			catch (Exception ex)
