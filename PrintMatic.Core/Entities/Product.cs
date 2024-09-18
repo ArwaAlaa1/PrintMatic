@@ -16,7 +16,6 @@ namespace PrintMatic.Core.Entities
         public string Description { get; set; }
 
         public int? NumOfPhotos { get; set; }
-
         public int NormalMinDate { get; set; } //int
         public int NormalMaxDate { get; set; }
         public int UrgentMinDate { get; set; }
@@ -39,6 +38,11 @@ namespace PrintMatic.Core.Entities
 
 		[ForeignKey(nameof(AppUser))]
 		public string UserId { get; set; }
+
+        public virtual ICollection<ProductPhotos > ProductPhotos { get; set; }
+        public virtual ICollection<ProductSale> ProductSales { get; set; }
+
+
 
     }
 }

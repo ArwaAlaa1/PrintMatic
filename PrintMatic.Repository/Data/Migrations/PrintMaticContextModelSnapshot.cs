@@ -166,6 +166,10 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FilePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -395,6 +399,40 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("PrintMatic.Core.Entities.ProductColor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("HexCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductColors");
+                });
+
             modelBuilder.Entity("PrintMatic.Core.Entities.ProductPhotos", b =>
                 {
                     b.Property<int>("ProductId")
@@ -455,6 +493,40 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.HasIndex("SaleId");
 
                     b.ToTable("productSales");
+                });
+
+            modelBuilder.Entity("PrintMatic.Core.Entities.ProductSize", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductSizes");
                 });
 
             modelBuilder.Entity("PrintMatic.Core.Entities.Review", b =>
@@ -596,7 +668,7 @@ namespace PrintMatic.Repository.Data.Migrations
             modelBuilder.Entity("PrintMatic.Core.Entities.Product", b =>
                 {
                     b.HasOne("PrintMatic.Core.Entities.Category", "Category")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -612,7 +684,7 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("PrintMatic.Core.Entities.ProductPhotos", b =>
+            modelBuilder.Entity("PrintMatic.Core.Entities.ProductColor", b =>
                 {
                     b.HasOne("PrintMatic.Core.Entities.Product", "Product")
                         .WithMany()
@@ -623,10 +695,21 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("PrintMatic.Core.Entities.ProductPhotos", b =>
+                {
+                    b.HasOne("PrintMatic.Core.Entities.Product", "Product")
+                        .WithMany("ProductPhotos")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("PrintMatic.Core.Entities.ProductSale", b =>
                 {
                     b.HasOne("PrintMatic.Core.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("ProductSales")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -640,6 +723,17 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Sale");
+                });
+
+            modelBuilder.Entity("PrintMatic.Core.Entities.ProductSize", b =>
+                {
+                    b.HasOne("PrintMatic.Core.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("PrintMatic.Core.Entities.Review", b =>
@@ -659,9 +753,21 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("PrintMatic.Core.Entities.Category", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("PrintMatic.Core.Entities.Identity.AppUser", b =>
                 {
                     b.Navigation("Address");
+                });
+
+            modelBuilder.Entity("PrintMatic.Core.Entities.Product", b =>
+                {
+                    b.Navigation("ProductPhotos");
+
+                    b.Navigation("ProductSales");
                 });
 #pragma warning restore 612, 618
         }

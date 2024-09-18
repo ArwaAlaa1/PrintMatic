@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Completion;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using PrintMartic_DashBoard.Helper.ViewModels;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities;
@@ -23,14 +24,20 @@ namespace PrintMartic_DashBoard.Controllers
         private readonly IMapper _mapper;
         private readonly IUnitOfWork<Category> _catUnitOfwork;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IUnitOfWork<ProductColor> _unitOfColor;
+        private readonly IUnitOfWork<ProductSize> _unitOfSize;
 
         public ProductController(IUnitOfWork<Product> unitOfWork, IMapper mapper,
-            IUnitOfWork<Category> catUnitOfwork, UserManager<AppUser> userManager)
+            IUnitOfWork<Category> catUnitOfwork, UserManager<AppUser> userManager,
+            IUnitOfWork<ProductColor> unitOfColor,
+            IUnitOfWork<ProductSize> unitOfSize)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _catUnitOfwork = catUnitOfwork;
             _userManager = userManager;
+            _unitOfColor = unitOfColor;
+            _unitOfSize = unitOfSize;
         }
 
 
@@ -115,17 +122,21 @@ namespace PrintMartic_DashBoard.Controllers
                 return RedirectToAction(nameof(Index));
             }
             var itemMapped = _mapper.Map<Product, ProductVM>(item);
+            var ListofProColor = await _unitOfColor.color.GetIdOfProAsync(item.Id);
+            if (ListofProColor.Count > 0)
+            {
+                itemMapped.Colors = ListofProColor;
+            }
+            var ListofProSize = await _unitOfColor.size.GetIdOfProAsync(item.Id);
+            if (ListofProSize.Count > 0)
+            {
+                itemMapped.Sizes = ListofProSize;
+            }
             return View(itemMapped);
         }
         [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
-
         public async Task<IActionResult> Create()
         {
-
-            //var cookievalue = Request.Cookies["Id"];
-            // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            // Get the current user's username
-          //   var userName = User.Identity.Name;
             ProductVM ProductVM = new ProductVM();
             var List = await _catUnitOfwork.generic.GetAllAsync();
             ProductVM.Categories = List;
@@ -142,6 +153,98 @@ namespace PrintMartic_DashBoard.Controllers
             return View(ProductVM);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = ("Admin"))]
+        public async Task<IActionResult> Create(ProductVM productVM)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (productVM.NormalPrice <= 500)
+                    {
+                        productVM.TotalPrice = productVM.NormalPrice * 1.7m;
+                    }
+                    else
+                    {
+                        productVM.TotalPrice = productVM.NormalPrice * 2m;
+                    }
+                    productVM.Enter = true;
+                    var itemMapped = _mapper.Map<ProductVM, Product>(productVM);
+
+
+                    _unitOfWork.generic.Add(itemMapped);
+                    var count = _unitOfWork.Complet();
+                    if (productVM.Color == true)
+                    {
+                        if (productVM.ColorJson != null)
+                        {
+                            var colors = JsonConvert.DeserializeObject<List<string>>(productVM.ColorJson);
+                            if (colors.Count > 0)
+                            {
+                                foreach (var hexCode in colors)
+                                {
+
+                                    ProductColor productColor = new ProductColor()
+                                    {
+                                        ProductId = itemMapped.Id,
+                                        HexCode = hexCode,
+
+                                    };
+                                    _unitOfColor.generic.Add(productColor);
+                                    _unitOfColor.Complet();
+
+                                }
+                            }
+                        }
+                    }
+                    if (productVM.SizeJson != null)
+                    {
+                        var sizes = JsonConvert.DeserializeObject<List<string>>(productVM.SizeJson);
+                        if (sizes?.Count > 0)
+                        {
+                            foreach (var size in sizes)
+                            {
+                                ProductSize productSize = new ProductSize()
+                                {
+                                    ProductId = itemMapped.Id,
+                                    Size = size
+                                };
+                                _unitOfSize.generic.Add(productSize);
+                                await _unitOfWork.CompletAsync();
+                            }
+                        }
+                    }
+                    if (count > 0)
+                    {
+                        ViewData["Message"] = "تم إضافة تفاصيل المنتج بنجاح";
+                    }
+                    return RedirectToAction(nameof(Index));
+
+                }
+                catch (Exception ex)
+                {
+                    ViewData["Message"] = ex.InnerException.Message;
+                }
+                // var userid =userManager.Users.FirstAsync(n => n.UserName==user); 
+
+            }
+            var List = await _catUnitOfwork.generic.GetAllAsync();
+            productVM.Categories = List;
+            List<AppUser> users = new List<AppUser>();
+            foreach (var item in _userManager.Users)
+            {
+                if (item.IsCompany == true)
+                {
+                    users.Add(item);
+                }
+            }
+            productVM.Users = users;
+            return View(productVM);
+        }
+
+
         [Authorize(AuthenticationSchemes = "Cookies",Roles =("بائع"))]
         public async Task<IActionResult> CreateForCompany()
         {
@@ -155,6 +258,7 @@ namespace PrintMartic_DashBoard.Controllers
             ProductVM.UserId = user.Id;
             return View("CreateForCompany",ProductVM);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(AuthenticationSchemes = "Cookies", Roles = ("بائع"))]
@@ -174,10 +278,50 @@ namespace PrintMartic_DashBoard.Controllers
                     }
                     productVM.Enter = false;
                     var itemMapped = _mapper.Map<ProductVM, Product>(productVM);
-
-
                     _unitOfWork.generic.Add(itemMapped);
-                    var count = _unitOfWork.Complet();
+                    var count = await _unitOfWork.CompletAsync();
+
+                    if (productVM.Color == true)
+                    {
+                        if (productVM.ColorJson != null)
+                        {
+                            var colors = JsonConvert.DeserializeObject<List<string>>(productVM.ColorJson);
+                            if (colors.Count > 0)
+                            {
+                                foreach (var hexCode in colors)
+                                {
+
+                                    ProductColor productColor = new ProductColor()
+                                    {
+                                        ProductId = itemMapped.Id,
+                                        HexCode = hexCode,
+
+                                    };
+                                    _unitOfColor.generic.Add(productColor);
+                                    _unitOfColor.Complet();
+
+                                }
+                            }
+                        }
+
+                    }
+                    if (productVM.SizeJson != null)
+                    {
+                        var sizes = JsonConvert.DeserializeObject<List<string>>(productVM.SizeJson);
+                        if (sizes?.Count > 0)
+                        {
+                            foreach (var size in sizes)
+                            {
+                                ProductSize productSize = new ProductSize()
+                                {
+                                    ProductId = itemMapped.Id,
+                                    Size = size
+                                };
+                                _unitOfSize.generic.Add(productSize);
+                                await _unitOfWork.CompletAsync();
+                            }
+                        }
+                    }
                     if (count > 0)
                     {
                         ViewData["Message"] = "سيتم التأكيد من بيانات المنتج ثم إضافته";
@@ -206,56 +350,8 @@ namespace PrintMartic_DashBoard.Controllers
             return View(productVM);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(AuthenticationSchemes = "Cookies", Roles = ("Admin"))]
-        public async Task<IActionResult> Create(ProductVM productVM)
-        {
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    if (productVM.NormalPrice <= 500)
-                    {
-                        productVM.TotalPrice = productVM.NormalPrice * 1.7m;
-                    }
-                    else
-                    {
-                        productVM.TotalPrice = productVM.NormalPrice * 2m;
-                    }
-                    productVM.Enter = true;
-                    var itemMapped = _mapper.Map<ProductVM, Product>(productVM);
 
-
-                    _unitOfWork.generic.Add(itemMapped);
-                    var count = _unitOfWork.Complet();
-                    if (count > 0)
-                    {
-                        ViewData["Message"] = "تم إضافة تفاصيل المنتج بنجاح";
-                    }
-                    return RedirectToAction(nameof(Index));
-
-                }
-                catch (Exception ex)
-                {
-                    ViewData["Message"] = ex.InnerException.Message;
-                }
-                // var userid =userManager.Users.FirstAsync(n => n.UserName==user); 
-
-            }
-            var List = await _catUnitOfwork.generic.GetAllAsync();
-            productVM.Categories = List;
-            List<AppUser> users = new List<AppUser>();
-            foreach (var item in _userManager.Users)
-            {
-                if (item.IsCompany == true)
-                {
-                    users.Add(item);
-                }
-            }
-            productVM.Users = users;
-            return View(productVM);
-        }
+        
         [Authorize(AuthenticationSchemes = "Cookies", Roles = ("بائع,Admin"))]
         public async Task<IActionResult> Edit(int id)
         {
@@ -265,9 +361,20 @@ namespace PrintMartic_DashBoard.Controllers
                 ViewData["Message"] = "لم يتم العثور على هذا العنصر";
                 return RedirectToAction(nameof(Index));
             }
+            
             var itemMapped = _mapper.Map<Product, ProductVM>(item);
             var List = await _catUnitOfwork.generic.GetAllAsync();
             itemMapped.Categories = List;
+            var ListofProColor = await _unitOfColor.color.GetIdOfProAsync(item.Id);
+            if (ListofProColor.Count > 0)
+            {
+                itemMapped.Colors = ListofProColor;
+            }
+            var ListofProSize = await _unitOfColor.size.GetIdOfProAsync(item.Id);
+            if (ListofProSize.Count > 0)
+            {
+                itemMapped.Sizes = ListofProSize;
+            }
             List<AppUser> users = new List<AppUser>();
             foreach (var user in _userManager.Users)
             {
@@ -277,6 +384,7 @@ namespace PrintMartic_DashBoard.Controllers
                 }
             }
             itemMapped.Users = users;
+         
             return View(itemMapped);
         }
 
@@ -304,11 +412,61 @@ namespace PrintMartic_DashBoard.Controllers
                     var ProMapped = _mapper.Map<ProductVM, Product>(productVM);
                     _unitOfWork.generic.Update(ProMapped);
                     var count = _unitOfWork.Complet();
+                    if (productVM.Color == true)
+                    {
+                        if(productVM.ColorJson != null)
+                        {
+                            var colors = JsonConvert.DeserializeObject<List<string>>(productVM.ColorJson);
+                            if (colors.Count > 0)
+                            {
+                                foreach (var hexCode in colors)
+                                {
+
+                                    ProductColor productColor = new ProductColor()
+                                    {
+                                        ProductId = ProMapped.Id,
+                                        HexCode = hexCode,
+
+                                    };
+                                    _unitOfColor.generic.Add(productColor);
+                                    _unitOfColor.Complet();
+
+                                }
+                            }
+                        }
+                       
+                    }
+                    if(productVM.SizeJson != null)
+                    {
+                        var sizes = JsonConvert.DeserializeObject<List<string>>(productVM.SizeJson);
+                        if (sizes?.Count > 0)
+                        {
+                            foreach (var size in sizes)
+                            {
+                                ProductSize productSize = new ProductSize()
+                                {
+                                    ProductId = ProMapped.Id,
+                                    Size = size
+                                };
+                                _unitOfSize.generic.Add(productSize);
+                                await _unitOfWork.CompletAsync();
+                            }
+                        }
+                    }
+                    
                     if (count > 0)
                     {
                         ViewData["Message"] = "تم تعديل تفاصيل المنتج بنجاح";
                     }
-                    return RedirectToAction(nameof(Index));
+                    if (User.IsInRole("Admin"))
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
+                    if (User.IsInRole("بائع"))
+                    {
+                        return RedirectToAction(nameof(YourProducts));
+                    }
+                  
                 }
                 catch (Exception ex)
                 {
@@ -334,17 +492,34 @@ namespace PrintMartic_DashBoard.Controllers
         {
             return await Details(id);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-
-        public IActionResult Delete(ProductVM productVM)
+        public async Task<IActionResult> Delete(ProductVM productVM)
         {
             try
             {
                 var Product = _mapper.Map<ProductVM, Product>(productVM);
                 Product.IsDeleted = true;
+                Product.IsActive = false;
+                var ListofProColor = await _unitOfColor.color.GetIdOfProAsync(Product.Id);
+                foreach (var color in ListofProColor)
+                {
+                    color.IsDeleted = true;
+                    color.IsActive = false;
+                    _unitOfColor.generic.Update(color);
+                    await _unitOfColor.CompletAsync();
+                }
+                var ListofProSize = await _unitOfColor.size.GetIdOfProAsync(Product.Id);
+                foreach (var size in ListofProSize)
+                {
+                    size.IsDeleted = true;
+                    size.IsActive = false;
+                    _unitOfSize.generic.Update(size);
+                    await _unitOfSize.CompletAsync();
+                }
                 _unitOfWork.generic.Update(Product);
-                var count = _unitOfWork.Complet();
+                var count =await _unitOfWork.CompletAsync();
                 if (count > 0)
                 {
                     ViewData["Message"] = "تم حذف تفاصيل المنتج بنجاح";
@@ -357,5 +532,6 @@ namespace PrintMartic_DashBoard.Controllers
             }
             return View(productVM);
         }
+
     }
 }

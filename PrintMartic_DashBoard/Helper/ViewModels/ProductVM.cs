@@ -36,6 +36,14 @@ namespace PrintMartic_DashBoard.Helper.ViewModels
 		public virtual AppUser? AppUser { get; set; }
 		public string UserId { get; set; }
         public IEnumerable<AppUser> Users { get; set; } = new List<AppUser>();
+        public string? ColorJson { get; set; }
+        public string? SizeJson { get; set; }
+        public List<ProductColor>? Colors { get; set; }
+        public List<ProductSize>? Sizes { get; set; }
+        public string? Photo { get; set; }
+        public string? FilePath { get; set; }
 
-	}
+        public List<IFormFile>? PhotoFile { get; set; }
+
+    }
 }

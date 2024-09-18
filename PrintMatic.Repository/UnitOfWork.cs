@@ -17,20 +17,29 @@ namespace PrintMatic.Repository
         private readonly PrintMaticContext _Context;
         public IReviewRepository review {  get; set; }
         public IProdduct prodduct { get; set; }
-        
+
+        public ICategoryRepository category { get; set; }
+        public IProductColor color { get; set; }
+        public IProductSize size { get; set; }
         public UnitOfWork(PrintMaticContext Context)
         {
             _Context = Context;
             generic = new GenericRepository<T>(_Context);
             review = new ReviewRepository(_Context);
             prodduct = new ProductRepository(_Context);
+            category = new CategoryRepository(_Context);
+            color = new ProductColorRepository(_Context); 
+            size = new ProductSizeRepository(_Context);
         }
 
         public int Complet()
         {
            return _Context.SaveChanges();
         }
-
+        public async Task<int> CompletAsync()
+        {
+            return await _Context.SaveChangesAsync();
+        }
         public void Dispose()
         {
              _Context.Dispose();

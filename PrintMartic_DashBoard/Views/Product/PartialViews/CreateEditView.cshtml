@@ -91,11 +91,8 @@
         <span asp-validation-for="UrgentMaxDate" class="text-danger"></span>
 
     </div>
-    <div class="form-group form-check">
-        <label class="form-check-label">
-            <input class="form-check-input" asp-for="Color" />اللون
-        </label>
-    </div>
+    
+    
     <div class="form-group form-check">
         <label class="form-check-label">
             <input class="form-check-input" asp-for="Text" />النص
@@ -106,7 +103,11 @@
             <input class="form-check-input" asp-for="Date" />التاريخ
         </label>
     </div>
-   
+    <div class="d-flex ">
+     <partial name="PartialViews/_ColorView" />
+        <div style="width:100px"></div>
+    <partial name="PartialViews/_SizeView" /> 
+    </div>
 </div>
 <div class="form-group ">
     <label for="example-textarea">وصف المنتج</label>
@@ -120,8 +121,8 @@
       <div class="invalid-feedback">
         Please provide a valid state.
       </div> *@
-    
-    
-  
 
-      
+
+  
+    
+    

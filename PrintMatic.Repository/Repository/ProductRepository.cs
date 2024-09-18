@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using PrintMatic.Core.Entities;
 using PrintMatic.Core.Repository.Contract;
 using PrintMatic.Repository.Data;
@@ -43,5 +44,7 @@ namespace PrintMatic.Repository.Repository
             return await _context.Products.Include("Category").Include("AppUser").Where(x=> x.IsDeleted == true).ToListAsync();
 
         }
+
+       
     }
 }

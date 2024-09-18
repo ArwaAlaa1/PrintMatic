@@ -15,6 +15,10 @@ namespace PrintMatic.Core
 		public IReviewRepository review { get; set; }
 
 		public IProdduct prodduct { get; set; }
-		int Complet();
-	}
+        public ICategoryRepository category { get; set; }
+        public IProductColor color { get; set; }
+        public IProductSize size { get; set; }
+        int Complet();
+        Task<int> CompletAsync();
+    }
 }

@@ -93,11 +93,7 @@
             <input type="text" class="form-control " asp-for="UrgentMaxDate" readonly>
 
         </div>
-        <div class="form-group form-check">
-            <label class="form-check-label">
-                <input class="form-check-input" asp-for="Color" readonly />اللون
-            </label>
-        </div>
+       
         <div class="form-group form-check">
             <label class="form-check-label">
                 <input class="form-check-input" asp-for="Text" readonly/>النص
@@ -108,7 +104,9 @@
                 <input class="form-check-input" asp-for="Date" readonly />التاريخ
             </label>
         </div>
-     
+
+        <partial name="PartialViews/_DeleteColorSize" />
+
     </div>
     <div class="form-group ">
         <label for="example-textarea">وصف المنتج</label>

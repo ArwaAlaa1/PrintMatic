@@ -39,9 +39,9 @@ namespace PrintMatic.Repository
         {
             _context.Update(entity);
         }
-        //public void Delete(int id)
-        //{ 
-        //    _context.Remove(entity);
-        //}
+        public void Delete(T entity)
+        {
+            _context.Remove(entity);
+        }
     }
 }
