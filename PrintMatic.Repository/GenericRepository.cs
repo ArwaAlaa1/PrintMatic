@@ -12,7 +12,7 @@ namespace PrintMatic.Repository
 {
 	public class GenericRepository<T>: IGenericRepository<T> where T : BaseEntity
     {
-        private readonly PrintMaticContext _context;
+        private protected readonly PrintMaticContext _context;
 
         public GenericRepository(PrintMaticContext context)
         {

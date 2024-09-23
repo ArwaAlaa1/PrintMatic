@@ -6,7 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PrintMatic.Core.Entities.Identity;
+using PrintMatic.Core.Services;
 using PrintMatic.Repository.Data;
+using PrintMatic.Services;
 using System.Text;
 
 
@@ -16,7 +18,12 @@ namespace PrintMatic.Extensions
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddIdentity<AppUser, IdentityRole>(options =>
+			services.AddScoped<ITokenService, TokenService>();
+
+			services.AddScoped<IUserService, UserService>();
+
+			//"Password must have 1 Uppercase, 1 Lowercase, 1 number, 1 non-alphanumeric, and at least 6 characters.")]
+			services.AddIdentity<AppUser, IdentityRole>(options => //allow DI for Services and configuration 
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
@@ -24,7 +31,9 @@ namespace PrintMatic.Extensions
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredLength = 6;
 
-            }).AddEntityFrameworkStores<PrintMaticContext>();
+
+			}).AddEntityFrameworkStores<PrintMaticContext>()
+			  .AddDefaultTokenProviders();
 
             services.AddAuthentication(/*JwtBearerDefaults.AuthenticationScheme*/ Options =>
             {
@@ -36,11 +45,11 @@ namespace PrintMatic.Extensions
                     options.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ValidateIssuer = true,
-                        ValidIssuer = configuration["JWT:ValidIssuer"],
+                        ValidIssuer = configuration["JWT:Issuer"],
                         ValidateAudience = true,
-                        ValidAudience = configuration["JWT:ValidAudience"],
+                        ValidAudience = configuration["JWT:Audience"],
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"])),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"])),
                         ValidateLifetime = true,
                     };
                 });

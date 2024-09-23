@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace PrintMatic.Repository.Migrations
+namespace PrintMatic.Repository.Data.Migrations
 {
     /// <inheritdoc />
     public partial class initial : Migration
@@ -32,7 +32,7 @@ namespace PrintMatic.Repository.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Photo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FilePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsCompany = table.Column<bool>(type: "bit", nullable: false),
+                    IsCompany = table.Column<bool>(type: "bit", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -125,7 +125,11 @@ namespace PrintMatic.Repository.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AddressDetails = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -402,8 +406,7 @@ namespace PrintMatic.Repository.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Address_AppUserId",
                 table: "Address",
-                column: "AppUserId",
-                unique: true);
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

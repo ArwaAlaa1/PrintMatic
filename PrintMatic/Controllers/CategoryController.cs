@@ -27,6 +27,7 @@ namespace PrintMatic.Controllers
             var MappedList = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(list);
             return Ok(MappedList);
         }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryWithProDetails>> GetById(int id)
         {

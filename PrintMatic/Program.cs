@@ -6,12 +6,12 @@ using PrintMatic.Core;
 using PrintMatic.Core.Entities.Identity;
 using PrintMatic.Core.Repository.Contract;
 using PrintMatic.Extensions;
-<<<<<<< HEAD
+
 using PrintMatic.Extentions;
-=======
+
 using PrintMatic.Helper;
 using PrintMatic.Repository;
->>>>>>> ce0301606de742a5cf94105f56ef58c8b53397f8
+
 using PrintMatic.Repository.Data;
 
 using PrintMatic.Repository.Repository;
@@ -37,11 +37,6 @@ namespace PrintMatic
 			builder.Services.AddDbContext<PrintMaticContext>(
 				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
-			
-            builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
-            builder.Services.AddAutoMapper(typeof(MappingProfiles));
-            builder.Services.AddScoped<ITokenService, TokenService>();
->>>>>>> ce0301606de742a5cf94105f56ef58c8b53397f8
 
 			builder.Services.AddSingleton<IConnectionMultiplexer>((serverprovider) =>
 			{
@@ -52,7 +47,9 @@ namespace PrintMatic
 			builder.Services.AddApplicationServices();	
 
 			builder.Services.AddIdentityServices(builder.Configuration);
+			builder.Services.AddAuthorization();
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
 			#endregion
@@ -76,8 +73,8 @@ namespace PrintMatic
 
 				await dbcontext.Database.MigrateAsync();
 
-				//var usermanager = services.GetRequiredService<UserManager<AppUser>>();
-				//await AppSeed.UserSeedAsync(usermanager);
+				var usermanager = services.GetRequiredService<UserManager<AppUser>>();
+				await AppSeeding.SeedUsersAsync(usermanager);
 
 			}
 			catch (Exception ex)
@@ -86,7 +83,7 @@ namespace PrintMatic
 				logger.LogError(ex, "An Error Occured During Apply Migration ");
 
 			}
-
+			
 
 			#endregion
 
@@ -99,6 +96,7 @@ namespace PrintMatic
 
 			app.UseHttpsRedirection();
 
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 

@@ -10,12 +10,13 @@ namespace PrintMatic.Core.Entities.Identity
 {
 	public class AppUser:IdentityUser
 	{
+
+        public IEnumerable<Address>? Addresses { get; set; }=null;
        
-        public Address? Address { get; set; }
        
         public string? Photo { get; set; }
         public string? FilePath { get; set; }
 
-        public bool IsCompany { get; set; }
+        public bool? IsCompany { get; set; }
     }
 }

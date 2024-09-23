@@ -11,7 +11,7 @@ namespace PrintMartic_DashBoard.ViewModels
         public string PhoneNumber { get; set; }
         public string Location { get; set; }
         public string Photo { get; set; }
-        public bool IsCompany { get; set; }
+        public bool? IsCompany { get; set; }
 
         public IEnumerable<string> Roles { get; set; }
     }

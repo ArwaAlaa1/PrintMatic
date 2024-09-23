@@ -9,16 +9,11 @@ using PrintMatic.Repository.Data;
 
 #nullable disable
 
-namespace PrintMatic.Repository.Migrations
+namespace PrintMatic.Repository.Data.Migrations
 {
     [DbContext(typeof(PrintMaticContext))]
-<<<<<<<< HEAD:PrintMatic.Repository/Migrations/20240909065814_initial.Designer.cs
-    [Migration("20240909065814_initial")]
+    [Migration("20240921005129_initial")]
     partial class initial
-========
-    [Migration("20240911124900_init")]
-    partial class init
->>>>>>>> ce0301606de742a5cf94105f56ef58c8b53397f8:PrintMatic.Repository/Migrations/20240911124900_init.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -228,9 +223,21 @@ namespace PrintMatic.Repository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("ModifiedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
@@ -242,8 +249,7 @@ namespace PrintMatic.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId")
-                        .IsUnique();
+                    b.HasIndex("AppUserId");
 
                     b.ToTable("Address");
                 });
@@ -270,7 +276,7 @@ namespace PrintMatic.Repository.Migrations
                     b.Property<string>("FilePath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsCompany")
+                    b.Property<bool?>("IsCompany")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -662,11 +668,13 @@ namespace PrintMatic.Repository.Migrations
 
             modelBuilder.Entity("PrintMatic.Core.Entities.Identity.Address", b =>
                 {
-                    b.HasOne("PrintMatic.Core.Entities.Identity.AppUser", null)
-                        .WithOne("Address")
-                        .HasForeignKey("PrintMatic.Core.Entities.Identity.Address", "AppUserId")
+                    b.HasOne("PrintMatic.Core.Entities.Identity.AppUser", "AppUser")
+                        .WithMany("Addresses")
+                        .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("PrintMatic.Core.Entities.Product", b =>
@@ -764,7 +772,7 @@ namespace PrintMatic.Repository.Migrations
 
             modelBuilder.Entity("PrintMatic.Core.Entities.Identity.AppUser", b =>
                 {
-                    b.Navigation("Address");
+                    b.Navigation("Addresses");
                 });
 
             modelBuilder.Entity("PrintMatic.Core.Entities.Product", b =>

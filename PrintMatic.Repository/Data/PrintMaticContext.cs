@@ -22,13 +22,14 @@ namespace PrintMatic.Repository.Data
         {
             this.configuration = configuration;
         }
+
         public PrintMaticContext()
         {
             
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            base.OnConfiguring(optionsBuilder);
+           base.OnConfiguring(optionsBuilder);
            optionsBuilder.UseSqlServer("server =Arwa-Alaa\\SQLEXPRESS; DataBase = PrintMatic; Trusted_Connection= True;TrustServerCertificate=True");
             //optionsBuilder.UseSqlServer("Data source =DESKTOP-9IISLS5; DataBase = PrintMaticDB; Trusted_Connection= True;TrustServerCertificate=True");
 
@@ -48,6 +49,7 @@ namespace PrintMatic.Repository.Data
         public DbSet<Review> Reviews { get; set; }
         public DbSet<ProductColor> ProductColors { get; set; }
         public DbSet<ProductSize> ProductSizes { get; set; }
+        public DbSet<Address> Address { get; set; }
 
     }
 }

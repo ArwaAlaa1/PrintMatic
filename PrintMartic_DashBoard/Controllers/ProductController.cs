@@ -137,14 +137,13 @@ namespace PrintMartic_DashBoard.Controllers
         [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
-<<<<<<< HEAD
+
 
             //var cookievalue = Request.Cookies["Id"];
-            // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            // Get the current user's username
+            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //Get the current user's username
             //   var userName = User.Identity.Name;
-=======
->>>>>>> ce0301606de742a5cf94105f56ef58c8b53397f8
+
             ProductVM ProductVM = new ProductVM();
             var List = await _catUnitOfwork.generic.GetAllAsync();
             ProductVM.Categories = List;
@@ -161,9 +160,8 @@ namespace PrintMartic_DashBoard.Controllers
             return View(ProductVM);
         }
 
-<<<<<<< HEAD
+
         [Authorize(AuthenticationSchemes = "Cookies", Roles = ("بائع"))]
-=======
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(AuthenticationSchemes = "Cookies", Roles = ("Admin"))]
@@ -257,7 +255,7 @@ namespace PrintMartic_DashBoard.Controllers
 
 
         [Authorize(AuthenticationSchemes = "Cookies",Roles =("بائع"))]
->>>>>>> ce0301606de742a5cf94105f56ef58c8b53397f8
+
         public async Task<IActionResult> CreateForCompany()
         {
 
