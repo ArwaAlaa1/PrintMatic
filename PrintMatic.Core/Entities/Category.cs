@@ -14,6 +14,7 @@ namespace PrintMatic.Core.Entities
 
         public string PhotoURL { get; set; }
         public string FilePath { get; set; }
-
+        public string Description { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
     }
 }

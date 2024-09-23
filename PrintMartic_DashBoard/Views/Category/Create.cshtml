@@ -1,4 +1,4 @@
-﻿@model CategoryVM
+﻿@model CategoryCrVM
 
 @{
     ViewData["Title"] = "Create";
@@ -18,8 +18,31 @@
 
     <form asp-action="Create" method="post" enctype="multipart/form-data">
 
+        <div asp-validation-summary="All"></div>
+        <div class="form-row  ">
+            
+            <br />
+            <div class="col">
 
-        <partial name="PartialViews/CreateEditView" />
+                <input asp-for="Name" class="form-control" placeholder="اسم القسم" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        
+
+            <div class="col">
+                @* <label  class="control-label fw-bold fs-4">صوره</label> *@
+                <input asp-for="PhotoFile" class="form-control form-control-lg" type="file" placeholder="صوره" id="formFile" />
+                <span asp-validation-for="PhotoFile" class="text-danger"></span>
+            </div>
+
+
+        </div>
+        <div class="form-group ">
+            <label for="example-textarea">وصف المنتج</label>
+            <textarea class="form-control" asp-for="Description" id="example-textarea" rows="4"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+
+        </div>
 
         <div class="form-group mt-4">
             <input type="submit" value="إضافه" class="btn btn-primary" />

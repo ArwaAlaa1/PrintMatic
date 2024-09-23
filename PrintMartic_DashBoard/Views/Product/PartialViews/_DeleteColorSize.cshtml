@@ -1,0 +1,216 @@
+﻿@model ProductVM
+
+<style>
+    .input-with-button {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+
+        .input-with-button input {
+            padding-right: 50px;
+            width: 200px;
+            height: 30px;
+            box-sizing: border-box;
+        }
+
+        .input-with-button button {
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            border: none;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            padding: 0 15px;
+            font-size: 18px;
+        }
+
+            .input-with-button button:hover {
+                background-color: #0056b3;
+            }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center;
+    }
+
+    td {
+        width: 50%;
+    }
+
+    #Inputcolor{
+        padding-left : 100px
+    }
+</style>
+<div class="form-group form-check">
+    <label class="form-check-label">
+        <input type="checkbox" class="form-check-input" id="toggleCheckbox" asp-for="Color " readonly/>اللون
+
+    </label>
+
+</div>
+<div >
+    <div id="Inputcolor" class="d-flex ">
+
+    @if (Model.Color == true)
+    {
+        <table id="colorTable" border="1">
+            <thead>
+                <tr>
+                    <th>اللون</th>
+                </tr>
+            </thead>
+
+
+            <tbody>
+                @if (Model.Colors?.Count > 0)
+                {
+                    @foreach (var color in Model.Colors)
+                    {
+                        <tr>
+                            <td style="background-color: @color.HexCode">
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+
+
+    <!-- Hidden field to store the color list -->
+    <input type="hidden" asp-for="ColorJson" id="colors" />
+
+        <div style="width:100px"></div>
+    <div id="styleForm">
+
+
+        <!-- Display added colors in a table -->
+        @if (Model.Sizes?.Count > 0)
+                {
+        <table id="sizeTable" border="1">
+            <thead>
+                <tr>
+                    <th>المقاس</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                    @foreach (var size in Model.Sizes)
+                    {
+                        <tr>
+                            <td>
+                                @size.Size
+                            </td>
+
+                        </tr>
+                    }
+               
+            </tbody>
+        </table>
+        }
+        <!-- Hidden field to store the color list -->
+        <input type="hidden" asp-for="SizeJson" id="sizes" />
+    </div>
+    </div>
+</div>
+
+<script>
+    // document.getElementById('toggleCheckbox').addEventListener('change', function () {
+    //     var Inputcolor = document.getElementById('Inputcolor');
+    //     if (this.checked) {
+    //         Inputcolor.style.display = 'block';
+    //     } else {
+    //         Inputcolor.style.display = 'none';
+    //     }
+    // });
+    // Array to store selected colors
+    // let selectedColors = [];
+
+    // // Get references to the button, table body, and hidden input field
+    // const addColorBtn = document.getElementById('addColorBtn');
+    // const colorPicker = document.getElementById('colorPicker');
+    // const colorTable = document.querySelector('#colorTable tbody');
+    // const hiddenColorField = document.getElementById('colors');
+
+    // // Function to add selected color to the table and the list
+    // addColorBtn.addEventListener('click', function (e) {
+    //     e.preventDefault(); // Prevent form submission if button is inside the form
+
+    //     const selectedColor = colorPicker.value;
+
+    //     // Add the color to the array
+    //     selectedColors.push(selectedColor);
+
+    //     // Create a new row for the table
+    //     const newRow = document.createElement('tr');
+
+    //     // Create the color cell
+    //     const colorCell = document.createElement('td');
+    //     colorCell.style.backgroundColor = selectedColor;
+    //     colorCell.style.width = '100px';
+
+    //     // Create the hex code cell
+    //     const hexCell = document.createElement('td');
+    //     hexCell.textContent = selectedColor;
+
+    //     // Append cells to the row
+    //     newRow.appendChild(colorCell);
+    //     newRow.appendChild(hexCell);
+
+    //     // Append the row to the table
+    //     colorTable.appendChild(newRow);
+
+    //     // Update the hidden input with the list of colors as JSON
+    //     hiddenColorField.value = JSON.stringify(selectedColors);
+    // });
+
+    // // Array to store selected colors
+    // let selectedSizes = [];
+
+    // // Get references to the button, table body, and hidden input field
+    // const addSizeBtn = document.getElementById('addSizeBtn');
+    // const sizeInput = document.getElementById('sizeInput');
+    // const sizeTable = document.querySelector('#sizeTable tbody');
+    // const hiddenSizeField = document.getElementById('sizes');
+
+    // // Function to add selected color to the table and the list
+    // addSizeBtn.addEventListener('click', function (e) {
+    //     e.preventDefault(); // Prevent form submission if button is inside the form
+
+    //     const selectedSize = sizeInput.value;
+
+    //     // Add the size to the array
+    //     selectedSizes.push(selectedSize);
+
+    //     // Create a new row for the table
+    //     const newRow = document.createElement('tr');
+
+    //     // Create the size cell
+    //     const sizeCell = document.createElement('td');
+    //     sizeCell.textContent = selectedSize
+
+    //     // Append cells to the row
+    //     newRow.appendChild(sizeCell);
+
+    //     // Append the row to the table
+    //     sizeTable.appendChild(newRow);
+    //     sizeInput.value = '';
+    //     // Update the hidden input with the list of colors as JSON
+    //     hiddenSizeField.value = JSON.stringify(selectedSizes);
+    // });
+
+
+
+</script>
+
+
+

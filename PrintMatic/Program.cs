@@ -2,10 +2,16 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using PrintMatic.Core;
 using PrintMatic.Core.Entities.Identity;
 using PrintMatic.Core.Repository.Contract;
 using PrintMatic.Extensions;
+<<<<<<< HEAD
 using PrintMatic.Extentions;
+=======
+using PrintMatic.Helper;
+using PrintMatic.Repository;
+>>>>>>> ce0301606de742a5cf94105f56ef58c8b53397f8
 using PrintMatic.Repository.Data;
 
 using PrintMatic.Repository.Repository;
@@ -32,6 +38,10 @@ namespace PrintMatic
 				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
 			
+            builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+            builder.Services.AddAutoMapper(typeof(MappingProfiles));
+            builder.Services.AddScoped<ITokenService, TokenService>();
+>>>>>>> ce0301606de742a5cf94105f56ef58c8b53397f8
 
 			builder.Services.AddSingleton<IConnectionMultiplexer>((serverprovider) =>
 			{

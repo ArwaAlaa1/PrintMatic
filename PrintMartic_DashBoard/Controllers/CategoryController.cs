@@ -61,19 +61,23 @@ namespace PrintMartic_DashBoard.Controllers
         //Create New Category --post  Category/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task< IActionResult> Create(CategoryVM categoryVM)
+        public async Task< IActionResult> Create(CategoryCrVM categoryVM)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    categoryVM.PhotoURL = categoryVM.PhotoFile.FileName;
+                    categoryVM.PhotoURL = categoryVM.PhotoFile?.FileName;
 
                     if (categoryVM.PhotoFile != null)
                     {
                         categoryVM.PhotoURL =  DocumentSetting.UploadFile(categoryVM.PhotoFile, "category");
                     }
-                    var CatMapped = _mapper.Map<CategoryVM, Category>(categoryVM);
+                    else
+                    {
+                        ModelState.AddModelError("PhotoURL", "Please Enter Photo");
+                    }
+                    var CatMapped = _mapper.Map<CategoryCrVM, Category>(categoryVM);
                     CatMapped.FilePath = Path.Combine(_environment.ContentRootPath,"wwwroot\\Uploads\\category", CatMapped.PhotoURL);
 
                     _unitOfWork.generic.Add(CatMapped);
@@ -87,6 +91,7 @@ namespace PrintMartic_DashBoard.Controllers
                 }
                 catch (Exception ex)
                 {
+
                     ModelState.AddModelError(string.Empty, ex.InnerException.Message);
                 }
             }
@@ -163,6 +168,7 @@ namespace PrintMartic_DashBoard.Controllers
                     System.IO.File.Delete(category.FilePath);
                 }
                 category.IsDeleted = true;
+                category.IsActive = false;
                 _unitOfWork.generic.Update(category);
                 var count = _unitOfWork.Complet();
                 if (count > 0)

@@ -44,6 +44,7 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 var RevMapped = _mapper.Map<ReviewVM,Review>(reviewVM);
                 RevMapped.IsDeleted = true;
+                RevMapped.IsActive = false;
                 _unitOfWork.generic.Update(RevMapped);
                 var count = _unitOfWork.Complet();
 

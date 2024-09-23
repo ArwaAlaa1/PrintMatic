@@ -120,6 +120,7 @@ namespace PrintMartic_DashBoard.Controllers
             try
             {
                 sale.IsDeleted = true;
+                sale.IsActive = false;
                 _unitOfWork.generic.Update(sale);
                 var count =_unitOfWork.Complet();
                 
