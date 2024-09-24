@@ -2,6 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities.Identity;
 using PrintMatic.Core.Repository.Contract;
@@ -93,8 +94,16 @@ namespace PrintMatic
 				app.UseSwagger();
 				app.UseSwaggerUI();
 			}
+            app.UseStaticFiles();
 
-			app.UseHttpsRedirection();
+            // Enable serving static files from the custom folder (assets/images/Users)
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(builder.Environment.ContentRootPath, "assets", "images", "Users")), // Specify the path to your custom folder
+                RequestPath = "/assets/images/Users" // The request path to access the files
+            });
+            app.UseHttpsRedirection();
 
 			app.UseAuthentication();
 			app.UseAuthorization();

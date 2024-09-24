@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities.Identity;
@@ -34,9 +35,9 @@ namespace PrintMatic.Controllers
         private readonly IUnitOfWork<Address> _unitOfWork;
         private readonly IAddressRepository _addressRepository;
         private readonly IMapper _mapper;
-
-
-
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly string _apiBaseUrl;
+        public readonly string _imagepath;
         public AccounttController(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManger,
@@ -47,7 +48,9 @@ namespace PrintMatic.Controllers
 			SignInManager<AppUser> signInManager,
             IUnitOfWork<Address> unitOfWork,
             IAddressRepository addressRepository,
-            IMapper mapper
+            IMapper mapper,
+            IWebHostEnvironment webHostEnvironment,
+            IConfiguration configuration
             )
         {
             _userManager = userManager;
@@ -61,6 +64,10 @@ namespace PrintMatic.Controllers
             _addressRepository = addressRepository;
           
             _mapper = mapper;
+            _webHostEnvironment = webHostEnvironment;
+            _apiBaseUrl = configuration["ApiBaseUrl"];
+            _imagepath = $"{_webHostEnvironment.WebRootPath}";
+
         }
 
         //Login EndPoint Domain/Api/Account/login
@@ -315,7 +322,8 @@ namespace PrintMatic.Controllers
 				UserName=user.UserName,
                 Email = user.Email,
 				PhoneNumber=user.PhoneNumber,
-				Password=user.PasswordHash
+				Password=user.PasswordHash,
+                Image=$"{_apiBaseUrl}{ user.FilePath }"
                 
             });
         }
@@ -503,7 +511,75 @@ namespace PrintMatic.Controllers
         }
 
 
+        [Authorize]
+        [HttpPut("AddProfilePhoto")]
+        public async Task<ActionResult> AddProfilePhoto(UserProfilePhotoDto userProfilePhotoDto)
+        {
+            var user=await _userManager.GetUserAsync(User);
+            if (user == null)
+            {
+                return NotFound(new
+                {
+                    Message = "المستخدم غير موجود"
+                });
+            }
+            string uploadDir = Path.Combine(_imagepath, "assets","images","Users");
+            if (!Directory.Exists(uploadDir))
+            {
+                Directory.CreateDirectory(uploadDir); 
+            }
 
+            var photoName = $"{Guid.NewGuid()}{Path.GetExtension(userProfilePhotoDto.Image.FileName)}";
+            var path=Path.Combine(uploadDir, photoName);
+
+            // Attempt to delete the existing photo if it exists
+                var existingPhotoPath = Path.Combine(_imagepath, user.FilePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+
+            if (!string.IsNullOrEmpty(user.FilePath) && System.IO.File.Exists(existingPhotoPath))
+            {
+                try
+                {
+                    System.IO.File.Delete(existingPhotoPath);
+                }
+                catch (Exception ex)
+                {
+                    // Handle file deletion error
+                    return StatusCode(500, new { message = "خطأ في حذف الصورة القديمة.", error = ex.Message });
+                }
+            }
+                // Save the new photo
+                try
+                {
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await userProfilePhotoDto.Image.CopyToAsync(fileStream);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { message = "خطأ في تحميل الصورة الجديدة.", error = ex.Message });
+                }
+
+                // Update the user's photo path
+                user.FilePath = $"/assets/images/Users/{photoName}";
+                var result = await _userManager.UpdateAsync(user);
+                if (result.Succeeded)
+                {
+                    return Ok(new { message = "تم تعديل صوره الاكونت بنجاح !" });
+                }
+                else
+                {
+                    var errors = string.Join(" ", result.Errors.Select(e => e.Description));
+                    return BadRequest(new { errors });
+                }
+            
+          
+         
+
+
+
+        }
+     
 
         //[Authorize]
         //[HttpGet("logout")]
