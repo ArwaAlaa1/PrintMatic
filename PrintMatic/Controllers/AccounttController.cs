@@ -52,7 +52,6 @@ namespace PrintMatic.Controllers
             IWebHostEnvironment webHostEnvironment,
             IConfiguration configuration
             )
-
         {
             _userManager = userManager;
             _signInManger = signInManger;
@@ -70,7 +69,6 @@ namespace PrintMatic.Controllers
             _imagepath = $"{_webHostEnvironment.WebRootPath}";
 
         }
-
 
         //Login EndPoint Domain/Api/Account/login
         [HttpPost("login")]
