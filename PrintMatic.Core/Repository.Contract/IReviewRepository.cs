@@ -11,5 +11,6 @@ namespace PrintMatic.Core.Repository.Contract
     {
         Task<IEnumerable<Review>> GetAllIncludeProductAsync();
         Task<Review> GetIdIncludeProductAsync(int id);
+        Task<IEnumerable<Review>> GetReviewsOfPro(int ProductId);
     }
 }

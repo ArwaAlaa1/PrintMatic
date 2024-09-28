@@ -21,6 +21,8 @@ namespace PrintMatic.Repository
         public ICategoryRepository category { get; set; }
         public IProductColor color { get; set; }
         public IProductSize size { get; set; }
+        public ISaleRepository Sale { get; set; }
+
         public UnitOfWork(PrintMaticContext Context)
         {
             _Context = Context;
@@ -30,6 +32,7 @@ namespace PrintMatic.Repository
             category = new CategoryRepository(_Context);
             color = new ProductColorRepository(_Context); 
             size = new ProductSizeRepository(_Context);
+            Sale = new SaleRepository(_Context);
         }
 
         public int Complet()

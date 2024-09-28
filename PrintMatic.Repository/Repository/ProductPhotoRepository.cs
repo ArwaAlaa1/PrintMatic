@@ -42,6 +42,10 @@ namespace PrintMatic.Repository.Repository
         {
             return await _context.ProductPhotos.Include("Product").Where(x => x.Enter == false && x.IsDeleted == false).ToListAsync();
         }
+        public async Task<IEnumerable<ProductPhotos>> GetPhotosOfProduct(int id)
+        {
+            return await _context.ProductPhotos.Include("Product").Where(x =>x.ProductId == id && x.Enter == true && x.IsDeleted == false).ToListAsync();
+        }
         public void Update(ProductPhotos entity)
         {
             _context.Update(entity);

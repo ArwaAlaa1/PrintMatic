@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using PrintMatic.Core.Entities;
+using PrintMatic.Core.Entities.Identity;
 using PrintMatic.DTOS;
 
 namespace PrintMatic.Helper
@@ -12,9 +13,8 @@ namespace PrintMatic.Helper
             CreateMap<CategoryDTO, Category>().ReverseMap();
             CreateMap<Category , CategoryWithProDetails>().ReverseMap();
             CreateMap<Product, ProductDto>().ReverseMap();
-            CreateMap<ProductSale , ProductSaleDto>().ForMember(x => x.ProductId, o => o.MapFrom(x => x.Product.Id)).ForMember(x => x.ProductAfterSale, o => o.MapFrom(x => x.PriceAfterSale) ).ReverseMap();
-            CreateMap<ProductPhotos, ProductPhotoDto>().ForMember(x => x.ProductId, o => o.MapFrom(x => x.Product.Id)).ForMember(x =>x.FilePath , o => o.MapFrom(x => x.FilePath)).ReverseMap();
-
+            CreateMap<Product, ProductDetailsDTO>().ForMember(x => x.CategoryName , o => o.MapFrom(x => x.Category.Name));
+            CreateMap<AppUser , UserSimpleDetails>().ReverseMap();
         }
     }
 }

@@ -18,6 +18,7 @@ namespace PrintMatic.Core
         public ICategoryRepository category { get; set; }
         public IProductColor color { get; set; }
         public IProductSize size { get; set; }
+        public ISaleRepository Sale { get; set; }
         int Complet();
         Task<int> CompletAsync();
     }

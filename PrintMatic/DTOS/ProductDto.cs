@@ -1,4 +1,6 @@
-﻿using PrintMatic.Core.Entities;
+﻿using PrintMatic.Core;
+using PrintMatic.Core.Entities;
+using PrintMatic.Core.Repository.Contract;
 using System.ComponentModel.DataAnnotations;
 
 namespace PrintMatic.DTOS
@@ -11,8 +13,14 @@ namespace PrintMatic.DTOS
         public string Name { get; set; }
         //public decimal Rating { get; set; }
         public decimal TotalPrice { get; set; }
-        public ProductSaleDto productSale { get; set; }
-        public IEnumerable<ProductPhotoDto> photos { get; set; }
+        public decimal PriceAfterSale {  get; set; }
+        public string FilePath { get; set; }
+        public float? AvgRating { get; set; }
+
+       
 
     }
+
+
+
 }

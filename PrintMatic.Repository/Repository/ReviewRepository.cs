@@ -29,5 +29,10 @@ namespace PrintMatic.Repository.Repository
         {
             return  _context.Reviews.Include("Product").Where(x => x.Id == id).FirstOrDefault();
         }
+        public async Task<IEnumerable<Review>> GetReviewsOfPro(int ProductId)
+        {
+            return await _context.Reviews.Where(x => x.ProductId == ProductId && x.IsDeleted == false).ToListAsync();
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PrintMartic_DashBoard.Helper;
 using PrintMartic_DashBoard.Helper.ViewModels;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities;
@@ -17,7 +18,7 @@ namespace PrintMartic_DashBoard.Controllers
         private readonly IUnitOfWork<Sale> _saleUnit;
 
         public ProductSaleController(IProductSale productSale ,IMapper mapper, IUnitOfWork<Product> ProUnit ,
-            IUnitOfWork<Sale> SaleUnit)
+            IUnitOfWork<Sale> SaleUnit )
         {
             _productSale = productSale;
             _mapper = mapper;
@@ -26,7 +27,7 @@ namespace PrintMartic_DashBoard.Controllers
         }
         public async Task<IActionResult> Index()
         {
-            var List = await _productSale.GetAllAsync();
+            var List = await _productSale.GetActiveSales();
             return View(List);
         }
 
@@ -45,9 +46,10 @@ namespace PrintMartic_DashBoard.Controllers
 
         public async Task<IActionResult> Create()
         {
-            var ProList = await _proUnit.generic.GetAllAsync();
-            var SaleList = await _saleUnit.generic.GetAllAsync();
-
+            var list = await _proUnit.generic.GetAllAsync();
+           var ProList = list.Where(x => x.Enter == true);
+            var SaleList = await _saleUnit.Sale.GetActiveSales();
+         
             var PSMapped = new ProductSaleVM();
             PSMapped.Products = ProList;
             PSMapped.Sales = SaleList;
@@ -63,7 +65,8 @@ namespace PrintMartic_DashBoard.Controllers
                 try
                 {
                     var product = await _proUnit.generic.GetByIdAsync(productSaleVM.ProductId);
-                    var sale = await _saleUnit.generic.GetByIdAsync(productSaleVM.SaleId);
+                    var sale = await _saleUnit.Sale.GetByIdAsync(productSaleVM.SaleId);
+                    
                     var paS = _productSale.GetPrice(sale.SaleDiscountPercentage, product.NormalPrice);
                     productSaleVM.PriceAfterSale = paS;
                     var ProSale = _mapper.Map<ProductSaleVM, ProductSale>(productSaleVM);

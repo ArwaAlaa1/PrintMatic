@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities.Identity;
+using PrintMatic.Core.Repository.Contract;
 using PrintMatic.Extensions;
 using PrintMatic.Helper;
 using PrintMatic.Repository;
 using PrintMatic.Repository.Data;
 using PrintMatic.Repository.Identity;
+using PrintMatic.Repository.Repository;
 using PrintMatic.Services;
 
 
@@ -33,10 +35,12 @@ namespace PrintMatic
             builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
             builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddScoped(typeof(IProductSale), typeof(ProductSaleRepository));
+            builder.Services.AddScoped(typeof(IProductPhoto), typeof(ProductPhotoRepository));
 
 
 
-			builder.Services.AddIdentityServices(builder.Configuration);
+            builder.Services.AddIdentityServices(builder.Configuration);
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
