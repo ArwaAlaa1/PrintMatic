@@ -5,14 +5,20 @@ namespace PrintMatic.DTOS.IdentityDTOS
 {
     public class AddressDto
     {
+		//public int? Id { get; set; }
 
-       
+		[Required(ErrorMessage ="هذا الحقل مطلوب")]
         public string FullName { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Region { get; set; }
-        public string City { get; set; }
-        public string Country { get; set; }
+		[Required(ErrorMessage = "هذا الحقل مطلوب")]
+		public string PhoneNumber { get; set; }
+		[Required(ErrorMessage = "هذا الحقل مطلوب")]
+		public string Region { get; set; }
+		[Required(ErrorMessage = "هذا الحقل مطلوب")]
+	
+		public string City { get; set; }
+		[Required(ErrorMessage = "هذا الحقل مطلوب")]
+		public string Country { get; set; }
         public string? AddressDetails { get; set; }
-       
-    }
+		//public string? AppUserId { get; set; }
+	}
 }

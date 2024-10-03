@@ -1,6 +1,7 @@
 
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using PrintMatic.Core;
@@ -56,6 +57,18 @@ namespace PrintMatic
 			#endregion
 
 
+			builder.Services.Configure<ApiBehaviorOptions>(options =>
+			{
+				options.InvalidModelStateResponseFactory = context =>
+				{
+					// Extract and concatenate all error messages into one
+					var errorMessage = string.Join(", ", context.ModelState.Values
+						.SelectMany(v => v.Errors)
+						.Select(e => e.ErrorMessage));
+
+					return new BadRequestObjectResult(new { Message = errorMessage });
+				};
+			});
 
 			var app = builder.Build();
 
@@ -84,16 +97,25 @@ namespace PrintMatic
 				logger.LogError(ex, "An Error Occured During Apply Migration ");
 
 			}
-			
+
 
 			#endregion
-
+			app.UseSwagger();
+			app.UseSwaggerUI();
+			//if (app.Environment.IsDevelopment())
+				
+			//else
+			//	app.UseSwaggerUI(options =>
+			//	{
+			//		options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+			//		options.RoutePrefix = string.Empty;
+			//	});
 			// Configure the HTTP request pipeline.
-			if (app.Environment.IsDevelopment())
-			{
-				app.UseSwagger();
-				app.UseSwaggerUI();
-			}
+			//if (app.Environment.IsDevelopment())
+			//{
+			//	app.UseSwagger();
+			//	app.UseSwaggerUI();
+			//}
             app.UseStaticFiles();
 
             // Enable serving static files from the custom folder (assets/images/Users)

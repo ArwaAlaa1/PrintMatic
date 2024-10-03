@@ -11,7 +11,7 @@ namespace PrintMatic.Core.Entities.Identity
 	public class AppUser:IdentityUser
 	{
 
-        public IEnumerable<Address>? Addresses { get; set; }=null;
+        public IList<Address>? Addresses { get; set; }=null;
        
        
         public string? Photo { get; set; }

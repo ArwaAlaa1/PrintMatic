@@ -13,12 +13,13 @@ namespace PrintMatic.DTOS.IdentityDTOS
 
         [Required(ErrorMessage ="رقم الهاتف مطلوب")]
         public string PhoneNumber { get; set; }
-        [Required]
+        [Required(ErrorMessage = "كلمه السر مطلوبه")]
         [RegularExpression(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{6,}$",
         ErrorMessage = "كلمة المرور يجب أن تحتوي على حرف كبير، حرف صغير، رقم، رمز غير حرفي، وأن تكون على الأقل 6 أحرف.")]
         public string Password { get; set; }
 
-        [Compare("NewPassword", ErrorMessage = " كلمة المرور وتأكيد كلمة المرور غير متطابقتين.")]
+		[Required(ErrorMessage = "تأكيد كلمه السر مطلوبه")]
+		[Compare("Password", ErrorMessage = " كلمة المرور وتأكيد كلمة المرور غير متطابقتين.")]
         public string ConfirmPassword { get; set; }
 
 

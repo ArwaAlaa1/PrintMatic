@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Org.BouncyCastle.Asn1.Cms;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities.Identity;
 using PrintMatic.Core.Repository.Contract;
@@ -14,7 +15,9 @@ using PrintMatic.Core.Services;
 using PrintMatic.DTOS.IdentityDTOS;
 using PrintMatic.Errors;
 using PrintMatic.Extensions;
+using PrintMatic.Extentions;
 using PrintMatic.Helper;
+using PrintMatic.Repository;
 using PrintMatic.Services;
 using System.Security.Claims;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
@@ -73,19 +76,22 @@ namespace PrintMatic.Controllers
 
 
         //Login EndPoint Domain/Api/Account/login
+        [Authorize]
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await _userManager.FindByEmailAsync(loginDto.EmailOrUserName)??
                                 await _userManager.FindByNameAsync(loginDto.EmailOrUserName); 
-            if (user == null) return Unauthorized(new ApiResponse(401));
+            if (user == null) return Unauthorized(new {
+				Message = "اسم المستخدم أو البريد الالكترونى غير صحيح"
+			});
 
 			var result = await _signInManger.CheckPasswordSignInAsync(user, loginDto.Password, false);
             if (!result.Succeeded)
 				return Unauthorized(new
 				{
-					StatusCode = 401,
-					Message = "اسم المستخدم أو كلمة المرور غير صحيحة"
+				
+					Message = " كلمة المرور غير صحيحة"
 				});
 
 		
@@ -104,9 +110,9 @@ namespace PrintMatic.Controllers
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
 			var emailexsist = await _userManager.FindByEmailAsync(registerDto.Email);
-            if (emailexsist == null)
+            if (emailexsist != null)
             {
-                return new BadRequestObjectResult(new ApiValidationErrorResponse() { Errors = new[] { "البريد الإلكتروني مستخدم بالفعل" } });
+                return new BadRequestObjectResult(new  { Message= "البريد الإلكتروني مستخدم بالفعل" } );
             }
             var user = new AppUser()
             {
@@ -121,10 +127,13 @@ namespace PrintMatic.Controllers
 
 			if (!result.Succeeded)
 			{
-				
-				var errors = result.Errors.Select(e => _userService.GetCustomErrorsMessage(e)).ToArray();
-				
-				return new BadRequestObjectResult(new ApiValidationErrorResponse { Errors = errors });
+				if (result.Errors.Any(e => e.Code == "DuplicateUserName"))
+				{
+					return new BadRequestObjectResult(new { Message = "اسم المستخدم موجود بالفعل. الرجاء اختيار اسم مستخدم آخر." });
+				}
+				//var errors = result.Errors.Select(e => _userService.GetCustomErrorsMessage(e)).ToArray();
+
+				return new BadRequestObjectResult(new { Message = "فشل إنشاء المستخدم. الرجاء التحقق من البيانات والمحاولة مرة أخرى." });
 			}
 
 		
@@ -148,7 +157,7 @@ namespace PrintMatic.Controllers
 			if (user == null)
 			{
 				
-				return BadRequest("هذا البريد الالكترونى غير موجود");
+				return BadRequest(new { Message = "هذا البريد الالكترونى غير موجود" });
 			}
 
 			var OTP = new Random().Next(1000, 9999).ToString();
@@ -157,7 +166,10 @@ namespace PrintMatic.Controllers
 
 			await _emailService.SendEmailAsync(user.Email, " رمز التحقق من giftly", OTP);
 
-			return Ok(new ApiResponse(200,"!تم إرسال الكود بنجاح "));
+			return Ok(new
+            {
+                Message = "!تم إرسال الكود بنجاح "
+            });
 		}
 
 		//VerifyCode EndPoint Domain/Api/Account/VerifyCode
@@ -165,22 +177,18 @@ namespace PrintMatic.Controllers
         [HttpPost("VerifyCode")]
         public async Task<ActionResult> VerifyCode(VerifyCodeDto verifyCodeDto)
         {
-			var email = User.FindFirstValue(ClaimTypes.Email);
-			if (string.IsNullOrEmpty(email))
-			     return Unauthorized("المستخدم غير مسجل الدخول");
+			var user = await _userManager.GetUserAsync(User);
+			if (user is null)
+			     return Unauthorized(new { Message = "المستخدم غير مسجل الدخول" });
 			
-			var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-                return BadRequest("المستخدم غير موجود"); 
-
 			
             var otp = await _verificationService.GetVerificationCode(user.Id);
 			
 			if (otp == null)
-                return BadRequest("هذا الكود غير صالح");
+                return BadRequest(new { Message = "هذا الكود غير صالح" });
            
             else if(otp != verifyCodeDto.Code)
-                return BadRequest("هذا الكود غير صحيح");
+                return BadRequest(new { Message = "هذا الكود غير صحيح" });
 			else
 				return Ok(new { Message = "تم تأكيد الكود بنجاح" });
 
@@ -193,22 +201,18 @@ namespace PrintMatic.Controllers
 		[Authorize, HttpGet("ResendCode")]
         public async Task<ActionResult> ResendCode()
         {
-            var email = User.FindFirstValue(ClaimTypes.Email);
-            if (email == null)
-                return BadRequest(new { Message = "المستخدم غير مسجل الدخول" });
-           //var user1 = await _userManager.GetUserAsync(User);
+			var user = await _userManager.GetUserAsync(User);
+			if (user is null)
+				return Unauthorized(new { Message = "المستخدم غير مسجل الدخول" });
 
-            var user2 = await _userManager.FindByEmailAsync(email);
-            if(user2 == null)
-				return BadRequest("المستخدم غير موجود");
 
 			var OTP = new Random().Next(1000, 9999).ToString();
 
-			await _verificationService.SaveVerificationCodeAsync(user2.Id, OTP);
+			await _verificationService.SaveVerificationCodeAsync(user.Id, OTP);
 
-			await _emailService.SendEmailAsync(user2.Email, " رمز التحقق من giftly", OTP);
+			await _emailService.SendEmailAsync(user.Email, " رمز التحقق من giftly", OTP);
 
-			return Ok(new ApiResponse(200, "!تم إرسال الكود بنجاح "));
+			return Ok(new { Message = "!تم إرسال الكود بنجاح " });
 		}
 
         //ResetPassword EndPoint Domain/Api/Account/ResetPassword
@@ -216,31 +220,29 @@ namespace PrintMatic.Controllers
         [HttpPost("ResetPassword")]
         public async Task<ActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
         {
-            
-            var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
-            if (user == null)
-				return BadRequest( new 
-                { 
-                Message="المستخدم غير موجود"
-                });
+
+			var user = await _userManager.GetUserAsync(User);
+			if (user is null)
+				return Unauthorized(new { Message = "المستخدم غير مسجل الدخول" });
+
 			var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 			if (string.IsNullOrEmpty(token))
 			{
-				return BadRequest("فشل في إنشاء رمز إعادة تعيين كلمة المرور");
+				return BadRequest(new { Message = "فشل في إنشاء رمز إعادة تعيين كلمة المرور" });
 			}
 			var result = await _userManager.ResetPasswordAsync(user, token, resetPasswordDto.NewPassword);
 			if (!result.Succeeded)
 			{
-				// Collect all errors and return them as a response
-				var errors = result.Errors.Select(e => _userService.GetCustomErrorsMessage(e)).ToArray();
+			
+				//var errors = result.Errors.Select(e => _userService.GetCustomErrorsMessage(e)).ToArray();
 				
-				return new BadRequestObjectResult(new ApiValidationErrorResponse { Errors = errors });
+				return new BadRequestObjectResult(new {Message= "فشل في إعادة تعيين كلمة المرور" });
 			}
 			
 
 			return Ok(new
 			{
-				StatusCode=200,
+				
 				Message="!تم تعديل كلمه السر بنجاح "
 			});
 		}
@@ -251,12 +253,10 @@ namespace PrintMatic.Controllers
 		public async Task<ActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
 		{
 
-			var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
-			if (user == null)
-				return BadRequest(new
-				{
-					Message = "المستخدم غير موجود"
-				});
+			var user = await _userManager.GetUserAsync(User);
+			if (user is null)
+				return Unauthorized(new { Message = "المستخدم غير مسجل الدخول" });
+
 			var checkOldpass =  _userManager.CheckPasswordAsync(user, changePasswordDto.OldPassword);
 			
             if (!checkOldpass.Result)
@@ -277,9 +277,9 @@ namespace PrintMatic.Controllers
 			if (!result.Succeeded)
 			{
 				// Collect all errors and return them as a response
-				var errors = result.Errors.Select(e => _userService.GetCustomErrorsMessage(e)).ToArray();
+				//var errors = result.Errors.Select(e => _userService.GetCustomErrorsMessage(e)).ToArray();
 
-				return new BadRequestObjectResult(new ApiValidationErrorResponse { Errors = errors });
+				return new BadRequestObjectResult( new {Message= "فشل في إعادة تعيين كلمة المرور جديده" });
 			}
 			else
 			{
@@ -317,197 +317,226 @@ namespace PrintMatic.Controllers
         public async Task<ActionResult<UserProfileDto>> GetCurrentUser()
         {
             var user = await _userManager.GetUserAsync(User);
+            if (user is null)
+            {
+                return  NotFound(new
+                {
+                    Message = "هذا المستخدم غير موجود"
+                });
+            }
             //var email = User.FindFirstValue(ClaimTypes.Email);
             //var user = await _userManager.FindByEmailAsync(email);
-            return Ok(new UserProfileDto()
+            if (user.FilePath == null)
             {
-				UserName=user.UserName,
-                Email = user.Email,
-				PhoneNumber=user.PhoneNumber,
-				Password=user.PasswordHash,
-                Image=$"{_apiBaseUrl}{ user.FilePath }"
-                
-            });
-        }
+                return Ok(new UserProfileDto()
+
+                {
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
+
+
+                    Image = $"{_apiBaseUrl}/assets/images/Users/{user.FilePath ?? "default-image.png"}"
+
+                });
+            }
+			return Ok(new UserProfileDto()
+
+			{
+				UserName = user.UserName,
+				Email = user.Email,
+				PhoneNumber = user.PhoneNumber,
+
+
+				Image = $"{_apiBaseUrl}{user.FilePath}"
+
+			});
+		}
 
 		[Authorize]
         [HttpPut("UpdateUser")]
         public async Task<ActionResult> UpdateUser(UpdateUserProfileDto updateUserProfile)
         {
-            var user = await _userManager.GetUserAsync(User);
-            //var email = User.FindFirstValue(ClaimTypes.Email);
-            //var user = await _userManager.FindByEmailAsync(email);
-		
-            if (user == null)
-            {
-                return NotFound(new { message = "المستخدم غير موجود." });
-            }
-            user.UserName = updateUserProfile.UserName;
-            user.Email = updateUserProfile.Email;
-            user.PhoneNumber = updateUserProfile.PhoneNumber;
 
-            var result = await _userManager.UpdateAsync(user);
-            if (result.Succeeded)
+            try
             {
-                return Ok(new { message = "تم تعديل البيانات بنجاح !" });
+				var user = await _userManager.GetUserAsync(User);
+
+				var emailexsist = await _userManager.FindByEmailAsync(updateUserProfile.Email);
+                if (updateUserProfile.UserName==user.UserName&& updateUserProfile.Email==user.Email && updateUserProfile.PhoneNumber==user.PhoneNumber)
+                {
+					return new BadRequestObjectResult(new { Message = "هذه نفس بيانات المستخدم القديمه!" });
+				}
+				if (updateUserProfile.Email != user.Email)
+				{
+					if (emailexsist != null)
+					{
+						return new BadRequestObjectResult(new { Message = "البريد الإلكتروني مستخدم بالفعل" });
+					}
+				}
+				var usernameExsist = await _userManager.FindByNameAsync(updateUserProfile.UserName);
+				if (updateUserProfile.UserName != user.UserName)
+				{
+					if (usernameExsist != null)
+					{
+
+						return new BadRequestObjectResult(new { Message = "اسم المستخدم موجود بالفعل. الرجاء اختيار اسم مستخدم آخر." });
+					}
+
+
+				}
+
+				if (user == null)
+				{
+					return NotFound(new { message = "المستخدم غير موجود." });
+				}
+				user.UserName = updateUserProfile.UserName;
+				user.Email = updateUserProfile.Email;
+				user.PhoneNumber = updateUserProfile.PhoneNumber;
+
+
+				var result = await _userManager.UpdateAsync(user);
+				if (result.Succeeded)
+				{
+					return Ok(new { message = "تم تعديل البيانات بنجاح!" });
+				}
+				else
+				{
+
+					return BadRequest(new { message = "فشل في تعديل البيانات. الرجاء المحاولة مرة أخرى." });
+				}
 			}
-			else
-			{
-                var passwordErrors = string.Join(" ",result.Errors.Select(e => e.Description));
-                return BadRequest(new { errors = passwordErrors });
-            }
-           
-        }
+            catch (Exception)
+            {
+
+				return BadRequest(new { message = "فشل في تعديل البيانات. الرجاء المحاولة مرة أخرى." });
+			}
+
+
+		}
 
 
 		[Authorize]
 		[HttpPost("AddAddress")]
 		public async Task<ActionResult> AddAddress(AddressDto address)
 		{
-			var user = await _userManager.GetUserAsync(User);
-            //var email = User.FindFirstValue(ClaimTypes.Email);
-            //var user2 = await _userManager.FindByEmailAsync(email);
-
-			Address address1 = new Address()
-			{
-                FullName=address.FullName,
-				PhoneNumber=address.PhoneNumber,
-				City=address.City,
-				Region=address.Region,
-				Country=address.Country,
-				AddressDetails=address.AddressDetails,
-				AppUserId=user.Id
-			};
-			try
-			{
-                _unitOfWork.generic.Add(address1);
-                _unitOfWork.Complet();
-                return Ok(new
+            
+            var addressResult = await _userManager.AddAddressUser(_unitOfWork, address, User);
+            if (addressResult >0)
+            { return Ok(new
 				{
 					Message = "تم إضافه العنوان بنجاح!"
 				});
-			}
-			catch (Exception)
-			{
 
-				return BadRequest(new
+            }else
+                return BadRequest(new
 				{
                     Message = "لم تم إضافه العنوان !"
                 });
-			}
-			
-
-
-
+	
 
         }
 
         [Authorize]
         [HttpPut("EditAddress")]
-        public async Task<ActionResult> EditAddress(AddressDto address)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            //var email = User.FindFirstValue(ClaimTypes.Email);
-            //var user2 = await _userManager.FindByEmailAsync(email);
+        public async Task<ActionResult> EditAddress(AddressUseIdDto address)
 
-            
-            Address address1 = new Address()
-            {
-                FullName = address.FullName,
-                PhoneNumber = address.PhoneNumber,
-                City = address.City,
-                Region = address.Region,
-                Country = address.Country,
-                AddressDetails = address.AddressDetails,
-                AppUserId = user.Id
-            };
+        {
+          
             try
             {
-                _unitOfWork.generic.Update(address1);
-                _unitOfWork.Complet();
-                return Ok(new
-                {
-                    Message = "تم تعديل العنوان بنجاح!"
-                });
-            }
-            catch (Exception)
-            {
+                var user =await _userManager.GetUserAsync(User);
+                var useraddress = await _addressRepository.GetUserAddress(address.Id);
+				//var addressmaped = _mapper.Map<AddressDto, Address>(address);
+                //useraddress = addressmaped;
+				_mapper.Map(address, useraddress);
+				_unitOfWork.generic.Update(useraddress);
+                var count=_unitOfWork.Complet();
+				if (count > 0)
+				{
+					return Ok(new
+					{
+						Message = "تم تعديل العنوان بنجاح!"
+					});
 
-                return BadRequest(new
-                {
-                    Message = "لم يتم تعديل العنوان !"
-                });
-            }
+				}
+				else
+					return BadRequest(new
+					{
+						Message = "لم يتم تعديل العنوان !"
+					});
 
+			}
+			catch (Exception ex)
+			{
 
+				
 
+			}return BadRequest(new
+				{
+					Message = "لم يتم تعديل العنوان !"
+				});
 
 
         }
 
         [Authorize]
         [HttpGet("GetAddress")]
-        public async Task<ActionResult<AddressDto>> GetAddress(int id)
+        public async Task<ActionResult<AddressUseIdDto>> GetAddress(int id)
         {
-            var user = await _userManager.GetUserAsync(User);
-            //var email = User.FindFirstValue(ClaimTypes.Email);
-            //var user2 = await _userManager.FindByEmailAsync(email);
-            try
-            {
-            var address = await _unitOfWork.generic.GetByIdAsync(id);
-                if (address==null)
-                {
-                    return NotFound(new ApiResponse(400,"هذا العنوان غير موجود"));
-                }
-                //AddressDto address1 = new AddressDto()
-                //{
+            //var user = await _userManager.GetUserAsync(User);
 
-                //    FullName = address.FullName,
-                //    PhoneNumber = address.PhoneNumber,
-                //    City = address.City,
-                //    Region = address.Region,
-                //    Country = address.Country,
-                //    AddressDetails = address.AddressDetails,
+			try
+			{
+				var address = await _unitOfWork.generic.GetByIdAsync(id);
+				if (address == null)
+				{
+					return NotFound(new { Message = "هذا العنوان غير موجود" });
+				}
 
-                //};
+				var addressmaped = _mapper.Map<Address, AddressUseIdDto>(address);
+				return Ok(addressmaped);
+			}
+			catch (Exception)
+			{
+				return BadRequest(new
+				{
+					Message = "لا يوجد عنوان لهذا المستخدم"
+				});
 
-                var addressmaped = _mapper.Map<Address, AddressDto>(address);
-                return Ok(addressmaped);
-            }
-            catch (Exception)
-            {
 
-               
-            } return BadRequest(new
-                {
-                    Message = "لا يوجد عنوان لهذا المستخدم"
-                });
+			}
 
-        }
+		}
 
         [Authorize]
         [HttpGet("GetUserAddressess")]
-        public async Task<ActionResult<GetAllAddressDto>> GetUserAddressess()
+        public async Task<ActionResult<AddressUseIdDto>> GetUserAddressess()
         {
             var user = await _userManager.GetUserAsync(User);
-            var email = User.FindFirstValue(ClaimTypes.Email);
-            var user2 = await _userManager.FindByEmailAsync(email);
+        
             try
             {
 
                 var addresses = await _addressRepository.GetAllUserAddress(user.Id);
-                var addressesMapped=  _mapper.Map<IEnumerable<Address>, IEnumerable<GetAllAddressDto>>(addresses);
+                var addressesMapped=  _mapper.Map<IEnumerable<Address>, IEnumerable<AddressUseIdDto>>(addresses);
 
+                if (addressesMapped.Count()!=0)
+                {
+                    return Ok(addressesMapped);
 
-                return Ok(addressesMapped);
+                }
+                else
+                    return NotFound(new { Message = " لا يوجد عنوان " });
+                
             }
             catch (Exception)
             {
 
                 return BadRequest(new
                 {
-                    Message = "لم يتم تعديل العنوان !"
-                });
+                    Message = "حدث خطأ أثناء استرجاع العناوين. الرجاء المحاولة لاحقاً."
+				});
             }
 
         }
@@ -533,11 +562,9 @@ namespace PrintMatic.Controllers
 
             var photoName = $"{Guid.NewGuid()}{Path.GetExtension(userProfilePhotoDto.Image.FileName)}";
             var path=Path.Combine(uploadDir, photoName);
-
-            // Attempt to delete the existing photo if it exists
-                var existingPhotoPath = Path.Combine(_imagepath, user.FilePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
-
-            if (!string.IsNullOrEmpty(user.FilePath) && System.IO.File.Exists(existingPhotoPath))
+            if (user.FilePath !=null)
+            {  var existingPhotoPath = Path.Combine(_imagepath, user.FilePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+if (!string.IsNullOrEmpty(user.FilePath) && System.IO.File.Exists(existingPhotoPath))
             {
                 try
                 {
@@ -546,9 +573,13 @@ namespace PrintMatic.Controllers
                 catch (Exception ex)
                 {
                     // Handle file deletion error
-                    return StatusCode(500, new { message = "خطأ في حذف الصورة القديمة.", error = ex.Message });
+                    return BadRequest(new { Message = "خطأ في حذف الصورة القديمة." });
                 }
             }
+
+            }
+          
+            
                 // Save the new photo
                 try
                 {
@@ -559,7 +590,7 @@ namespace PrintMatic.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return StatusCode(500, new { message = "خطأ في تحميل الصورة الجديدة.", error = ex.Message });
+                    return BadRequest(new { message = "خطأ في تحميل الصورة الجديدة." });
                 }
 
                 // Update the user's photo path
@@ -571,8 +602,8 @@ namespace PrintMatic.Controllers
                 }
                 else
                 {
-                    var errors = string.Join(" ", result.Errors.Select(e => e.Description));
-                    return BadRequest(new { errors });
+                   
+                    return BadRequest(new {Message="حدث خطأ فى اضافه صوره الاكونت اعد المحاوله مره اخرى" });
                 }
             
           
