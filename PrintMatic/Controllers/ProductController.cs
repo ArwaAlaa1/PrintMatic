@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PrintMatic.Core;
@@ -7,6 +8,7 @@ using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
 using PrintMatic.Core.Repository.Contract;
 using PrintMatic.DTOS;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PrintMatic.Controllers
 {
@@ -97,63 +99,51 @@ namespace PrintMatic.Controllers
             }
             var ProList = await _unitOfWork.prodduct.GetUserWithHisProducts(id);
             var proMapped = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(ProList);
-           var products = await GetSaleAndReview(proMapped);
+            foreach (var prod in proMapped)
+            {
+                var SalesList = await _productSale.GetProByIDAsync(prod.Id);
+                var PList = await _productPhoto.GetPhotosOfProduct(prod.Id);
+                var Reviews = await _unitOfReview.review.GetReviewsOfPro(prod.Id);
+                var products = await ProductDto.GetProducts(prod, SalesList, PList, Reviews);
+                proMapped.ToList().Add(products);
+                
+            }
             return Ok(new UserWithPro()
             {
                 Id = user.Id,
                 UserName = user.UserName,
                 FilePath = user.FilePath,
                 ProductsCount = ProList.ToList().Count,
-                products = products,
+                products = proMapped
             });
         }
-
-        [HttpGet]
-        public async Task<IEnumerable<ProductDto>> GetSaleAndReview(IEnumerable<ProductDto> products)
+        [HttpGet("SearchByName")]
+        public async Task<ActionResult<IEnumerable<ProductDto>>> SearchByName(string? ProductName)
         {
-            foreach (var prod in products)
+            if (!string.IsNullOrEmpty(ProductName))
             {
-                var SalesList = await _productSale.GetProByIDAsync(prod.Id);
-                if (SalesList.ToList().Count > 0)
+                var list = await _unitOfWork.prodduct.SearchByName(ProductName);
+                if (list.Any())
                 {
-                    var list = new List<ProductSale>();
-                    foreach (var sale in SalesList)
+                    var proMapped = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(list);
+                    foreach (var prod in proMapped)
                     {
-                        if (sale.Sale.SaleEndDate > DateTime.UtcNow)
-                        {
-                            list.Add(sale);
-                        }
-                    }
-                    var item = list.FirstOrDefault();
-                    if (item != null)
-                    {
-                        prod.PriceAfterSale = item.PriceAfterSale;
-                    }
-                }
-                var PList = await _productPhoto.GetPhotosOfProduct(prod.Id);
-                if (PList.ToList().Count > 0)
-                {
-                    var pitem = PList.FirstOrDefault();
-                    if (pitem != null)
-                    {
-                        prod.FilePath = pitem.FilePath;
-                    }
-                }
-                var Reviews = await _unitOfReview.review.GetReviewsOfPro(prod.Id);
-                float? Rating = 0f;
-                foreach (var review in Reviews)
-                {
-                    if (review != null)
-                    {
-                        Rating += review.Rating;
-                    }
+                        var SalesList = await _productSale.GetProByIDAsync(prod.Id);
+                        var PList = await _productPhoto.GetPhotosOfProduct(prod.Id);
+                        var Reviews = await _unitOfReview.review.GetReviewsOfPro(prod.Id);
+                        var products = await ProductDto.GetProducts(prod, SalesList, PList, Reviews);
+                        proMapped.ToList().Add(products);
 
+                    }
+                    return Ok(proMapped);
                 }
-                prod.AvgRating = Rating / 5f;
+                else
+                    return BadRequest("لا يوجد منتج بهذا الاسم");
+
+               
             }
-
-            return products;
+            else
+                return BadRequest("ادخل اسم المنتج الذى تبحث عنه");
         }
-
     }
 }

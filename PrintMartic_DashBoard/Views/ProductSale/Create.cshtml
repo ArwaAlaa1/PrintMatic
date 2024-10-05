@@ -6,9 +6,6 @@
 
 
 
-
-
-
     <div class="m-auto  bg-white p-5">
         <h1>إضافة خصم لمنتج </h1>
         @if (!string.IsNullOrEmpty(TempData["Message"] as string))
@@ -18,21 +15,20 @@
             </div>
         }
         <hr />
-
         <form asp-action="Create" method="post">
 
 
             <partial name="PartialViews/CreateEditView" />
             <div class="form-group mt-4">
-                <input type="submit" value="Create" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-light">Back to List</a>
+                <input type="submit" value="إضافه" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-light">العوده</a>
             </div>
         </form>
     </div>
 
-</main>
 
-@* @section Scripts {
+
+@section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-} *@
+}

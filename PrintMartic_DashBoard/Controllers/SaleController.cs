@@ -49,21 +49,30 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
-
-                    var sale = _mapper.Map<SaleVM, Sale>(saleVM);
-                    _unitOfWork.generic.Add(sale);
-                    var count = _unitOfWork.Complet();
-                    if (count > 0)
+                    if (saleVM.SaleEndDate< saleVM.SaleStartDate)
                     {
-                        TempData["Message"] = "تم إضافة تفاصيل الخصم بنجاح";
+                        ModelState.AddModelError("SaleEndDate", "ادخل تاريخ انتهاء آخر");
                     }
-                    return RedirectToAction(nameof(Index));
+                    else
+                    {
+                        var sale = _mapper.Map<SaleVM, Sale>(saleVM);
+
+                        _unitOfWork.generic.Add(sale);
+                        var count = _unitOfWork.Complet();
+                        if (count > 0)
+                        {
+                            TempData["Message"] = "تم إضافة تفاصيل الخصم بنجاح";
+                        }
+                        return RedirectToAction(nameof(Index));
+                    }
+                    
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
                 }
             }
+            TempData["Message"] = "فشلت عملية الإضافه";
             return View(saleVM);
         }
 
@@ -85,21 +94,26 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
-                    
-                    var sale = _mapper.Map<SaleVM, Sale>(saleVM);
-
-                    _unitOfWork.generic.Update(sale);
-                    var count = _unitOfWork.Complet();
-                    if (count > 0)
+                    if (saleVM.SaleEndDate < saleVM.SaleStartDate)
                     {
-                        TempData["Message"] = "تم تعديل تفاصيل الخصم بنجاح";
+                        ModelState.AddModelError("SaleEndDate", "ادخل تاريخ انتهاء آخر");
                     }
+                    else
+                    {
+                        var sale = _mapper.Map<SaleVM, Sale>(saleVM);
 
-                    return RedirectToAction(nameof(Index));
+                        _unitOfWork.generic.Update(sale);
+                        var count = _unitOfWork.Complet();
+                        if (count > 0)
+                        {
+                            TempData["Message"] = "تم تعديل تفاصيل الخصم بنجاح";
+                        }
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty , ex.InnerException.Message);
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
                 }
             }
             TempData["Message"] = "فشلت عملية التعديل";

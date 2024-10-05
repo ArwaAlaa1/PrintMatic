@@ -37,7 +37,7 @@ namespace PrintMartic_DashBoard.Controllers
             }
             catch (Exception ex)
             {
-                return View(ex.Message);
+                return View(ex.Message.ToString());
             }
         }
 
@@ -92,7 +92,7 @@ namespace PrintMartic_DashBoard.Controllers
                 catch (Exception ex)
                 {
 
-                    ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
                 }
             }
 
@@ -139,9 +139,9 @@ namespace PrintMartic_DashBoard.Controllers
                         TempData["Message"] = $"تم تعديل تفاصيل القسم بنجاح";
                     }
                     return RedirectToAction(nameof(Index));
-                }catch(Exception e)
+                }catch(Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty, e.InnerException.Message);
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
                 }
             }
             return View(categoryVM);

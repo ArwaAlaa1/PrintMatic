@@ -2,16 +2,22 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities.Identity;
 using PrintMatic.Core.Repository.Contract;
 using PrintMatic.Extensions;
+
+using PrintMatic.Extentions;
+
 using PrintMatic.Helper;
 using PrintMatic.Repository;
+
 using PrintMatic.Repository.Data;
-using PrintMatic.Repository.Identity;
+
 using PrintMatic.Repository.Repository;
 using PrintMatic.Services;
+using StackExchange.Redis;
 
 
 namespace PrintMatic
@@ -38,10 +44,18 @@ namespace PrintMatic
             builder.Services.AddScoped(typeof(IProductSale), typeof(ProductSaleRepository));
             builder.Services.AddScoped(typeof(IProductPhoto), typeof(ProductPhotoRepository));
 
+			builder.Services.AddSingleton<IConnectionMultiplexer>((serverprovider) =>
+			{
+				var connectionredis = builder.Configuration.GetConnectionString("Redis");
+				return ConnectionMultiplexer.Connect(connectionredis);
+			});
 
+			builder.Services.AddApplicationServices();	
 
-            builder.Services.AddIdentityServices(builder.Configuration);
+			builder.Services.AddIdentityServices(builder.Configuration);
+			builder.Services.AddAuthorization();
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
 			#endregion
@@ -66,7 +80,7 @@ namespace PrintMatic
 				await dbcontext.Database.MigrateAsync();
 
 				var usermanager = services.GetRequiredService<UserManager<AppUser>>();
-				await AppSeed.UserSeedAsync(usermanager);
+				await AppSeeding.SeedUsersAsync(usermanager);
 
 			}
 			catch (Exception ex)
@@ -75,7 +89,7 @@ namespace PrintMatic
 				logger.LogError(ex, "An Error Occured During Apply Migration ");
 
 			}
-
+			
 
 			#endregion
 
@@ -85,9 +99,18 @@ namespace PrintMatic
 				app.UseSwagger();
 				app.UseSwaggerUI();
 			}
+            app.UseStaticFiles();
 
-			app.UseHttpsRedirection();
+            // Enable serving static files from the custom folder (assets/images/Users)
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(builder.Environment.ContentRootPath, "assets", "images", "Users")), // Specify the path to your custom folder
+                RequestPath = "/assets/images/Users" // The request path to access the files
+            });
+            app.UseHttpsRedirection();
 
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 

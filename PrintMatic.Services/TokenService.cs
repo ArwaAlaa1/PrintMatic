@@ -13,38 +13,56 @@ using System.Threading.Tasks;
 namespace PrintMatic.Services
 {
     public class TokenService : ITokenService
-    {
+    { 
+        public IConfiguration Configuration { get; }
         public TokenService(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+       
 
         public async Task<string> CreateToken(AppUser user, UserManager<AppUser> userManager)
         {
+            #region Pivate Claims
+
             var authClaims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.GivenName, user.DisplayName)
-            }; // Private Claims (UserDefined)
+				new Claim(ClaimTypes.NameIdentifier, user.Id), // User ID claim
+                new Claim(ClaimTypes.Email, user.Email), // Email claim
+               // new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+
+                new Claim(ClaimTypes.Name, user.UserName),
+             
+            };
 
             var userRoles = await userManager.GetRolesAsync(user);
 
             foreach (var role in userRoles)
                 authClaims.Add(new Claim(ClaimTypes.Role, role));
 
-            var authKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Key"]));
+            #endregion
+
+            #region Secret Key
+
+            var authKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:SecretKey"]));
+
+            #endregion
+
+            #region Token Object & Registered Claims
 
             var token = new JwtSecurityToken(
 
-                issuer: Configuration["JWT:ValidIssuer"],
-                audience: Configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddDays(double.Parse(Configuration["JWT:DurationInDays"])),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authKey, SecurityAlgorithms.HmacSha256Signature)
-                );
+              issuer: Configuration["JWT:Issuer"],
+              audience: Configuration["JWT:Audience"],
+              expires: DateTime.UtcNow.AddDays(double.Parse(Configuration["JWT:DurationExpire"])),
+              claims: authClaims,
+              signingCredentials: new SigningCredentials(authKey, SecurityAlgorithms.HmacSha256Signature)
+              );
 
+            #endregion
+
+            //Token itself
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }

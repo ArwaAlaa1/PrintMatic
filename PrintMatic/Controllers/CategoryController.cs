@@ -35,6 +35,7 @@ namespace PrintMatic.Controllers
             var MappedList = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(list);
             return Ok(MappedList);
         }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryWithProDetails>> GetById(int id)
         {
@@ -49,42 +50,10 @@ namespace PrintMatic.Controllers
             foreach (var prod in CategoryMapped.Products)
             {
                 var SalesList = await _productSale.GetProByIDAsync(prod.Id);
-                if (SalesList.ToList().Count > 0)
-                {
-                    var list = new List<ProductSale>();
-                    foreach (var sale in SalesList)
-                    {
-                        if (sale.Sale.SaleEndDate > DateTime.UtcNow)
-                        {
-                            list.Add(sale);
-                        }
-                    }
-                    var item = list.FirstOrDefault();
-                    if (item != null)
-                    {
-                        prod.PriceAfterSale = item.PriceAfterSale;
-                    }
-                }
                 var PList = await _productPhoto.GetPhotosOfProduct(prod.Id);
-                if (PList.ToList().Count > 0)
-                {
-                    var pitem = PList.FirstOrDefault();
-                    if (pitem != null)
-                    {
-                        prod.FilePath = pitem.FilePath;
-                    }
-                }
                 var Reviews = await _unitOfReview.review.GetReviewsOfPro(prod.Id);
-                float? Rating = 0f;
-                foreach (var review in Reviews)
-                {
-                    if (review != null)
-                    {
-                        Rating += review.Rating;
-                    }
-
-                }
-                prod.AvgRating = Rating / 5f;
+                var products = await ProductDto.GetProducts(prod, SalesList, PList, Reviews);
+                CategoryMapped.Products.ToList().Add(products);
             }
             return Ok(CategoryMapped);
         }

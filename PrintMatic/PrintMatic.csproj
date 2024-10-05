@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="MailKit" Version="4.7.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
       <PrivateAssets>all</PrivateAssets>
@@ -24,6 +25,10 @@
   <ItemGroup>
     <ProjectReference Include="..\PrintMatic.Repository\PrintMatic.Repository.csproj" />
     <ProjectReference Include="..\PrintMatic.Services\PrintMatic.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="assets\images\Users\" />
   </ItemGroup>
 
 </Project>

@@ -32,7 +32,7 @@
             }
 
     table {
-        width: 100%;
+        width: 100px;
         border-collapse: collapse;
         margin-top: 20px;
     }
@@ -49,19 +49,15 @@
     #Inputcolor{
         padding-left : 100px
     }
+
+    #sizeTable{
+        width:30%
+    }
 </style>
-<div class="form-group form-check">
-    <label class="form-check-label">
-        <input type="checkbox" class="form-check-input" id="toggleCheckbox" asp-for="Color " readonly/>اللون
 
-    </label>
-
-</div>
 <div >
     <div id="Inputcolor" class="d-flex ">
 
-    @if (Model.Color == true)
-    {
         <table id="colorTable" border="1">
             <thead>
                 <tr>
@@ -83,7 +79,7 @@
                 }
             </tbody>
         </table>
-    }
+    
 
 
     <!-- Hidden field to store the color list -->
@@ -96,7 +92,7 @@
         <!-- Display added colors in a table -->
         @if (Model.Sizes?.Count > 0)
                 {
-        <table id="sizeTable" border="1">
+        <table id="sizeTable" border="1" style="width: 100px" >
             <thead>
                 <tr>
                     <th>المقاس</th>

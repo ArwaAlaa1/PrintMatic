@@ -5,4 +5,8 @@
           
         }        public async Task<Product?> GetIDProducts(int id)        {            return _context.Products.Include("Category").Include("AppUser").Where(x => x.Id == id && x.IsDeleted == false).FirstOrDefault();        }        public async Task<IEnumerable<Product>> GetWaitingProducts()        {            return await _context.Products.Include("Category").Include("AppUser").Where(x => x.Enter == false && x.IsDeleted == false).ToListAsync();        }        public async Task<IEnumerable<Product>> GetAllProducts()        {            return await _context.Products.Include("Category").Include("AppUser").Where(x => x.Enter == true && x.IsDeleted == false).ToListAsync();        }        public async Task<IEnumerable<Product>> GetYourProducts(string userName)        {            return await _context.Products.Include("Category").Include("AppUser").Where(x => x.AppUser.UserName == userName&& x.Enter == true && x.IsDeleted == false).ToListAsync();        }        public async Task<IEnumerable<Product>> GetInActiveProducts()        {            return await _context.Products.Include("Category").Include("AppUser").Where(x=> x.IsDeleted == true).ToListAsync();        }        public async Task<IEnumerable<Product>> GetUserWithHisProducts(string id)        {            return await _context.Products.Include("AppUser").Where(x => x.AppUser.Id == id && x.IsDeleted == false && x.Enter == true).ToListAsync();        }
 
+        public async Task<IEnumerable<Product>> SearchByName(string ProName)
+        {
+            return await _context.Products.Where(x => x.IsDeleted == false && x.Name.Trim().ToLower().Contains(ProName.Trim().ToUpper())).ToListAsync();
+        }
     }}

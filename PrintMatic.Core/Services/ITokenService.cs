@@ -11,6 +11,6 @@ namespace PrintMatic.Services
 {
     public interface ITokenService
     {
-        Task<string> CreateToken(AppUser user, UserManager<AppUser> userManager);
+       Task<string> CreateToken(AppUser user, UserManager<AppUser> userManager);
     }
 }

@@ -65,7 +65,7 @@ namespace PrintMartic_DashBoard.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Message"] = ex.Message;
+                ViewData["Message"] = ex.InnerException?.Message.ToString() ?? ex.Message.ToString();
             }
             return RedirectToAction(nameof(WaitingProductPhotos));
 
@@ -89,31 +89,37 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
-                    product.Photo = product.PhotoFile.FileName;
-                    if (product.PhotoFile != null)
+                    if (product.PhotoFile == null)
                     {
+                        ModelState.AddModelError("Photo", "ادخل الصوره");
+                    }
+                    else
+                    {
+                        product.Photo = product.PhotoFile.FileName;
                         product.Photo = DocumentSetting.UploadFile(product.PhotoFile, "products");
-                    }
-                    var ProMa = _mapper.Map<ProductPhotosVM, ProductPhotos>(product);
-                    ProMa.FilePath = Path.Combine(_environment.ContentRootPath, "wwwroot\\Uploads\\products", ProMa.Photo);
-                    ProMa.Enter = true;
-                    _productPhoto.Add(ProMa);
-                    var count = _productPhoto.Complet();
-                    if (count > 0)
-                    {
-                        TempData["Message"] = "تم إضافة صورة المنتج بنجاح";
-                    }
-                    return RedirectToAction("Index");
 
+                        var ProMa = _mapper.Map<ProductPhotosVM, ProductPhotos>(product);
+                        ProMa.FilePath = Path.Combine(_environment.ContentRootPath, "wwwroot\\Uploads\\products", ProMa.Photo);
+                        ProMa.Enter = true;
+                        _productPhoto.Add(ProMa);
+                        var count = _productPhoto.Complet();
+                        if (count > 0)
+                        {
+                            TempData["Message"] = "تم إضافة صورة المنتج بنجاح";
+                        }
+                        return RedirectToAction("Index");
+                    }
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                    ModelState.AddModelError("ProductId", "ادخل اسم المنتج");
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
                 }
 
             }
             var ProList = await _unitOfWork.generic.GetAllAsync();
             product.Products = ProList;
+            TempData["Message"] = "فشلت عملية الإضافه";
             return View(product);
         }
         #endregion
@@ -133,7 +139,7 @@ namespace PrintMartic_DashBoard.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Message"] = ex.Message;
+                ViewData["Message"] = ex.InnerException?.Message.ToString() ?? ex.Message.ToString();
                 return View("Error");
             }
         }
@@ -156,32 +162,42 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
-                    product.Photo = product.PhotoFile.FileName;
-                    if (product.PhotoFile != null)
+                    if(product.ProductId == 0)
                     {
+                        ModelState.AddModelError("ProductId", "ادخل اسم المنتج");
+                    }
+                    if (product.PhotoFile == null)
+                    {
+                        ModelState.AddModelError("Photo", "ادخل الصوره");
+                    }
+                    else
+                    {
+                        product.Photo = product.PhotoFile.FileName;
                         product.Photo = DocumentSetting.UploadFile(product.PhotoFile, "products");
-                    }
-                    var ProMa = _mapper.Map<ProductPhotosVM, ProductPhotos>(product);
-                    ProMa.FilePath = Path.Combine(_environment.ContentRootPath, "wwwroot\\Uploads\\products", ProMa.Photo);
-                    ProMa.Enter = false;
-                    _productPhoto.Add(ProMa);
-                    var count = _productPhoto.Complet();
-                    if (count > 0)
-                    {
-                        ViewData["Message"] = "سيتم التأكيد من صورة المنتج ثم إضافته";
 
+                        var ProMa = _mapper.Map<ProductPhotosVM, ProductPhotos>(product);
+                        ProMa.FilePath = Path.Combine(_environment.ContentRootPath, "wwwroot\\Uploads\\products", ProMa.Photo);
+                        ProMa.Enter = false;
+                        _productPhoto.Add(ProMa);
+                        var count = _productPhoto.Complet();
+                        if (count > 0)
+                        {
+                            ViewData["Message"] = "سيتم التأكيد من صورة المنتج ثم إضافته";
+
+                        }
+                        return RedirectToAction(nameof(YourProductPhotos));
                     }
-                    return RedirectToAction(nameof(YourProductPhotos));
 
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
                 }
 
             }
             var ProList = await _unitOfWork.generic.GetAllAsync();
             product.Products = ProList;
+            TempData["Message"] = "فشلت عملية الإضافه";
             return View(product);
         }
         #endregion
@@ -216,6 +232,7 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 var ProList = await _unitOfWork.generic.GetAllAsync();
                 Mapped.Products = ProList;
+                
             }
             else if(User.IsInRole("بائع"))
             {
@@ -246,7 +263,15 @@ namespace PrintMartic_DashBoard.Controllers
                     }
                     var ProMapped = _mapper.Map<ProductPhotosVM, ProductPhotos>(photosVM);
                     ProMapped.FilePath = Path.Combine(_environment.ContentRootPath, "wwwroot\\Uploads\\products", ProMapped.Photo);
-
+                    if (User.IsInRole("Admin"))
+                    {
+                        ProMapped.Enter = true;
+                    }
+                    else
+                    {
+                        ProMapped.Enter = false;
+                    }
+                        
                     _productPhoto.Update(ProMapped);
                     var count = _unitOfWork.Complet();
                     if (count > 0 )
@@ -262,11 +287,12 @@ namespace PrintMartic_DashBoard.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
                 }
             }
             var ProList = await _unitOfWork.generic.GetAllAsync();
             photosVM.Products = ProList;
+            TempData["Message"] = "فشلت عملية التعديل";
             return View(photosVM);
         }
 

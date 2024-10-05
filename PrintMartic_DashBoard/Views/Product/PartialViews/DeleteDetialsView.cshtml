@@ -32,8 +32,8 @@
 
         </div>
         <div class="form-group col-md-4">
-            <label asp-for="AppUser.DisplayName" >اسم البائع</label>
-            <input type="text" class="form-control" value="@Model.AppUser.DisplayName" readonly>
+            <label asp-for="AppUser.UserName" >اسم البائع</label>
+            <input type="text" class="form-control" value="@Model.AppUser.UserName" readonly>
 
         </div>
         <div class="col">
@@ -93,7 +93,13 @@
             <input type="text" class="form-control " asp-for="UrgentMaxDate" readonly>
 
         </div>
-       
+       </div>
+    <div class="form-group ">
+        <label for="example-textarea">وصف المنتج</label>
+        <textarea class="form-control" asp-for="Description" id="example-textarea" rows="4" readonly></textarea>
+
+    </div>
+    <div class="form-row">
         <div class="form-group form-check">
             <label class="form-check-label">
                 <input class="form-check-input" asp-for="Text" readonly/>النص
@@ -104,12 +110,13 @@
                 <input class="form-check-input" asp-for="Date" readonly />التاريخ
             </label>
         </div>
+        </div>
+
+    <br />
+    <p class="text-muted nav-heading mt-4 mb-1 bol">
+        <span>الألوان و الأحجام</span>
+    </p>
 
         <partial name="PartialViews/_DeleteColorSize" />
 
-    </div>
-    <div class="form-group ">
-        <label for="example-textarea">وصف المنتج</label>
-        <textarea class="form-control" asp-for="Description" id="example-textarea" rows="4" readonly></textarea>
 
-    </div>

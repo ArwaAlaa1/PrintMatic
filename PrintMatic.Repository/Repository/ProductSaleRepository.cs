@@ -45,7 +45,7 @@ namespace PrintMatic.Repository.Repository
         }
         public async Task<IEnumerable<ProductSale>> GetActiveSales()
         {
-            return await _context.productSales.Include("Sale").Include("Product").Where(x => x.Sale.SaleStartDate < DateTime.Now && x.Sale.SaleEndDate > DateTime.Now && x.IsDeleted == false).ToListAsync();
+            return await _context.productSales.Include("Sale").Include("Product").Where(x => x.Sale.SaleEndDate > DateTime.Now && x.IsDeleted == false).ToListAsync();
         }
 
         public void Update(ProductSale entity)

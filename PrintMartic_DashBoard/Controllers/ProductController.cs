@@ -57,18 +57,18 @@ namespace PrintMartic_DashBoard.Controllers
             var List = await _unitOfWork.prodduct.GetWaitingProducts();
             return View(List);
         }
-       [Authorize(AuthenticationSchemes = "Cookies",Roles ="بائع,Admin")]
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "بائع,Admin")]
         public async Task<IActionResult> YourProducts()
         {
             try
             {
                 var user = User.Identity.Name;
                 var product = await _unitOfWork.prodduct.GetYourProducts(user);
-                return View(nameof(Index),product);
+                return View(nameof(Index), product);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                ViewData["Message"] = ex.Message;
+                ViewData["Message"] = ex.InnerException?.Message.ToString() ?? ex.Message.ToString();
                 return View("Error");
             }
         }
@@ -76,7 +76,7 @@ namespace PrintMartic_DashBoard.Controllers
 
         public async Task<IActionResult> InActiveProducts()
         {
-       
+
             try
             {
                 var product = await _unitOfWork.prodduct.GetInActiveProducts();
@@ -84,7 +84,7 @@ namespace PrintMartic_DashBoard.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Message"] = ex.Message;
+                ViewData["Message"] = ex.InnerException?.Message.ToString() ?? ex.Message.ToString();
                 return View("Error");
             }
         }
@@ -107,7 +107,7 @@ namespace PrintMartic_DashBoard.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Message"] = ex.Message;
+                ViewData["Message"] = ex.InnerException?.Message.ToString() ?? ex.Message.ToString();
             }
             return RedirectToAction(nameof(WaitingProducts));
 
@@ -134,23 +134,34 @@ namespace PrintMartic_DashBoard.Controllers
             }
             return View(itemMapped);
         }
+
         [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
-            ProductVM ProductVM = new ProductVM();
-            var List = await _catUnitOfwork.generic.GetAllAsync();
-            ProductVM.Categories = List;
-            List<AppUser> users = new List<AppUser>();
-            foreach (var item in _userManager.Users)
+            try
             {
-                if (item.IsCompany == true)
+                ProductVM ProductVM = new ProductVM();
+                var List = await _catUnitOfwork.generic.GetAllAsync();
+                ProductVM.Categories = List;
+                List<AppUser> users = new List<AppUser>();
+                foreach (var item in _userManager.Users)
                 {
-                    users.Add(item);
+                    if (item.IsCompany == true)
+                    {
+                        users.Add(item);
+                    }
                 }
-            }
-            ProductVM.Users = users;
+                ProductVM.Users = users;
 
-            return View(ProductVM);
+                return View(ProductVM);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
+                ;
+                return RedirectToAction(nameof(Index));
+            }
+
         }
 
         [HttpPost]
@@ -176,8 +187,7 @@ namespace PrintMartic_DashBoard.Controllers
 
                     _unitOfWork.generic.Add(itemMapped);
                     var count = _unitOfWork.Complet();
-                    if (productVM.Color == true)
-                    {
+                    
                         if (productVM.ColorJson != null)
                         {
                             var colors = JsonConvert.DeserializeObject<List<string>>(productVM.ColorJson);
@@ -198,7 +208,7 @@ namespace PrintMartic_DashBoard.Controllers
                                 }
                             }
                         }
-                    }
+                    
                     if (productVM.SizeJson != null)
                     {
                         var sizes = JsonConvert.DeserializeObject<List<string>>(productVM.SizeJson);
@@ -225,7 +235,9 @@ namespace PrintMartic_DashBoard.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ViewData["Message"] = ex.InnerException.Message;
+                    ModelState.AddModelError("CategoryId", "ادخل اسم القسم من فضلك");
+                    ModelState.AddModelError("UserId", "ادخل اسم البائع من فضلك");
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
                 }
                 // var userid =userManager.Users.FirstAsync(n => n.UserName==user); 
 
@@ -246,6 +258,7 @@ namespace PrintMartic_DashBoard.Controllers
 
 
         [Authorize(AuthenticationSchemes = "Cookies",Roles =("بائع"))]
+
         public async Task<IActionResult> CreateForCompany()
         {
 
@@ -256,7 +269,7 @@ namespace PrintMartic_DashBoard.Controllers
             var Username = User.Identity.Name;
             var user = await _userManager.FindByNameAsync(Username);
             ProductVM.UserId = user.Id;
-            return View("CreateForCompany",ProductVM);
+            return View("CreateForCompany", ProductVM);
         }
 
         [HttpPost]
@@ -268,7 +281,7 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
-                    if(productVM.NormalPrice <= 500)
+                    if (productVM.NormalPrice <= 500)
                     {
                         productVM.TotalPrice = productVM.NormalPrice * 1.7m;
                     }
@@ -281,8 +294,7 @@ namespace PrintMartic_DashBoard.Controllers
                     _unitOfWork.generic.Add(itemMapped);
                     var count = await _unitOfWork.CompletAsync();
 
-                    if (productVM.Color == true)
-                    {
+                   
                         if (productVM.ColorJson != null)
                         {
                             var colors = JsonConvert.DeserializeObject<List<string>>(productVM.ColorJson);
@@ -304,7 +316,7 @@ namespace PrintMartic_DashBoard.Controllers
                             }
                         }
 
-                    }
+                    
                     if (productVM.SizeJson != null)
                     {
                         var sizes = JsonConvert.DeserializeObject<List<string>>(productVM.SizeJson);
@@ -331,7 +343,8 @@ namespace PrintMartic_DashBoard.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ViewData["Message"] = ex.InnerException.Message;
+                    ModelState.AddModelError("CategoryId", "ادخل اسم القسم من فضلك");
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
                 }
                 // var userid =userManager.Users.FirstAsync(n => n.UserName==user); 
 
@@ -412,8 +425,7 @@ namespace PrintMartic_DashBoard.Controllers
                     var ProMapped = _mapper.Map<ProductVM, Product>(productVM);
                     _unitOfWork.generic.Update(ProMapped);
                     var count = _unitOfWork.Complet();
-                    if (productVM.Color == true)
-                    {
+                    
                         if(productVM.ColorJson != null)
                         {
                             var colors = JsonConvert.DeserializeObject<List<string>>(productVM.ColorJson);
@@ -435,7 +447,7 @@ namespace PrintMartic_DashBoard.Controllers
                             }
                         }
                        
-                    }
+                    
                     if(productVM.SizeJson != null)
                     {
                         var sizes = JsonConvert.DeserializeObject<List<string>>(productVM.SizeJson);
@@ -470,7 +482,8 @@ namespace PrintMartic_DashBoard.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                    ModelState.AddModelError("CategoryId", "ادخل اسم القسم من فضلك");
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
 
                 }
             }
@@ -528,7 +541,8 @@ namespace PrintMartic_DashBoard.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Message"] = ex.InnerException.Message;
+
+                ViewData["Message"] = ex.InnerException?.Message.ToString() ?? ex.Message.ToString();
             }
             return View(productVM);
         }

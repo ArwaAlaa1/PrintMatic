@@ -36,7 +36,7 @@ namespace PrintMartic_DashBoard.Controllers
             var item = await _productSale.GetByIDAsync(ProductId,SaleId);
             if(item == null)
             {
-                ViewData["Message"] = "Not Found";
+                ViewData["Message"] = "لم يتم العثور على هذا العنصر";
                 return RedirectToAction("Index");
             }
            var PSMapped = _mapper.Map<ProductSale , ProductSaleVM>(item);
@@ -64,31 +64,39 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
-                    var product = await _proUnit.generic.GetByIdAsync(productSaleVM.ProductId);
-                    var sale = await _saleUnit.Sale.GetByIdAsync(productSaleVM.SaleId);
-                    
-                    var paS = _productSale.GetPrice(sale.SaleDiscountPercentage, product.NormalPrice);
-                    productSaleVM.PriceAfterSale = paS;
-                    var ProSale = _mapper.Map<ProductSaleVM, ProductSale>(productSaleVM);
-                    _productSale.Add(ProSale);
-                    var count = _productSale.Complet();
-                    if (count > 0)
+                    if(productSaleVM.ProductId == 0 || productSaleVM.SaleId == 0)
                     {
-                        ViewData["Message"] = "ProductSale Created Successfully";
+                        ModelState.AddModelError("PriceAfterSale", "اختر اسم المنتج ونسبة الخصم");
+                    }else
+                    {
+                        var product = await _proUnit.generic.GetByIdAsync(productSaleVM.ProductId);
+                        var sale = await _saleUnit.Sale.GetByIdAsync(productSaleVM.SaleId);
+
+                        var paS = _productSale.GetPrice(sale.SaleDiscountPercentage, product.TotalPrice);
+                        productSaleVM.PriceAfterSale = paS;
+                        var ProSale = _mapper.Map<ProductSaleVM, ProductSale>(productSaleVM);
+                        _productSale.Add(ProSale);
+                        var count = _productSale.Complet();
+                        if (count > 0)
+                        {
+                            ViewData["Message"] = "تم إضافة الخصم على المنتج بنجاح";
+                        }
+                        return RedirectToAction(nameof(Index));
                     }
-                    return RedirectToAction(nameof(Index));
+
                 }
                 catch(Exception ex) 
                 {
-                    ModelState.AddModelError(string.Empty , ex.InnerException.Message);
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
+               
                 }
 
             }
-
             var ProList = await _proUnit.generic.GetAllAsync();
             var SaleList = await _saleUnit.generic.GetAllAsync();
             productSaleVM.Sales = SaleList;
             productSaleVM.Products = ProList;
+            TempData["Message"] = "فشلت عملية الإضافه";
             return View(productSaleVM);
 
         }
@@ -118,21 +126,28 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
-                    var product = await _proUnit.generic.GetByIdAsync(productSaleVM.ProductId);
-                    var sale = await _saleUnit.generic.GetByIdAsync(productSaleVM.SaleId);
-                    var paS = _productSale.GetPrice(sale.SaleDiscountPercentage, product.NormalPrice); productSaleVM.PriceAfterSale = paS;
-                    var ProSale = _mapper.Map<ProductSaleVM, ProductSale>(productSaleVM);
-                    _productSale.Update(ProSale);
-                    var count = _productSale.Complet();
-                    if (count > 0)
+                    if (productSaleVM.ProductId == 0 || productSaleVM.SaleId == 0)
                     {
-                        ViewData["Message"] = "ProductSale Updated Successfully";
+                        ModelState.AddModelError("PriceAfterSale", "اختر اسم المنتج ونسبة الخصم");
                     }
-                    return RedirectToAction(nameof(Index));
+                    else
+                    {
+                        var product = await _proUnit.generic.GetByIdAsync(productSaleVM.ProductId);
+                        var sale = await _saleUnit.generic.GetByIdAsync(productSaleVM.SaleId);
+                        var paS = _productSale.GetPrice(sale.SaleDiscountPercentage, product.TotalPrice); productSaleVM.PriceAfterSale = paS;
+                        var ProSale = _mapper.Map<ProductSaleVM, ProductSale>(productSaleVM);
+                        _productSale.Update(ProSale);
+                        var count = _productSale.Complet();
+                        if (count > 0)
+                        {
+                            ViewData["Message"] = "تم تعديل الخصم على المنتج بنجاح";
+                        }
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
                 }
 
             }
@@ -141,8 +156,8 @@ namespace PrintMartic_DashBoard.Controllers
             var SaleList = await _saleUnit.generic.GetAllAsync();
             productSaleVM.Sales = SaleList;
             productSaleVM.Products = ProList;
+            TempData["Message"] = "فشلت عملية التعديل";
             return View(productSaleVM);
-
 
         }
 
@@ -164,13 +179,13 @@ namespace PrintMartic_DashBoard.Controllers
                 var count = _productSale.Complet();
                 if (count > 0)
                 {
-                    TempData["Message"] = "ProductSale Deleted Successfully";
+                    TempData["Message"] = "تم حذف الخصم على المنتج بنجاح";
                 }
                 return RedirectToAction(nameof(Index));
 
             }catch
             {
-                TempData["Message"] = "Deletion operation failed";
+                TempData["Message"] = "فشلت عملية الحذف";
                 return View(productSaleVM);
             }
         

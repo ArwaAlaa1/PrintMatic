@@ -58,7 +58,7 @@
     </div>
 
     <!-- Display added colors in a table -->
-    <table id="sizeTable" border="1">
+    <table id="sizeTable" border="1" class="table">
         <thead>
             <tr>
                 <th colspan="2">المقاس</th>
@@ -88,77 +88,74 @@
     <!-- Hidden field to store the color list -->
     <input type="hidden" asp-for="SizeJson" id="sizes" />
 </div>
-<script>
- 
-    // Array to store selected colors
-    let selectedSizes = [];
+    <script>
 
-    // Get references to the button, table body, and hidden input field
-    const addSizeBtn = document.getElementById('addSizeBtn');
-    const sizeInput = document.getElementById('sizeInput');
-    const sizeTable = document.querySelector('#sizeTable tbody');
-    const hiddenSizeField = document.getElementById('sizes');
+        // Array to store selected colors
+        let selectedSizes = [];
 
-    // Function to add selected color to the table and the list
-    addSizeBtn.addEventListener('click', function (e) {
-        e.preventDefault(); // Prevent form submission if button is inside the form
+        // Get references to the button, table body, and hidden input field
+        const addSizeBtn = document.getElementById('addSizeBtn');
+        const sizeInput = document.getElementById('sizeInput');
+        const sizeTable = document.querySelector('#sizeTable tbody');
+        const hiddenSizeField = document.getElementById('sizes');
 
-        const selectedSize = sizeInput.value;
+        // Function to add selected color to the table and the list
+        addSizeBtn.addEventListener('click', function (e) {
+            e.preventDefault(); // Prevent form submission if button is inside the form
 
-        // Add the size to the array
-        selectedSizes.push(selectedSize);
+            const selectedSize = sizeInput.value;
 
-        // Create a new row for the table
-        const newRow = document.createElement('tr');
+            // Add the size to the array
+            selectedSizes.push(selectedSize);
 
-        // Create the size cell
-        const sizeCell = document.createElement('td');
-        sizeCell.textContent = selectedSize
+            // Create a new row for the table
+            const newRow = document.createElement('tr');
 
-        // Append cells to the row
-        newRow.appendChild(sizeCell);
+            // Create the size cell
+            const sizeCell = document.createElement('td');
+            sizeCell.textContent = selectedSize
 
-        // Append the row to the table
-        sizeTable.appendChild(newRow);
-        sizeInput.value = '';
-        // Update the hidden input with the list of colors as JSON
-        hiddenSizeField.value = JSON.stringify(selectedSizes);
-  
+            // Append cells to the row
+            newRow.appendChild(sizeCell);
 
-    const deleteCell = document.createElement('td');
-    const deleteBtn = document.createElement('button');
-    deleteBtn.textContent = 'X';
-        deleteBtn.className = 'deleteBtn btn btn-light';
-    deleteCell.appendChild(deleteBtn);
-
-    // Append cells to the row
-    newRow.appendChild(sizeCell);
-    // newRow.appendChild(hexCell);
-    newRow.appendChild(deleteCell);
-
-    // Append the row to the table
-    sizeTable.appendChild(newRow);
-
-    // Update the hidden input with the list of colors as JSON
-        hiddenSizeField.value = JSON.stringify(selectedSizes);
-
-    // Attach event listener for the delete button
-    deleteBtn.addEventListener('click', function () {
-        const rowIndex = Array.from(sizeTable.children).indexOf(newRow);
- 
-        // Remove the color from the array
-            selectedSizes.splice(rowIndex, 1);
-
-        // Update the hidden input with the updated list of colors as JSON
+            // Append the row to the table
+            sizeTable.appendChild(newRow);
+            sizeInput.value = '';
+            // Update the hidden input with the list of colors as JSON
             hiddenSizeField.value = JSON.stringify(selectedSizes);
 
-        // Remove the row from the table
-        newRow.remove();
-    });
 
-    });
+            const deleteCell = document.createElement('td');
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'X';
+            deleteBtn.className = 'deleteBtn btn btn-light';
+            deleteCell.appendChild(deleteBtn);
 
-</script>
+            // Append cells to the row
+            newRow.appendChild(sizeCell);
+            // newRow.appendChild(hexCell);
+            newRow.appendChild(deleteCell);
 
+            // Append the row to the table
+            sizeTable.appendChild(newRow);
 
+            // Update the hidden input with the list of colors as JSON
+            hiddenSizeField.value = JSON.stringify(selectedSizes);
+
+            // Attach event listener for the delete button
+            deleteBtn.addEventListener('click', function () {
+                const rowIndex = Array.from(sizeTable.children).indexOf(newRow);
+
+                // Remove the color from the array
+                selectedSizes.splice(rowIndex, 1);
+
+                // Update the hidden input with the updated list of colors as JSON
+                hiddenSizeField.value = JSON.stringify(selectedSizes);
+
+                // Remove the row from the table
+                newRow.remove();
+            });
+
+        });
+    </script>
 

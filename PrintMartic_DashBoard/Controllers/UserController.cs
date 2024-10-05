@@ -37,10 +37,10 @@ namespace PrintMartic_DashBoard.Controllers
                 Id = u.Id,
                 Photo = u.Photo,
                 UserName = u.UserName,
-                DisplayName = u.DisplayName,
+                
                 Email = u.Email,
                 PhoneNumber = u.PhoneNumber,
-                Location = u.Location,
+               
                 IsCompany = u.IsCompany,
                 Roles = new List<string>() 
             }).Where(u=>u.IsCompany==false).ToListAsync();
@@ -78,10 +78,10 @@ namespace PrintMartic_DashBoard.Controllers
                 var user = new AppUser()
                 {
                     UserName = addUser.UserName,
-                    DisplayName = addUser.DisplayName,
+                   
                     Email = addUser.Email,
                     PhoneNumber = addUser.PhoneNumber,
-                    Location = addUser.Location,
+                 
                     IsCompany = addUser.IsCompany,
                     Photo = $"images/user/{addUser.Photo}"
                 };
@@ -123,7 +123,7 @@ namespace PrintMartic_DashBoard.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
+                ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
             }
 
             return View(addUser);
@@ -159,10 +159,10 @@ namespace PrintMartic_DashBoard.Controllers
                     Id = editUser.Id,
 
                     UserName = editUser.UserName,
-                    DisplayName = editUser.DisplayName,
+                    
                     Email = editUser.Email,
                     PhoneNumber = editUser.PhoneNumber,
-                    Location = editUser.Location,
+                    
                     IsCompany = editUser.IsCompany,
                     //Photo = $"images/user/{editUser.Photo}"
 
@@ -175,7 +175,7 @@ namespace PrintMartic_DashBoard.Controllers
             catch (Exception ex)
             {
 
-                ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
             }
 
 
@@ -213,7 +213,7 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 Id = user.Id,
 
-                DisplayName = user.DisplayName,
+               UserName= user.UserName,
 
                 Roles = roles.Select(roles => new RoleViewModel()
                 {
@@ -264,10 +264,10 @@ namespace PrintMartic_DashBoard.Controllers
 
 
                 user.UserName = userRoleEdit.UserForm.UserName;
-                user.DisplayName = userRoleEdit.UserForm.DisplayName;
+                
                 user.Email = userRoleEdit.UserForm.Email;
                 user.PhoneNumber = userRoleEdit.UserForm.PhoneNumber;
-                user.Location = userRoleEdit.UserForm.Location;
+               
                 user.IsCompany = userRoleEdit.UserForm.IsCompany;
                 user.Photo = $"images/user/{userRoleEdit.UserForm.Photo}";
 
@@ -291,10 +291,10 @@ namespace PrintMartic_DashBoard.Controllers
                 Id = u.Id,
                 Photo = u.Photo,
                 UserName = u.UserName,
-                DisplayName = u.DisplayName,
+               
                 Email = u.Email,
                 PhoneNumber = u.PhoneNumber,
-                Location = u.Location,
+               
                 IsCompany = u.IsCompany,
                 Roles = new List<string>()
             }).ToListAsync();

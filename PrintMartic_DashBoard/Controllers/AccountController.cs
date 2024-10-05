@@ -50,17 +50,17 @@ namespace PrintMartic_DashBoard.Controllers
            
                 if (result.Succeeded)
             {
-                
-
-
-                    List<Claim> claims = new List<Claim>()
+                if (role == null) 
                 {
-                    new Claim(ClaimTypes.Name, login.UserName),
-                     new Claim(ClaimTypes.NameIdentifier, login.UserName),
-                  new Claim(ClaimTypes.Role,role.First())
+                    role = new string[] { "عميل" };
+                }
 
-                };
-                
+                List<Claim>? claims = new List<Claim>()
+                    {
+                         new Claim(ClaimTypes.Name, login.UserName),
+                     new Claim(ClaimTypes.NameIdentifier, login.UserName),
+                    new Claim(ClaimTypes.Role, role.FirstOrDefault())
+                    };
 
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,
                     CookieAuthenticationDefaults.AuthenticationScheme);
@@ -87,6 +87,7 @@ namespace PrintMartic_DashBoard.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync("Cookies");
+            var x = User.Identity.IsAuthenticated;
             return RedirectToAction(nameof(Signin));
         }
         //public async Task<IActionResult> Logout()

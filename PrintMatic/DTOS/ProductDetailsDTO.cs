@@ -18,7 +18,6 @@ namespace PrintMatic.DTOS
 
         public decimal NormalPrice { get; set; }
         public decimal UrgentPrice { get; set; }
-        public bool Color { get; set; }
         public bool Text { get; set; }
         public bool Date { get; set; }
         public UserSimpleDetails User { get; set; }
