@@ -5,7 +5,7 @@ namespace PrintMatic.DTOS.IdentityDTOS
 {
     public class LoginDto
     {
-        [Required(ErrorMessage ="اسم المستخد او البريد الالكترونى مطلوب")]
+        [Required(ErrorMessage ="اسم المستخدم او البريد الالكترونى مطلوب")]
         public string EmailOrUserName { get; set; }
 
 

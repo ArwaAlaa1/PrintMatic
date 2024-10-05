@@ -11,5 +11,6 @@ namespace PrintMatic.Core.Repository.Contract
     public interface IAddressRepository
     {
         public Task<IEnumerable<Address>> GetAllUserAddress(string id);
+        public Task<Address> GetUserAddress(int id);
     }
 }

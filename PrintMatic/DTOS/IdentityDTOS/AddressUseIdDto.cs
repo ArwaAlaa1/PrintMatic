@@ -1,6 +1,6 @@
 ﻿namespace PrintMatic.DTOS.IdentityDTOS
 {
-    public class GetAllAddressDto
+    public class AddressUseIdDto
     {
 
         public int Id { get; set; }

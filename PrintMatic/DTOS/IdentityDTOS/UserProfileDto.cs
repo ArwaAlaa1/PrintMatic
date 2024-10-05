@@ -12,7 +12,7 @@ namespace PrintMatic.DTOS.IdentityDTOS
         [EmailAddress(ErrorMessage = "البريد الإلكتروني غير صالح")]
         public string Email { get; set; }
         public string? Image { get; set; }
-        public string Password { get; set; }
+      
 
         [Required(ErrorMessage = "رقم الهاتف مطلوب")]
         public string PhoneNumber { get; set; }
