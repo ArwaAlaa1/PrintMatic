@@ -20,8 +20,6 @@ namespace PrintMatic.Repository.Data
 					UserName="ArwaAlaa",
 					PhoneNumber="01011037481"
 				};
-
-				
 				var result=await _usermanager.CreateAsync(user,"P@ssWord1");
 			}
 		}

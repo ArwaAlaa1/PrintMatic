@@ -11,10 +11,10 @@ namespace PrintMatic.Core.Entities
     public class Favorite: BaseEntity
     {
         [ForeignKey(nameof(AppUser))]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public AppUser User { get; set; }
         [ForeignKey(nameof(Product))]
-        public int ProductId { get; set; }
-        public Product Product { get; set; }
+        public int? ProductId { get; set; }
+        public Product? Product { get; set; }
     }
 }

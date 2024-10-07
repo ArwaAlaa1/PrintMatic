@@ -28,6 +28,6 @@ namespace PrintMatic.DTOS
         public List<string> Sizes { get; set; } = new List<string>();
         public List<string> Photos { get; set; }= new List<string>();
         public decimal PriceAfterSale { get; set; }
-
+        public float? AvgRating { get; set; }
     }
 }

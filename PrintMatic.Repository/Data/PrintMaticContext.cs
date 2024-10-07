@@ -48,6 +48,7 @@ namespace PrintMatic.Repository.Data
         public DbSet<ProductSale> productSales { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<ProductColor> ProductColors { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
         public DbSet<ProductSize> ProductSizes { get; set; }
         public DbSet<Address> Address { get; set; }
 

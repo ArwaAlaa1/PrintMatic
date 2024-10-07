@@ -22,6 +22,7 @@ namespace PrintMatic.Repository
         public IProductColor color { get; set; }
         public IProductSize size { get; set; }
         public ISaleRepository Sale { get; set; }
+        public IFavouriteRepository Fav { get; set; }
 
         public UnitOfWork(PrintMaticContext Context)
         {
@@ -33,6 +34,7 @@ namespace PrintMatic.Repository
             color = new ProductColorRepository(_Context); 
             size = new ProductSizeRepository(_Context);
             Sale = new SaleRepository(_Context);
+            Fav = new FavouriteRepository(_Context);
         }
 
         public int Complet()

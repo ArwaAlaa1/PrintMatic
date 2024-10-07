@@ -17,10 +17,9 @@ namespace PrintMatic.Helper
             CreateMap<CartItems,CartItemsDto>().ReverseMap();
             CreateMap<Address, AddressUseIdDto>().ReverseMap();
             CreateMap<Address, AddressDto>().ReverseMap();
-			 
+            CreateMap<Favorite, FavouriteDto>().ReverseMap();
 
-
-			CreateMap<CategoryDTO, Category>().ReverseMap();
+            CreateMap<CategoryDTO, Category>().ReverseMap();
             CreateMap<Category , CategoryWithProDetails>().ReverseMap();
             CreateMap<Product, ProductDto>().ReverseMap();
             CreateMap<Product, ProductDetailsDTO>().ReverseMap();

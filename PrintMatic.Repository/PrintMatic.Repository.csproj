@@ -21,8 +21,4 @@
     <ProjectReference Include="..\PrintMatic.Core\PrintMatic.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\Migrations\" />
-  </ItemGroup>
-
 </Project>

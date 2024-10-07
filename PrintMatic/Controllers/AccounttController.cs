@@ -76,7 +76,7 @@ namespace PrintMatic.Controllers
 
 
         //Login EndPoint Domain/Api/Account/login
-        [Authorize]
+        //[Authorize]
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {

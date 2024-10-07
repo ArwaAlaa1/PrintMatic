@@ -41,51 +41,70 @@ namespace PrintMatic.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDetailsDTO>> GetById(int id)
         {
-            var product = await _unitOfWork.prodduct.GetIDProducts(id);
-            if (product == null) 
+            try
             {
-                return BadRequest("There is no product with this Id");
-            }
-            var ProMapped = _mapper.Map<Product, ProductDetailsDTO>(product);
-            ProMapped.User = new UserSimpleDetails()
-            {
-                Id = product.AppUser.Id,
-                FilePath = product.AppUser.FilePath,
-                UserName = product.AppUser.UserName
-            };
-            var ProductColors = await _unitofcolor.color.GetIdOfProAsync(ProMapped.Id);
-            foreach (var color in ProductColors)
-            {
-                ProMapped.Colors.Add(color.HexCode);
-            }
-            var ProSizes = await _unitofSize.size.GetIdOfProAsync(ProMapped.Id);
-            foreach (var size in ProSizes)
-            {
-                ProMapped.Sizes.Add(size.Size);
-            }
-            var photosList = await _productPhoto.GetPhotosOfProduct(ProMapped.Id);
-            foreach (var photo in photosList)
-            {
-                ProMapped.Photos.Add(photo.FilePath);
-            }
-            var SalesList = await _productSale.GetProByIDAsync(ProMapped.Id);
-            if (SalesList.ToList().Count > 0)
-            {
-                var list = new List<ProductSale>();
-                foreach (var sale in SalesList)
+
+                var product = await _unitOfWork.prodduct.GetIDProducts(id);
+                if (product == null)
                 {
-                    if (sale.Sale.SaleEndDate > DateTime.UtcNow)
+                    return BadRequest("There is no product with this Id");
+                }
+                var ProMapped = _mapper.Map<Product, ProductDetailsDTO>(product);
+                ProMapped.User = new UserSimpleDetails()
+                {
+                    Id = product.AppUser.Id,
+                    FilePath = product.AppUser.FilePath,
+                    UserName = product.AppUser.UserName
+                };
+                var ProductColors = await _unitofcolor.color.GetIdOfProAsync(ProMapped.Id);
+                foreach (var color in ProductColors)
+                {
+                    ProMapped.Colors.Add(color.HexCode);
+                }
+                var ProSizes = await _unitofSize.size.GetIdOfProAsync(ProMapped.Id);
+                foreach (var size in ProSizes)
+                {
+                    ProMapped.Sizes.Add(size.Size);
+                }
+                var photosList = await _productPhoto.GetPhotosOfProduct(ProMapped.Id);
+                foreach (var photo in photosList)
+                {
+                    ProMapped.Photos.Add(photo.FilePath);
+                }
+                var SalesList = await _productSale.GetProByIDAsync(ProMapped.Id);
+                if (SalesList.ToList().Count > 0)
+                {
+                    var list = new List<ProductSale>();
+                    foreach (var sale in SalesList)
                     {
-                        list.Add(sale);
+                        if (sale.Sale.SaleEndDate > DateTime.UtcNow)
+                        {
+                            list.Add(sale);
+                        }
+                    }
+                    var item = list.FirstOrDefault();
+                    if (item != null)
+                    {
+                        ProMapped.PriceAfterSale = item.PriceAfterSale;
                     }
                 }
-                var item = list.FirstOrDefault();
-                if (item != null)
+
+                var Reviews = await _unitOfReview.review.GetReviewsOfPro(ProMapped.Id);
+                float? Rating = 0f;
+                foreach (var review in Reviews)
                 {
-                    ProMapped.PriceAfterSale = item.PriceAfterSale;
+                    if (review != null)
+                    {
+                        Rating += review.Rating;
+                    }
+
                 }
+                ProMapped.AvgRating = Rating / 5f;
+                return Ok(ProMapped);
             }
-            return Ok(ProMapped);
+            catch (Exception ex) { 
+            return BadRequest(ex.Message.ToString()?? ex.InnerException?.Message.ToString());
+            }
 
         }
 
