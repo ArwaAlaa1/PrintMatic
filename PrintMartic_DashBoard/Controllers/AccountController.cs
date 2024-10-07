@@ -50,7 +50,7 @@ namespace PrintMartic_DashBoard.Controllers
            
                 if (result.Succeeded)
             {
-                if (role == null) 
+                if (role.Count == 0) 
                 {
                     role = new string[] { "عميل" };
                 }

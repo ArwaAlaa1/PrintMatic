@@ -10,5 +10,6 @@ namespace PrintMatic.Core.Repository.Contract
     public interface IFavouriteRepository : IGenericRepository<Favorite>
     {
         Task<Favorite> GetFavoriteAsync(int ProductId , string UserId);
+        Task<IEnumerable<Favorite>> GetFavorites(string UserId);
     }
 }

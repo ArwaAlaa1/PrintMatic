@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FuzzySharp;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities;
@@ -54,7 +55,14 @@ namespace PrintMatic.Repository.Repository
 
         public async Task<IEnumerable<Product>> SearchByName(string ProName)
         {
-            return await _context.Products.Where(x => x.IsDeleted == false && x.Name.Trim().ToLower().Contains(ProName.Trim().ToUpper())).ToListAsync();
+            var products = _context.Products.Where(x => x.IsDeleted == false && x.Enter == true).AsEnumerable();
+            int similarityThreshold = 70;
+
+            var listofProducts = products.Where(x => Fuzz.Ratio(x.Name, ProName) > similarityThreshold || x.Name.Trim().ToLower().Contains(ProName.Trim().ToUpper())).ToList();
+           
+                return listofProducts;
+            
+            
         }
     }
 }

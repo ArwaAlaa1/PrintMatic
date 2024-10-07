@@ -23,5 +23,10 @@ namespace PrintMatic.Repository.Repository
         {
             return await _context.Favorites.Where(x => x.IsDeleted == false && x.Product.IsDeleted == false && x.Product.Enter == true && x.ProductId == ProductId && x.UserId == UserId).FirstOrDefaultAsync();
         }
+
+        public async Task<IEnumerable<Favorite>> GetFavorites(string UserId)
+        {
+            return await _context.Favorites.Include("Product").Where(x => x.IsDeleted == false && x.Product.IsDeleted== false && x.Product.Enter == true && x.UserId == UserId).ToListAsync();
+        }
     }
 }
