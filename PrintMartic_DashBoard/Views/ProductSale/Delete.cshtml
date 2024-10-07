@@ -4,8 +4,6 @@
 }
 
 
-<main role="main" class="main-content">
-
     <div class="m-auto  bg-white p-5">
         <h1>إزالة الخصم لمنتج </h1>
         @if (!string.IsNullOrEmpty(TempData["Message"] as string))
@@ -22,13 +20,12 @@
             <partial name="PartialViews/DeleteDetialsView" />
 
             <div class="form-group mt-4">
-                <input type="submit" value="Delete" class="btn btn-danger " />
-                <a asp-action="Index" class="btn btn-light">Back to List</a>
+                <input type="submit" value="حذف" class="btn btn-danger " />
+                <a asp-action="Index" class="btn btn-light">العوده</a>
             </div>
         </form>
     </div>
 
-</main>
 
 
 @* @section Scripts {

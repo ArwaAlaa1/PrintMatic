@@ -21,7 +21,7 @@ namespace PrintMatic.Repository.Repository
 
         public async Task<Category> GetCategoryWithProduct(int id)
         {
-           return await _context.Categories.Include(x => x.Products.Where(x => x.IsDeleted == false && x.Enter== true)).ThenInclude(x => x.ProductPhotos).Include(x => x.Products.Where(x => x.IsDeleted == false && x.Enter == true)).ThenInclude(x => x.ProductSales).FirstAsync(x => x.Id == id);
+           return await _context.Categories.Include(x => x.Products.Where(x => x.IsDeleted == false && x.Enter== true)).Where(x => x.Id == id && x.IsDeleted == false).FirstOrDefaultAsync();
         }
     }
 }

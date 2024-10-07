@@ -17,18 +17,18 @@ namespace PrintMatic.Helper
             CreateMap<CartItems,CartItemsDto>().ReverseMap();
             CreateMap<Address, AddressUseIdDto>().ReverseMap();
             CreateMap<Address, AddressDto>().ReverseMap();
-			 
-
-
-			CreateMap<CategoryDTO, Category>().ReverseMap();
+            CreateMap<Favorite, FavouriteDto>().ReverseMap();
+            CreateMap<ProductColor, ColorDto>().ReverseMap();
+            CreateMap<CategoryDTO, Category>().ReverseMap();
             CreateMap<Category , CategoryWithProDetails>().ReverseMap();
             CreateMap<Product, ProductDto>().ReverseMap();
-            CreateMap<ProductSale , ProductSaleDto>().ForMember(x => x.ProductId, o => o.MapFrom(x => x.Product.Id)).ForMember(x => x.ProductAfterSale, o => o.MapFrom(x => x.PriceAfterSale) ).ReverseMap();
-            CreateMap<ProductPhotos, ProductPhotoDto>().ForMember(x => x.ProductId, o => o.MapFrom(x => x.Product.Id)).ForMember(x =>x.FilePath , o => o.MapFrom(x => x.FilePath)).ReverseMap();
+            CreateMap<Product, ProductDetailsDTO>().ReverseMap();
 
+            // CreateMap<ProductSale , ProductSaleDto>().ForMember(x => x., o => o.MapFrom(x => x.Product.Id)).ForMember(x => x.ProductAfterSale, o => o.MapFrom(x => x.PriceAfterSale) ).ReverseMap();
+            CreateMap<ProductPhotos, ProductPhotoDto>().ForMember(x => x.ProductId, o => o.MapFrom(x => x.Product.Id)).ForMember(x =>x.FilePath , o => o.MapFrom(x => x.FilePath)).ReverseMap();
+            
 
         }
-
         private void CreateMap<T1, T2>(T2 addressDto, string v, object id)
         {
             throw new NotImplementedException();

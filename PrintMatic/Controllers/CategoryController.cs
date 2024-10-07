@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities;
+using PrintMatic.Core.Repository.Contract;
 using PrintMatic.DTOS;
 using PrintMatic.Repository;
 
@@ -13,11 +14,18 @@ namespace PrintMatic.Controllers
     {
         private readonly IUnitOfWork<Category> _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IProductSale _productSale;
+        private readonly IUnitOfWork<Review> _unitOfReview;
+        private readonly IProductPhoto _productPhoto;
 
-        public CategoryController(IUnitOfWork<Category> unitOfWork, IMapper mapper)
+        public CategoryController(IUnitOfWork<Category> unitOfWork, IMapper mapper
+            ,IProductSale productSale , IUnitOfWork<Review> unitOfReview , IProductPhoto productPhoto)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _productSale = productSale;
+            _unitOfReview = unitOfReview;
+            _productPhoto = productPhoto;
         }
 
         [HttpGet("GetAll")]
@@ -31,15 +39,25 @@ namespace PrintMatic.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<CategoryWithProDetails>> GetById(int id)
         {
+
             var category = await _unitOfWork.category.GetCategoryWithProduct(id);
-            if (category == null) 
+            if (category == null)
             {
                 return BadRequest("Category doesnot exist");
-            
             }
-            var CategoryMapped = _mapper.Map<Category , CategoryWithProDetails>(category);
+
+            var CategoryMapped = _mapper.Map<Category, CategoryWithProDetails>(category);
+            foreach (var prod in CategoryMapped.Products)
+            {
+                var SalesList = await _productSale.GetProByIDAsync(prod.Id);
+                var PList = await _productPhoto.GetPhotosOfProduct(prod.Id);
+                var Reviews = await _unitOfReview.review.GetReviewsOfPro(prod.Id);
+                var products = await ProductDto.GetProducts(prod, SalesList, PList, Reviews);
+                CategoryMapped.Products.ToList().Add(products);
+            }
             return Ok(CategoryMapped);
         }
+
 
     }
 }

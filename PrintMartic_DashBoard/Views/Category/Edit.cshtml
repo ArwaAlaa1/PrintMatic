@@ -14,7 +14,7 @@
 </hr>
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
 
-        <div asp-validation-summary="All"></div>
+        <div asp-validation-summary="All" class="text-danger"></div>
         <div class="form-row ">
             
             <div class="col">
@@ -82,8 +82,8 @@
 </form>
 
 </div>
-@* @section Scripts {
+@section Scripts {
     <partial name="_ValidationScriptsPartial" />
 
-} *@
+}
 

@@ -123,7 +123,7 @@ namespace PrintMartic_DashBoard.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
+                ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
             }
 
             return View(addUser);
@@ -175,7 +175,7 @@ namespace PrintMartic_DashBoard.Controllers
             catch (Exception ex)
             {
 
-                ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
             }
 
 

@@ -11,7 +11,7 @@ namespace PrintMatic.Core.Entities
 {
     public class Review : BaseEntity
     {
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
         [Range(1 , 5)]
         public float? Rating { get; set; }

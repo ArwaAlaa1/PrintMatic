@@ -12,7 +12,6 @@ namespace PrintMatic.Core.Repository.Contract
         Task<List<ProductColor>> GetIdOfProAsync(int id);
 
         Task<ProductColor?> GetColor_Pro(int Id);
-
         void Delete(int id);
     }
 }

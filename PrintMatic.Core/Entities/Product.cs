@@ -22,9 +22,7 @@ namespace PrintMatic.Core.Entities
         public int UrgentMaxDate { get; set; }
 
         public decimal NormalPrice { get; set; }
-        public decimal UrgentPrice { get;set; }
-
-        public bool Color { get; set; }
+        public decimal UrgentPrice { get; set; }
         public bool Text { get; set; }
         public bool Date { get; set; }
         

@@ -50,20 +50,17 @@ namespace PrintMartic_DashBoard.Controllers
            
                 if (result.Succeeded)
             {
-
+                if (role.Count == 0) 
+                {
+                    role = new string[] { "عميل" };
+                }
 
                 List<Claim>? claims = new List<Claim>()
                     {
                          new Claim(ClaimTypes.Name, login.UserName),
-                     new Claim(ClaimTypes.NameIdentifier, login.UserName)
-                    
+                     new Claim(ClaimTypes.NameIdentifier, login.UserName),
+                    new Claim(ClaimTypes.Role, role.FirstOrDefault())
                     };
-
-                if (role != null && role.Any())
-                {
-                    new Claim(ClaimTypes.Role, role.First());
-                }
-
 
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,
                     CookieAuthenticationDefaults.AuthenticationScheme);

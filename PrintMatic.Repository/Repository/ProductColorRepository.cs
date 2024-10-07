@@ -27,7 +27,7 @@ namespace PrintMatic.Repository.Repository
         {
             return _context.ProductColors.Where(x => x.Id == id && x.IsDeleted == false).FirstOrDefault();
         }
-       
+      
         public void Delete(int id)
         {
             var item = _context.ProductColors.Where(x=> x.Id == id).FirstOrDefault();

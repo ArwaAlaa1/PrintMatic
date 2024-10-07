@@ -2,8 +2,12 @@
 
 
 <div class="m-auto  bg-white p-5">
-    @*     <button type="button" class="btn btn-outline-secondary" style="float: left;">Secondary</button>
-    *@
+    @if (!string.IsNullOrEmpty(TempData["Message"] as string))
+    {
+        <div class="alert alert-primary mt-3 mb-2">
+            @TempData["message"]
+        </div>
+    }
     <a class="btn btn-outline-secondary " style="float: left; width: 170px; asp-controller="Category" asp-action="Create">
         إضافة خصم جديد
     </a>
@@ -11,12 +15,7 @@
 
     <h1>جميع الخصومات </h1>
 
-    @if (!string.IsNullOrEmpty(TempData["Message"] as string))
-    {
-        <div class="alert alert-primary mt-3 mb-2">
-            @TempData["message"]
-        </div>
-    }
+  
     <hr />
 
     @*  <h2 class="h4 mb-1">Customize table rendering</h2> *@
@@ -53,8 +52,8 @@
                             </div>
                         </td>
                         <th>معرف الخصم</th>
-                        <th>تاريخ البدايه</th>
-                        <th> تاريخ النهايه</th>
+                        <th>تاريخ بدء الخصم</th>
+                        <th> تاريخ انتهاء الخصم</th>
                         <th> نسبة الخصم</th>
                         <th>التفاصيل </th>
 

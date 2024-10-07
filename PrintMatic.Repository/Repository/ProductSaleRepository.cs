@@ -38,6 +38,15 @@ namespace PrintMatic.Repository.Repository
         {
             return await _context.productSales.Include("Product").Include("Sale").Where(x => x.ProductId == ProductId && x.SaleId == SaleId).FirstOrDefaultAsync();
         }
+        
+        public async Task<IEnumerable<ProductSale>> GetProByIDAsync(int ProductId)
+        {
+            return await _context.productSales.Include("Sale").Include("Product").OrderByDescending(x => x.Sale.SaleStartDate).Where(x => x.ProductId == ProductId && x.Product.IsDeleted == false).ToListAsync();
+        }
+        public async Task<IEnumerable<ProductSale>> GetActiveSales()
+        {
+            return await _context.productSales.Include("Sale").Include("Product").Where(x => x.Sale.SaleEndDate > DateTime.Now && x.IsDeleted == false).ToListAsync();
+        }
 
         public void Update(ProductSale entity)
         {

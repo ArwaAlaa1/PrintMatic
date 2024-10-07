@@ -37,7 +37,7 @@ namespace PrintMartic_DashBoard.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Message"] = ex.Message;
+                ViewData["Message"] = ex.InnerException?.Message.ToString() ?? ex.Message.ToString();
             }
             return RedirectToAction("Index", "Product");
         }

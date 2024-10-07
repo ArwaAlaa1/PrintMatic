@@ -39,6 +39,11 @@ namespace PrintMatic
 			builder.Services.AddDbContext<PrintMaticContext>(
 				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
 
+            builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+            builder.Services.AddAutoMapper(typeof(MappingProfiles));
+            builder.Services.AddScoped<ITokenService, TokenService>();
+            builder.Services.AddScoped(typeof(IProductSale), typeof(ProductSaleRepository));
+            builder.Services.AddScoped(typeof(IProductPhoto), typeof(ProductPhotoRepository));
 
 			builder.Services.AddSingleton<IConnectionMultiplexer>((serverprovider) =>
 			{

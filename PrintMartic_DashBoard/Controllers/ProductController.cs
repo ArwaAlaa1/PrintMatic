@@ -68,7 +68,7 @@ namespace PrintMartic_DashBoard.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Message"] = ex.Message;
+                ViewData["Message"] = ex.InnerException?.Message.ToString() ?? ex.Message.ToString();
                 return View("Error");
             }
         }
@@ -84,7 +84,7 @@ namespace PrintMartic_DashBoard.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Message"] = ex.Message;
+                ViewData["Message"] = ex.InnerException?.Message.ToString() ?? ex.Message.ToString();
                 return View("Error");
             }
         }
@@ -107,7 +107,7 @@ namespace PrintMartic_DashBoard.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Message"] = ex.Message;
+                ViewData["Message"] = ex.InnerException?.Message.ToString() ?? ex.Message.ToString();
             }
             return RedirectToAction(nameof(WaitingProducts));
 
@@ -134,34 +134,36 @@ namespace PrintMartic_DashBoard.Controllers
             }
             return View(itemMapped);
         }
+
         [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
-
-
-            //var cookievalue = Request.Cookies["Id"];
-            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            //Get the current user's username
-            //   var userName = User.Identity.Name;
-
-            ProductVM ProductVM = new ProductVM();
-            var List = await _catUnitOfwork.generic.GetAllAsync();
-            ProductVM.Categories = List;
-            List<AppUser> users = new List<AppUser>();
-            foreach (var item in _userManager.Users)
+            try
             {
-                if (item.IsCompany == true)
+                ProductVM ProductVM = new ProductVM();
+                var List = await _catUnitOfwork.generic.GetAllAsync();
+                ProductVM.Categories = List;
+                List<AppUser> users = new List<AppUser>();
+                foreach (var item in _userManager.Users)
                 {
-                    users.Add(item);
+                    if (item.IsCompany == true)
+                    {
+                        users.Add(item);
+                    }
                 }
-            }
-            ProductVM.Users = users;
+                ProductVM.Users = users;
 
-            return View(ProductVM);
+                return View(ProductVM);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
+                ;
+                return RedirectToAction(nameof(Index));
+            }
+
         }
 
-
-        [Authorize(AuthenticationSchemes = "Cookies", Roles = ("بائع"))]
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(AuthenticationSchemes = "Cookies", Roles = ("Admin"))]
@@ -185,8 +187,7 @@ namespace PrintMartic_DashBoard.Controllers
 
                     _unitOfWork.generic.Add(itemMapped);
                     var count = _unitOfWork.Complet();
-                    if (productVM.Color == true)
-                    {
+                    
                         if (productVM.ColorJson != null)
                         {
                             var colors = JsonConvert.DeserializeObject<List<string>>(productVM.ColorJson);
@@ -207,7 +208,7 @@ namespace PrintMartic_DashBoard.Controllers
                                 }
                             }
                         }
-                    }
+                    
                     if (productVM.SizeJson != null)
                     {
                         var sizes = JsonConvert.DeserializeObject<List<string>>(productVM.SizeJson);
@@ -234,7 +235,9 @@ namespace PrintMartic_DashBoard.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ViewData["Message"] = ex.InnerException.Message;
+                    ModelState.AddModelError("CategoryId", "ادخل اسم القسم من فضلك");
+                    ModelState.AddModelError("UserId", "ادخل اسم البائع من فضلك");
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
                 }
                 // var userid =userManager.Users.FirstAsync(n => n.UserName==user); 
 
@@ -291,8 +294,7 @@ namespace PrintMartic_DashBoard.Controllers
                     _unitOfWork.generic.Add(itemMapped);
                     var count = await _unitOfWork.CompletAsync();
 
-                    if (productVM.Color == true)
-                    {
+                   
                         if (productVM.ColorJson != null)
                         {
                             var colors = JsonConvert.DeserializeObject<List<string>>(productVM.ColorJson);
@@ -314,7 +316,7 @@ namespace PrintMartic_DashBoard.Controllers
                             }
                         }
 
-                    }
+                    
                     if (productVM.SizeJson != null)
                     {
                         var sizes = JsonConvert.DeserializeObject<List<string>>(productVM.SizeJson);
@@ -341,7 +343,8 @@ namespace PrintMartic_DashBoard.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ViewData["Message"] = ex.InnerException.Message;
+                    ModelState.AddModelError("CategoryId", "ادخل اسم القسم من فضلك");
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
                 }
                 // var userid =userManager.Users.FirstAsync(n => n.UserName==user); 
 
@@ -422,8 +425,7 @@ namespace PrintMartic_DashBoard.Controllers
                     var ProMapped = _mapper.Map<ProductVM, Product>(productVM);
                     _unitOfWork.generic.Update(ProMapped);
                     var count = _unitOfWork.Complet();
-                    if (productVM.Color == true)
-                    {
+                    
                         if(productVM.ColorJson != null)
                         {
                             var colors = JsonConvert.DeserializeObject<List<string>>(productVM.ColorJson);
@@ -445,7 +447,7 @@ namespace PrintMartic_DashBoard.Controllers
                             }
                         }
                        
-                    }
+                    
                     if(productVM.SizeJson != null)
                     {
                         var sizes = JsonConvert.DeserializeObject<List<string>>(productVM.SizeJson);
@@ -480,7 +482,8 @@ namespace PrintMartic_DashBoard.Controllers
                 }
                 catch (Exception ex)
                 {
-                    ModelState.AddModelError(string.Empty, ex.InnerException.Message);
+                    ModelState.AddModelError("CategoryId", "ادخل اسم القسم من فضلك");
+                    ModelState.AddModelError(string.Empty, ex.InnerException?.Message.ToString() ?? ex.Message.ToString());
 
                 }
             }
@@ -538,7 +541,8 @@ namespace PrintMartic_DashBoard.Controllers
             }
             catch (Exception ex)
             {
-                ViewData["Message"] = ex.InnerException.Message;
+
+                ViewData["Message"] = ex.InnerException?.Message.ToString() ?? ex.Message.ToString();
             }
             return View(productVM);
         }
