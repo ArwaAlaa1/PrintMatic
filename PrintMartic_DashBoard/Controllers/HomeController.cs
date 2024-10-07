@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PrintMartic_DashBoard.Models;
+using PrintMatic.Core;
+using PrintMatic.Core.Entities;
 using System.Diagnostics;
 
 namespace PrintMartic_DashBoard.Controllers
@@ -9,14 +11,26 @@ namespace PrintMartic_DashBoard.Controllers
     public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
+        private readonly IUnitOfWork<Product> _unitOfWork;
 
-		public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger , IUnitOfWork<Product> unitOfWork)
 		{
 			_logger = logger;
-		}
-
-		public IActionResult Index()
+            _unitOfWork = unitOfWork;
+        }
+		[Authorize(AuthenticationSchemes = "Cookies")]
+		public async Task<IActionResult> Index()
 		{
+            bool flag = false;
+            if (User.IsInRole("Admin"))
+			{
+                var list = await _unitOfWork.prodduct.GetWaitingProducts();
+                if (list.Any())
+                {
+                    flag = true;
+                }
+                return View(flag);
+            }
 			return View();
 		}
 

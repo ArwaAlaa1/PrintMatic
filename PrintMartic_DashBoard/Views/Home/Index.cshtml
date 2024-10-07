@@ -1,4 +1,5 @@
-﻿<!doctype html>
+﻿@model bool
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -24,11 +25,33 @@
     <!-- App CSS -->
     <link rel="stylesheet" href="~/css/app-light.css" id="lightTheme">
     <link rel="stylesheet" href="~/css/app-dark.css" id="darkTheme" disabled>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </head>
   <body class="vertical  light rtl ">
+    <script>
+        var flag = @Model.ToString().ToLower();
+        if (flag) {
+            Swal.fire({
+                toast: true,
+                position: 'top',  // Position the alert at the top
+                title: 'Notification',
+                text: 'هناك منتجات قيد الإنتظار يجب تأكيدها',
+                icon: 'info',  // Neutral 'info' icon
+                showConfirmButton: false,  // Hides the confirm button
+                timer: 5000,  // Auto close after 3 seconds
+                timerProgressBar: true,  // Show progress bar
+                background: '#e0f7fa',  // Light blue background for neutral notification
+                iconColor: '#007bff',  // Blue color for the info icon
+                customClass: {
+                    title: 'swal2-title',
+                    popup: 'swal2-popup'
+                }
+            });
+        }
+    </script>
     <div class="wrapper">
       
-
+       
         <div class="container-fluid">
           <div class="row justify-content-center">
             <div class="col-12">
@@ -647,6 +670,7 @@
         </div>
       
     </div> <!-- .wrapper -->
+   
     <script src="~/js/jquery.min.js"></script>
     <script src="~/js/popper.min.js"></script>
     <script src="~/js/moment.min.js"></script>
@@ -897,3 +921,4 @@
     </script>
   </body>
 </html>
+
