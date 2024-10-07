@@ -27,10 +27,11 @@ namespace PrintMatic.Extensions
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = true;
-                options.Password.RequiredLength = 6;
-
+                options.Password.RequiredLength = 5;
+             
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
 
 			}).AddEntityFrameworkStores<PrintMaticContext>()
 			  .AddDefaultTokenProviders();
@@ -52,7 +53,8 @@ namespace PrintMatic.Extensions
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"])),
                         ValidateLifetime = true,
                     };
-                });
+					
+				});
 
             return services;
         }

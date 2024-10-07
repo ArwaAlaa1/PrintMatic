@@ -1,5 +1,5 @@
-
-using AutoMapper;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -32,7 +32,7 @@ namespace PrintMatic
 
 			#region Service Container
 			// Add services to the container.
-
+			builder.Services.AddScoped<IAuthorizationMiddlewareResultHandler, ValidationAuthorization>();
 			builder.Services.AddControllers();
 
 			//Add Context Services
@@ -46,17 +46,11 @@ namespace PrintMatic
 				return ConnectionMultiplexer.Connect(connectionredis);
 			});
 
-			builder.Services.AddApplicationServices();	
+			builder.Services.AddApplicationServices();
 
 			builder.Services.AddIdentityServices(builder.Configuration);
 			builder.Services.AddAuthorization();
 			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
-			builder.Services.AddEndpointsApiExplorer();
-			builder.Services.AddSwaggerGen();
-			#endregion
-
-
 			builder.Services.Configure<ApiBehaviorOptions>(options =>
 			{
 				options.InvalidModelStateResponseFactory = context =>
@@ -69,6 +63,24 @@ namespace PrintMatic
 					return new BadRequestObjectResult(new { Message = errorMessage });
 				};
 			});
+	builder.Services.AddCors(options =>
+			{
+				options.AddPolicy("AllowAllOrigins",
+					builder =>
+					{
+						builder.AllowAnyOrigin()
+							   .AllowAnyMethod()
+							   .AllowAnyHeader();
+					});
+			});
+
+
+			
+			builder.Services.AddEndpointsApiExplorer();
+			builder.Services.AddSwaggerGen();
+			#endregion
+
+
 
 			var app = builder.Build();
 
@@ -88,7 +100,8 @@ namespace PrintMatic
 				await dbcontext.Database.MigrateAsync();
 
 				var usermanager = services.GetRequiredService<UserManager<AppUser>>();
-				await AppSeeding.SeedUsersAsync(usermanager);
+				var rolemanager = services.GetRequiredService<RoleManager<IdentityRole>>();
+				await AppSeeding.SeedUsersAsync(usermanager,rolemanager);
 
 			}
 			catch (Exception ex)
@@ -98,42 +111,50 @@ namespace PrintMatic
 
 			}
 
-
 			#endregion
+
 			app.UseSwagger();
-			app.UseSwaggerUI();
-			//if (app.Environment.IsDevelopment())
-				
-			//else
-			//	app.UseSwaggerUI(options =>
-			//	{
-			//		options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-			//		options.RoutePrefix = string.Empty;
-			//	});
-			// Configure the HTTP request pipeline.
+			if (app.Environment.IsDevelopment())
+				app.UseSwaggerUI();
+			else
+				app.UseSwaggerUI(options =>
+				{
+					options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+					options.RoutePrefix = string.Empty;
+				});
+			//app.UseSwagger();
+			//app.UseSwaggerUI();
+			//app.Use
 			//if (app.Environment.IsDevelopment())
 			//{
 			//	app.UseSwagger();
 			//	app.UseSwaggerUI();
-			//}
-            app.UseStaticFiles();
-
-            // Enable serving static files from the custom folder (assets/images/Users)
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(
-                    Path.Combine(builder.Environment.ContentRootPath, "assets", "images", "Users")), // Specify the path to your custom folder
-                RequestPath = "/assets/images/Users" // The request path to access the files
-            });
-            app.UseHttpsRedirection();
-
-			app.UseAuthentication();
-			app.UseAuthorization();
+			//}Swagger();
+			//app.UseSwagger();
+			//app.UseSwaggerUI(c =>
+			//{
+			//	c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+			//	c.RoutePrefix = string.Empty; // Makes Swagger UI the app's root
+			//});
 
 
-			app.MapControllers();
+			app.UseHttpsRedirection(); // Redirect HTTP requests to HTTPS
+			app.UseStaticFiles(); // Serve static files
 
-			app.Run();
+			app.UseRouting(); // Configure routing
+
+			app.UseCors("AllowAllOrigins"); // Apply CORS policy
+
+			app.UseAuthentication(); // Enable authentication
+			app.UseAuthorization(); // Enable authorization
+
+			
+
+			app.MapControllers();      // 7. Map routes
+
+			app.Run();                 // 8. Run the application
+
+			
 		}
 	}
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PrintMatic.Repository.Data;
 
@@ -11,9 +12,11 @@ using PrintMatic.Repository.Data;
 namespace PrintMatic.Repository.Data.Migrations
 {
     [DbContext(typeof(PrintMaticContext))]
-    partial class PrintMaticContextModelSnapshot : ModelSnapshot
+    [Migration("20241005175715_order")]
+    partial class order
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -356,9 +359,6 @@ namespace PrintMatic.Repository.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ShippingCostId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -367,8 +367,6 @@ namespace PrintMatic.Repository.Data.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ShippingCostId");
 
                     b.ToTable("Orders");
                 });
@@ -407,42 +405,6 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
-                });
-
-            modelBuilder.Entity("PrintMatic.Core.Entities.Order.ShippingCost", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ShippingTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ShippingCosts");
                 });
 
             modelBuilder.Entity("PrintMatic.Core.Entities.Product", b =>
@@ -796,10 +758,6 @@ namespace PrintMatic.Repository.Data.Migrations
 
             modelBuilder.Entity("PrintMatic.Core.Entities.Order.Order", b =>
                 {
-                    b.HasOne("PrintMatic.Core.Entities.Order.ShippingCost", "ShippingCost")
-                        .WithMany()
-                        .HasForeignKey("ShippingCostId");
-
                     b.OwnsOne("PrintMatic.Core.Entities.Order.Address", "ShippingAddress", b1 =>
                         {
                             b1.Property<int>("OrderId")
@@ -838,8 +796,6 @@ namespace PrintMatic.Repository.Data.Migrations
 
                     b.Navigation("ShippingAddress")
                         .IsRequired();
-
-                    b.Navigation("ShippingCost");
                 });
 
             modelBuilder.Entity("PrintMatic.Core.Entities.Order.OrderItem", b =>

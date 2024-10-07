@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PrintMatic.Core.Entities.Order;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,13 +9,21 @@ namespace PrintMatic.Core.Entities
 {
     public class CustomerCart
     {
+        public CustomerCart()
+        {
+            
+        }
         public CustomerCart(string id)
         {
             Id = id;
             Items = new List<CartItems>();
+            orderSammery=new OrderSammery();
         }
 
         public string Id { get; set; }
         public List<CartItems> Items { get; set; }
+
+        public OrderSammery?  orderSammery { get; set; }
+
     }
 }
