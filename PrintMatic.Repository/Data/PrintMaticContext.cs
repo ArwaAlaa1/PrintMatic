@@ -34,19 +34,14 @@ namespace PrintMatic.Repository.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
            base.OnConfiguring(optionsBuilder);
-<<<<<<< HEAD
+
 			// optionsBuilder.UseSqlServer("Server=db8617.public.databaseasp.net; Database=db8617; User Id=db8617; Password=2f!YQ3q@4#Zh; Encrypt=False; MultipleActiveResultSets=True;");
 			//optionsBuilder.UseSqlServer("Data source =DESKTOP-9IISLS5; DataBase = PrintMaticDB; Trusted_Connection= True;TrustServerCertificate=True");
          optionsBuilder.UseSqlServer("server =Arwa-Alaa\\SQLEXPRESS; DataBase = PrintMatic2; Trusted_Connection = True; TrustServerCertificate = True");
 			//  optionsBuilder.UseSqlServer(configuration.GetConnectionString("conn"));
 		}
-=======
-           //optionsBuilder.UseSqlServer("server =Arwa-Alaa\\SQLEXPRESS; DataBase = PrintMatic; Trusted_Connection= True;TrustServerCertificate=True");
-            optionsBuilder.UseSqlServer("Data source =DESKTOP-9IISLS5; DataBase = PrintMaticDB; Trusted_Connection= True;TrustServerCertificate=True");
 
-            //  optionsBuilder.UseSqlServer(configuration.GetConnectionString("conn"));
-        }
->>>>>>> e7a1ce2fcefa8289c004219ba33f26f0fd9a5f0d
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

@@ -20,7 +20,7 @@ namespace PrintMatic.Repository.Data
 					UserName="Arwa10",
 					PhoneNumber="01011037481"
 				};
-<<<<<<< HEAD
+
 				var nagham = new AppUser()
 				{
 					Email = "nagham15@gmail.com",
@@ -40,9 +40,9 @@ namespace PrintMatic.Repository.Data
 				var resultAdd =await _usermanager.AddToRoleAsync(arwa, "Admin");
 				var resultAdd2 = await _usermanager.AddToRoleAsync(nagham, "Admin");
 
-=======
-				var result=await _usermanager.CreateAsync(user,"P@ssWord1");
->>>>>>> e7a1ce2fcefa8289c004219ba33f26f0fd9a5f0d
+
+			
+
 			}
 		}
 	}

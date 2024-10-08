@@ -15,6 +15,10 @@ namespace PrintMatic.Repository.Data.Configuration
 		{
 			builder.OwnsOne(OItem => OItem.ProductItem, ProductItem => ProductItem.WithOwner());
 			builder.Property(o => o.Price).HasColumnType("decimal(18,2)");
+			builder.Property(o => o.OrderItemStatus).HasConversion(
+			OStatus => OStatus.ToString(), //store
+			OStatus => (OrderItemStatus)Enum.Parse(typeof(OrderItemStatus), OStatus)//retrive
+			);
 			//builder.Property(o => o.ProductOrderDetails.NormalPrice).HasColumnType("decimal(18,2)");
 			//builder.Property(o => o.ProductOrderDetails.PriceAfterSale).HasColumnType("decimal(18,2)");
 		}

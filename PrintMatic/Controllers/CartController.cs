@@ -7,6 +7,7 @@ using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
 using PrintMatic.Core.Repository.Contract;
 using PrintMatic.DTOS;
+using StackExchange.Redis;
 
 namespace PrintMatic.Controllers
 {
@@ -47,6 +48,7 @@ namespace PrintMatic.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             cart.Id = user.Id;
+            
             var mappedcart = _mapper.Map<CustomerCart>(cart);
             var createOrupdateCart = await cartRepository.UpdateCartAsync(mappedcart);
             if (createOrupdateCart == null) return BadRequest();

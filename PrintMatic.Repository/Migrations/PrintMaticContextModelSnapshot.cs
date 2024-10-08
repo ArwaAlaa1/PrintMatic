@@ -8,7 +8,7 @@ using PrintMatic.Repository.Data;
 
 #nullable disable
 
-namespace PrintMatic.Repository.Data.Migrations
+namespace PrintMatic.Repository.Migrations
 {
     [DbContext(typeof(PrintMaticContext))]
     partial class PrintMaticContextModelSnapshot : ModelSnapshot
@@ -432,6 +432,10 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
+                    b.Property<string>("OrderItemStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
@@ -707,7 +711,6 @@ namespace PrintMatic.Repository.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Message")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ModifiedDate")

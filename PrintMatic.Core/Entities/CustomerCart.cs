@@ -17,13 +17,13 @@ namespace PrintMatic.Core.Entities
         {
             Id = id;
             Items = new List<CartItems>();
-            orderSammery=new OrderSammery();
+            //orderSammery=new OrderSammery(Items);
         }
 
         public string Id { get; set; }
         public List<CartItems> Items { get; set; }
 
-        public OrderSammery?  orderSammery { get; set; }
+       //public OrderSammery?  orderSammery { get; set; }
 
     }
 }
