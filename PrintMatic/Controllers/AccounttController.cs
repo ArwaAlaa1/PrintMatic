@@ -76,12 +76,13 @@ namespace PrintMatic.Controllers
 
 
         //Login EndPoint Domain/Api/Account/login
-        //[Authorize]
+
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var user = await _userManager.FindByEmailAsync(loginDto.EmailOrUserName)??
-                                await _userManager.FindByNameAsync(loginDto.EmailOrUserName); 
+			var user = await _userManager.FindByEmailAsync(loginDto.EmailOrUserName)??
+				await _userManager.FindByNameAsync(loginDto.EmailOrUserName) ;
+                               
             if (user == null) return Unauthorized(new {
 				Message = "اسم المستخدم أو البريد الالكترونى غير صحيح"
 			});
@@ -127,13 +128,22 @@ namespace PrintMatic.Controllers
 
 			if (!result.Succeeded)
 			{
-				if (result.Errors.Any(e => e.Code == "DuplicateUserName"))
-				{
-					return new BadRequestObjectResult(new { Message = "اسم المستخدم موجود بالفعل. الرجاء اختيار اسم مستخدم آخر." });
-				}
+				string errors = string.Join(", ", result.Errors.Select(e => _userService.GetCustomErrorsMessage(e)));
+
+				
+				return BadRequest(new { message = errors });
+
+				//if (result.Errors.Any(e => e.Code == "DuplicateUserName"))
+				//{
+				//	return new BadRequestObjectResult(new { Message = "اسم المستخدم موجود بالفعل. الرجاء اختيار اسم مستخدم آخر." });
+				//}
+				//if (result.Errors.Any(e => e.Code == "DuplicateUserName"))
+				//{
+				//	return new BadRequestObjectResult(new { Message = "اسم المستخدم موجود بالفعل. الرجاء اختيار اسم مستخدم آخر." });
+				//}
 				//var errors = result.Errors.Select(e => _userService.GetCustomErrorsMessage(e)).ToArray();
 
-				return new BadRequestObjectResult(new { Message = "فشل إنشاء المستخدم. الرجاء التحقق من البيانات والمحاولة مرة أخرى." });
+				//return new BadRequestObjectResult(new { Message = "فشل إنشاء المستخدم. الرجاء التحقق من البيانات والمحاولة مرة أخرى." });
 			}
 
 		
@@ -148,7 +158,7 @@ namespace PrintMatic.Controllers
       
 
 		//ForgetPassword EndPoint Domain/Api/Account/forgetpassword
-		[Authorize]
+		
         [HttpPost("forgetpassword")]
         public async Task<ActionResult> ForgetPassword(ForgetPasswordDTO forgetPasswordDto)
         {
@@ -173,21 +183,22 @@ namespace PrintMatic.Controllers
 		}
 
 		//VerifyCode EndPoint Domain/Api/Account/VerifyCode
-		[Authorize]
+		
         [HttpPost("VerifyCode")]
-        public async Task<ActionResult> VerifyCode(VerifyCodeDto verifyCodeDto)
+        public async Task<ActionResult> VerifyCode(VerifyCodeDto verifyCode)
         {
-			var user = await _userManager.GetUserAsync(User);
+			var user = await _userManager.FindByEmailAsync(verifyCode.Email);
+
 			if (user is null)
-			     return Unauthorized(new { Message = "المستخدم غير مسجل الدخول" });
-			
-			
-            var otp = await _verificationService.GetVerificationCode(user.Id);
+				return Unauthorized(new { Message = "هذا البريد الالكترونى غير موجود" });
+
+
+			var otp = await _verificationService.GetVerificationCode(user.Id);
 			
 			if (otp == null)
-                return BadRequest(new { Message = "هذا الكود غير صالح" });
+                return BadRequest(new { Message = "تم انتهاء صلاحيه استخدام الكود" });
            
-            else if(otp != verifyCodeDto.Code)
+            else if(otp != verifyCode.Code)
                 return BadRequest(new { Message = "هذا الكود غير صحيح" });
 			else
 				return Ok(new { Message = "تم تأكيد الكود بنجاح" });
@@ -198,12 +209,13 @@ namespace PrintMatic.Controllers
 		}
 
 		//ResendCode EndPoint Domain/Api/Account/ResendCode
-		[Authorize, HttpGet("ResendCode")]
-        public async Task<ActionResult> ResendCode()
+		[HttpGet("ResendCode")]
+        public async Task<ActionResult> ResendCode(EmailDto emailDto)
         {
-			var user = await _userManager.GetUserAsync(User);
+			var user = await _userManager.FindByEmailAsync(emailDto.Email);
+			
 			if (user is null)
-				return Unauthorized(new { Message = "المستخدم غير مسجل الدخول" });
+				return Unauthorized(new { Message = "هذا البريد الالكترونى غير موجود" });
 
 
 			var OTP = new Random().Next(1000, 9999).ToString();
@@ -216,14 +228,15 @@ namespace PrintMatic.Controllers
 		}
 
         //ResetPassword EndPoint Domain/Api/Account/ResetPassword
-        [Authorize]
+       
         [HttpPost("ResetPassword")]
         public async Task<ActionResult> ResetPassword(ResetPasswordDto resetPasswordDto)
         {
 
-			var user = await _userManager.GetUserAsync(User);
+			var user = await _userManager.FindByEmailAsync(resetPasswordDto.Email);
+
 			if (user is null)
-				return Unauthorized(new { Message = "المستخدم غير مسجل الدخول" });
+				return Unauthorized(new { Message = "هذا البريد الالكترونى غير موجود" });
 
 			var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 			if (string.IsNullOrEmpty(token))
@@ -303,8 +316,8 @@ namespace PrintMatic.Controllers
 			await _signInManager.SignOutAsync();
 			return Ok(new
 			{
-				Status = true,
-				Message = "Logged out successfully"
+				
+				Message = "تم تسجيل الخروج بنجاح"
 			});
 		}
 
@@ -336,7 +349,7 @@ namespace PrintMatic.Controllers
                     PhoneNumber = user.PhoneNumber,
 
 
-                    Image = $"{_apiBaseUrl}/assets/images/Users/{user.FilePath ?? "default-image.png"}"
+                    Image = $"{_apiBaseUrl}/images/Users/{user.FilePath ?? "UserDefault.png"}"
 
                 });
             }
@@ -431,7 +444,7 @@ namespace PrintMatic.Controllers
             }else
                 return BadRequest(new
 				{
-                    Message = "لم تم إضافه العنوان !"
+                    Message = "فشل إضافه العنوان !"
                 });
 	
 
@@ -463,19 +476,19 @@ namespace PrintMatic.Controllers
 				else
 					return BadRequest(new
 					{
-						Message = "لم يتم تعديل العنوان !"
+						Message = "فشل تعديل العنوان !"
 					});
 
 			}
 			catch (Exception ex)
 			{
 
-				
-
-			}return BadRequest(new
+				return BadRequest(new
 				{
 					Message = "لم يتم تعديل العنوان !"
 				});
+
+			}
 
 
         }
@@ -542,101 +555,92 @@ namespace PrintMatic.Controllers
         }
 
 
-        [Authorize]
-        [HttpPut("AddProfilePhoto")]
-        public async Task<ActionResult> AddProfilePhoto(UserProfilePhotoDto userProfilePhotoDto)
-        {
-            var user=await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound(new
-                {
-                    Message = "المستخدم غير موجود"
-                });
-            }
-            string uploadDir = Path.Combine(_imagepath, "assets","images","Users");
-            if (!Directory.Exists(uploadDir))
-            {
-                Directory.CreateDirectory(uploadDir); 
-            }
+		[Authorize]
+		[HttpPut("AddProfilePhoto")]
+		public async Task<ActionResult> AddProfilePhoto(UserProfilePhotoDto userProfilePhotoDto)
+		{
+			var user = await _userManager.GetUserAsync(User);
+			if (user == null)
+			{
+				return NotFound(new { Message = "المستخدم غير موجود" });
+			}
 
-            var photoName = $"{Guid.NewGuid()}{Path.GetExtension(userProfilePhotoDto.Image.FileName)}";
-            var path=Path.Combine(uploadDir, photoName);
-            if (user.FilePath !=null)
-            {  var existingPhotoPath = Path.Combine(_imagepath, user.FilePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
-if (!string.IsNullOrEmpty(user.FilePath) && System.IO.File.Exists(existingPhotoPath))
-            {
-                try
-                {
-                    System.IO.File.Delete(existingPhotoPath);
-                }
-                catch (Exception ex)
-                {
-                    // Handle file deletion error
-                    return BadRequest(new { Message = "خطأ في حذف الصورة القديمة." });
-                }
-            }
+			// Ensure the images are saved in the correct wwwroot path
+			string uploadDir = Path.Combine(_imagepath, "images", "Users"); // Adjusted path
+			if (!Directory.Exists(uploadDir))
+			{
+				Directory.CreateDirectory(uploadDir);
+			}
 
-            }
-          
-            
-                // Save the new photo
-                try
-                {
-                    using (var fileStream = new FileStream(path, FileMode.Create))
-                    {
-                        await userProfilePhotoDto.Image.CopyToAsync(fileStream);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(new { message = "خطأ في تحميل الصورة الجديدة." });
-                }
+			var photoName = $"{Guid.NewGuid()}{Path.GetExtension(userProfilePhotoDto.Image.FileName)}";
+			var path = Path.Combine(uploadDir, photoName);
 
-                // Update the user's photo path
-                user.FilePath = $"/assets/images/Users/{photoName}";
-                var result = await _userManager.UpdateAsync(user);
-                if (result.Succeeded)
-                {
-                    return Ok(new { message = "تم تعديل صوره الاكونت بنجاح !" });
-                }
-                else
-                {
-                   
-                    return BadRequest(new {Message="حدث خطأ فى اضافه صوره الاكونت اعد المحاوله مره اخرى" });
-                }
-            
-          
-         
+			// Check if the user already has an existing photo and delete it
+			if (!string.IsNullOrEmpty(user.FilePath))
+			{
+				var existingPhotoPath = Path.Combine(_imagepath, user.FilePath.TrimStart('/').Replace("/", Path.DirectorySeparatorChar.ToString()));
+				if (System.IO.File.Exists(existingPhotoPath))
+				{
+					try
+					{
+						System.IO.File.Delete(existingPhotoPath);
+					}
+					catch (Exception ex)
+					{
+						return BadRequest(new { Message = "خطأ في حذف الصورة القديمة." });
+					}
+				}
+			}
 
+			// Save the new photo
+			try
+			{
+				using (var fileStream = new FileStream(path, FileMode.Create))
+				{
+					await userProfilePhotoDto.Image.CopyToAsync(fileStream);
+				}
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(new { message = "خطأ في تحميل الصورة الجديدة." });
+			}
 
+			// Update the user's photo path
+			user.FilePath = $"/images/Users/{photoName}";
+			var result = await _userManager.UpdateAsync(user);
+			if (result.Succeeded)
+			{
+				return Ok(new { message = "تم رفع صورة الحساب بنجاح!" });
+			}
+			else
+			{
+				return BadRequest(new { Message = "حدث خطأ في إضافة صورة الحساب. أعد المحاولة مرة أخرى." });
+			}
+		}
 
-        }
-     
+		//[Authorize]
+		//[HttpGet("logout")]
+		//public async Task<ActionResult> Logout()
+		//{
+		//	try
+		//	{
+		//		var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
+		//		var result = await _userManager.RemoveAuthenticationTokenAsync(user, "JwtBearer", "JwtBearer");
+		//		if (!result.Succeeded)
+		//		{
+		//			var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+		//			return BadRequest($"خطأ في إزالة رمز المصادقة: {errors}");
+		//		}
+		//	}
+		//	catch (Exception ex)
+		//	{
 
-        //[Authorize]
-        //[HttpGet("logout")]
-        //public async Task<ActionResult> Logout()
-        //{
-        //	try
-        //	{
-        //		var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
-        //		var result = await _userManager.RemoveAuthenticationTokenAsync(user, "JwtBearer", "JwtBearer");
-        //		if (!result.Succeeded)
-        //		{
-        //			var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-        //			return BadRequest($"خطأ في إزالة رمز المصادقة: {errors}");
-        //		}
-        //	}
-        //	catch (Exception ex)
-        //	{
+		//		return BadRequest(ex.Message);
+		//	}
 
-        //		return BadRequest(ex.Message);
-        //	}
+		//	return Ok(new { Message = "تم تسجيل الخروج بنجاح" });
+		//}
 
-        //	return Ok(new { Message = "تم تسجيل الخروج بنجاح" });
-        //}
-
-    }
+	}
 
 }

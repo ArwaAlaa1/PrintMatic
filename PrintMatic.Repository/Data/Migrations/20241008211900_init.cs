@@ -93,6 +93,25 @@ namespace PrintMatic.Repository.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ShippingCosts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Cost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ShippingTime = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShippingCosts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -271,6 +290,39 @@ namespace PrintMatic.Repository.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrderDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShippingAddress_FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShippingAddress_PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShippingAddress_Region = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShippingAddress_City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShippingAddress_Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShippingAddress_AddressDetails = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ShippingCostId = table.Column<int>(type: "int", nullable: true),
+                    SubTotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PaymentId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_ShippingCosts_ShippingCostId",
+                        column: x => x.ShippingCostId,
+                        principalTable: "ShippingCosts",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Favorites",
                 columns: table => new
                 {
@@ -406,7 +458,7 @@ namespace PrintMatic.Repository.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Rating = table.Column<float>(type: "real", nullable: true),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
@@ -429,6 +481,50 @@ namespace PrintMatic.Repository.Data.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductItem_ProductId = table.Column<int>(type: "int", nullable: false),
+                    ProductItem_Photo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductItem_Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductItem_Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductItem_CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductItem_UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductItem_NormalMinDate = table.Column<int>(type: "int", nullable: true),
+                    ProductItem_NormalMaxDate = table.Column<int>(type: "int", nullable: true),
+                    ProductItem_UrgentMinDate = table.Column<int>(type: "int", nullable: true),
+                    ProductItem_UrgentMaxDate = table.Column<int>(type: "int", nullable: true),
+                    ProductItem_NormalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProductItem_PriceAfterSale = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    ProductItem_Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductItem_Color = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductItem_Size = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductItem_Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductItem_Date = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductItem_Photos = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductItem_FilePdf = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OrderItemStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -484,6 +580,16 @@ namespace PrintMatic.Repository.Data.Migrations
                 name: "IX_Favorites_UserId",
                 table: "Favorites",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_OrderId",
+                table: "OrderItems",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ShippingCostId",
+                table: "Orders",
+                column: "ShippingCostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductColors_ProductId",
@@ -546,6 +652,9 @@ namespace PrintMatic.Repository.Data.Migrations
                 name: "Favorites");
 
             migrationBuilder.DropTable(
+                name: "OrderItems");
+
+            migrationBuilder.DropTable(
                 name: "ProductColors");
 
             migrationBuilder.DropTable(
@@ -564,10 +673,16 @@ namespace PrintMatic.Repository.Data.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
                 name: "Sales");
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "ShippingCosts");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

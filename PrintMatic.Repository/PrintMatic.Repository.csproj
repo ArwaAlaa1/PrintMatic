@@ -9,8 +9,11 @@
 
   <ItemGroup>
     <Compile Remove="Data\Configurations\**" />
+    <Compile Remove="Data\Migrations\**" />
     <EmbeddedResource Remove="Data\Configurations\**" />
+    <EmbeddedResource Remove="Data\Migrations\**" />
     <None Remove="Data\Configurations\**" />
+    <None Remove="Data\Migrations\**" />
   </ItemGroup>
 
   <ItemGroup>

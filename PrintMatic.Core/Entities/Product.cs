@@ -37,7 +37,7 @@ namespace PrintMatic.Core.Entities
 		[ForeignKey(nameof(AppUser))]
 		public string UserId { get; set; }
 
-        public virtual ICollection<ProductPhotos > ProductPhotos { get; set; }
+        public virtual ICollection<ProductPhotos> ProductPhotos { get; set; }
         public virtual ICollection<ProductSale> ProductSales { get; set; }
 
 
