@@ -17,15 +17,18 @@ namespace PrintMatic.Controllers
         private readonly IProductSale _productSale;
         private readonly IUnitOfWork<Review> _unitOfReview;
         private readonly IProductPhoto _productPhoto;
+        private readonly IUnitOfWork<ProductColor> _unitOfcolor;
 
         public CategoryController(IUnitOfWork<Category> unitOfWork, IMapper mapper
-            ,IProductSale productSale , IUnitOfWork<Review> unitOfReview , IProductPhoto productPhoto)
+            ,IProductSale productSale , IUnitOfWork<Review> unitOfReview , IProductPhoto productPhoto,
+            IUnitOfWork<ProductColor> unitOfcolor)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _productSale = productSale;
             _unitOfReview = unitOfReview;
             _productPhoto = productPhoto;
+            _unitOfcolor = unitOfcolor;
         }
 
         [HttpGet("GetAll")]
@@ -52,7 +55,8 @@ namespace PrintMatic.Controllers
                 var SalesList = await _productSale.GetProByIDAsync(prod.Id);
                 var PList = await _productPhoto.GetPhotosOfProduct(prod.Id);
                 var Reviews = await _unitOfReview.review.GetReviewsOfPro(prod.Id);
-                var products = await ProductDto.GetProducts(prod, SalesList, PList, Reviews);
+                var Colors = await _unitOfcolor.color.GetIdOfProAsync(prod.Id);
+                var products = await ProductDto.GetProducts(prod, SalesList, PList, Reviews,Colors);
                 CategoryMapped.Products.ToList().Add(products);
             }
             return Ok(CategoryMapped);

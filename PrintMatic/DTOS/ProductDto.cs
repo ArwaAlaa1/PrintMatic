@@ -14,13 +14,13 @@ namespace PrintMatic.DTOS
         //public decimal Rating { get; set; }
         public decimal TotalPrice { get; set; }
         public decimal PriceAfterSale {  get; set; }
-        public string FilePath { get; set; }
+        public string PhotoUrl { get; set; }
         public float? AvgRating { get; set; }
+        public List<string> Colors {  get; set; } = new List<string>();
 
-       
+        
 
-
-        public static async Task<ProductDto> GetProducts(ProductDto product,IEnumerable<ProductSale> sales,IEnumerable<ProductPhotos> photos,IEnumerable<Review> reviews)
+        public static async Task<ProductDto> GetProducts(ProductDto product,IEnumerable<ProductSale> sales,IEnumerable<ProductPhotos> photos,IEnumerable<Review> reviews, IEnumerable<ProductColor>  colors)
         {
            
                 if (sales.ToList().Count > 0)
@@ -44,7 +44,7 @@ namespace PrintMatic.DTOS
                     var pitem = photos.FirstOrDefault();
                     if (pitem != null)
                     {
-                        product.FilePath = pitem.FilePath;
+                    product.PhotoUrl = $"http://printsite.runasp.net//Uploads//products//{pitem.Photo}";
                     }
                 }
                 float? Rating = 0f;
@@ -57,10 +57,15 @@ namespace PrintMatic.DTOS
 
                 }
                 product.AvgRating = Rating / 5f;
-            
+            if (colors.Any())
+            {
+                foreach (var color in colors)
+                {
+                    product.Colors.Add(color.HexCode);
+                }
+            }
             return product;
             
-
         }
 
     }

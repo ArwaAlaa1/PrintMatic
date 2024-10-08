@@ -19,7 +19,7 @@ namespace PrintMatic.Helper
             CreateMap<Address, AddressDto>().ReverseMap();
             CreateMap<Favorite, FavouriteDto>().ReverseMap();
             CreateMap<ProductColor, ColorDto>().ReverseMap();
-            CreateMap<CategoryDTO, Category>().ReverseMap();
+            CreateMap<Category, CategoryDTO>().ForMember(i => i.PhotoURL, i => i.MapFrom<CategoryPhotoResolved>()).ReverseMap();
             CreateMap<Category , CategoryWithProDetails>().ReverseMap();
             CreateMap<Product, ProductDto>().ReverseMap();
             CreateMap<Product, ProductDetailsDTO>().ReverseMap();

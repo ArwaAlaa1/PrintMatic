@@ -21,9 +21,11 @@ namespace PrintMatic.Controllers
         private readonly IProductPhoto _productPhoto;
         private readonly IProductSale _productSale;
         private readonly IUnitOfWork<Review> _unitOfReview;
+        private readonly IUnitOfWork<ProductColor> _unitOfcolor;
 
         public FavouriteController(IUnitOfWork<Favorite> fav , IUnitOfWork<Product> product
-            ,UserManager<AppUser> user , IMapper mapper, IProductPhoto productPhoto, IProductSale productSale, IUnitOfWork<Review> unitOfReview)
+            ,UserManager<AppUser> user , IMapper mapper, IProductPhoto productPhoto, IProductSale productSale, IUnitOfWork<Review> unitOfReview
+            ,IUnitOfWork<ProductColor> unitOfcolor)
         {
             _fav = fav;
             _product = product;
@@ -32,6 +34,7 @@ namespace PrintMatic.Controllers
             _productPhoto = productPhoto;
             _productSale = productSale;
             _unitOfReview = unitOfReview;
+            _unitOfcolor = unitOfcolor;
         }
         [HttpPost("AddFavourite")]
         public async Task<IActionResult> AddFavourite(int productId)
@@ -144,7 +147,8 @@ namespace PrintMatic.Controllers
                         var SalesList = await _productSale.GetProByIDAsync(favourite.Product.Id);
                         var PList = await _productPhoto.GetPhotosOfProduct(favourite.Product.Id);
                         var Reviews = await _unitOfReview.review.GetReviewsOfPro(favourite.Product.Id);
-                        var product = await ProductDto.GetProducts(favourite.Product, SalesList, PList, Reviews);
+                        var Colors = await _unitOfcolor.color.GetIdOfProAsync(favourite.Product.Id);
+                        var product = await ProductDto.GetProducts(favourite.Product, SalesList, PList, Reviews ,Colors);
                         productDtos.Add(product);
                     }
                     return Ok(productDtos);

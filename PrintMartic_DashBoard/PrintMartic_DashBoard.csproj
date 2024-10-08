@@ -23,7 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PrintMatic\PrintMatic.csproj" />
+    <ProjectReference Include="..\PrintMatic.Core\PrintMatic.Core.csproj" />
+    <ProjectReference Include="..\PrintMatic.Repository\PrintMatic.Repository.csproj" />
+    <ProjectReference Include="..\PrintMatic.Services\PrintMatic.Services.csproj" />
   </ItemGroup>
 
 </Project>
