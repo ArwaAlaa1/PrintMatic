@@ -13,13 +13,21 @@
     <div>
 
         <partial name="PartialViews/DeleteDetialsView" />
+       
 
+
+        </div>
         <div class=" mt-4">
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">تعديل</a>
-
-            @if (User.IsInRole("Admin"))
+       
+        @if (User.IsInRole("Admin"))
             {
-                <a asp-action="Index" class="btn btn-light">العوده</a>
+            if(Model.Enter == false)
+            {
+            <a class="btn btn-outline-success" style="width: 50px" asp-action="Confirm" asp-route-id="@Model.Id" asp-controller="Product">تأكيد</a>
+                
+            }
+            <a asp-action="Index" class="btn btn-light">العوده</a>
 
             }
             else if (User.IsInRole("بائع"))

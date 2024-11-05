@@ -14,10 +14,10 @@
     }
     </hr>
 
-    <form asp-action="Edit" method="post" >
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
 
 
-        <partial name="PartialViews/CreateEditView" />
+        <partial name="PartialViews/CreateEditView"  />
 
         <div class="form-group mt-4">
             <input type="submit" value="حفظ" class="btn btn-primary" />

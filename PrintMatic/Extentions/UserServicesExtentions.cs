@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PrintMatic.Core;
+using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
 using PrintMatic.DTOS.IdentityDTOS;
 using PrintMatic.Repository;
@@ -13,7 +14,7 @@ namespace PrintMatic.Extentions
 	public static class UserServicesExtentions
 	{
 
-		public async static Task<int> AddAddressUser(this UserManager<AppUser> userManager, IUnitOfWork<Address> unitOfWork, AddressDto address, ClaimsPrincipal User)
+		public async static Task<int> AddAddressUser(this UserManager<AppUser> userManager, IUnitOfWork unitOfWork, AddressDto address, ClaimsPrincipal User)
 		{
 			var user = await userManager.GetUserAsync(User);
 			//var email = User.FindFirstValue(ClaimTypes.Email);
@@ -32,8 +33,8 @@ namespace PrintMatic.Extentions
 			};
 			try
 			{
-				unitOfWork.generic.Add(address1);
-				return unitOfWork.Complet();
+				unitOfWork.Repository<Address>().Add(address1);
+				return await unitOfWork.Complet();
 			}
 			catch (Exception ex)
 			{
@@ -44,12 +45,12 @@ namespace PrintMatic.Extentions
 		}
 
 
-		public async static Task<int> EditAddressUser(this UserManager<AppUser> userManager, IUnitOfWork<Address> unitOfWork, AddressDto addressDto, ClaimsPrincipal User,int id)
+		public async static Task<int> EditAddressUser(this UserManager<AppUser> userManager, IUnitOfWork unitOfWork, AddressDto addressDto, ClaimsPrincipal User,int id)
 		{
 			var user = await userManager.GetUserAsync(User);
 			//var email = User.FindFirstValue(ClaimTypes.Email);
 			//var user2 = await _userManager.FindByEmailAsync(email);
-			var address = await unitOfWork.generic.GetByIdAsync(id);
+			var address = await unitOfWork.Repository<Address>().GetByIdAsync(id);
 
 			 address = new Address()
 			{
@@ -64,9 +65,9 @@ namespace PrintMatic.Extentions
 			};
 			try
 			{
-				unitOfWork.generic.Update(address);
+				unitOfWork.Repository<Address>().Update(address);
 
-				return unitOfWork.Complet();
+				return await unitOfWork.Complet();
 			}
 			catch (Exception ex)
 			{
@@ -76,7 +77,7 @@ namespace PrintMatic.Extentions
 
 		}
 
-		public async static Task<int> FindUserWithAddress(this UserManager<AppUser> userManager,AddressDto address,int id, ClaimsPrincipal User,IUnitOfWork<Address> unitOfWork)
+		public async static Task<int> FindUserWithAddress(this UserManager<AppUser> userManager,AddressDto address,int id, ClaimsPrincipal User,IUnitOfWork unitOfWork)
 		{
 			//var user = await userManager.GetUserAsync(User);
 		var user = userManager.Users
@@ -96,9 +97,9 @@ namespace PrintMatic.Extentions
 			};
 			var addressuser = user.Addresses.Where(a => a.Id == id).FirstOrDefault();
 			addressuser= address01;
-			 unitOfWork.generic.Update(addressuser);
+			 unitOfWork.Repository<Address>().Update(addressuser);
 
-			return unitOfWork.Complet();
+			return await unitOfWork.Complet();
 		
 		}
 	

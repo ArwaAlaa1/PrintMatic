@@ -1,16 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities;
+using PrintMatic.Core.Repository.Contract;
 
 namespace PrintMartic_DashBoard.Controllers
 {
     public class ProductSizeController : Controller
     {
-        private readonly IUnitOfWork<ProductSize> _unitOfSize;
+        private readonly IProductSize _size;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProductSizeController(IUnitOfWork<ProductSize> unitOfSize)
+        public ProductSizeController(IProductSize size,IUnitOfWork unitOfWork)
         {
-            _unitOfSize = unitOfSize;
+            _size = size;
+            _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
@@ -22,10 +25,10 @@ namespace PrintMartic_DashBoard.Controllers
             try
             {
 
-                var item = await _unitOfSize.size.GetSize_Pro(id);
+                var item = await _size.GetSize_Pro(id);
                 
-                _unitOfSize.size.Delete(id);
-                var count = await _unitOfSize.CompletAsync();
+                _size.Delete(id);
+                var count = await _unitOfWork.Complet();
                 if (count > 0)
                 {
                     ViewData["Message"] = "تم حذف تفاصيل المنتج بنجاح";

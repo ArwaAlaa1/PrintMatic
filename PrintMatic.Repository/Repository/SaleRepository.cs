@@ -21,7 +21,7 @@ namespace PrintMatic.Repository.Repository
 
         public async Task<IEnumerable<Sale>> GetActiveSales()
         {
-            return await _context.Sales.Where(x => x.IsDeleted == false && x.SaleStartDate < DateTime.Now && x.SaleEndDate > DateTime.Now).ToListAsync();
+            return await _context.Sales.Where(x => x.IsDeleted == false && x.SaleEndDate > DateTime.Now).ToListAsync();
         }
     }
 }

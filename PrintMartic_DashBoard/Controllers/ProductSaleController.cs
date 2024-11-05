@@ -14,16 +14,18 @@ namespace PrintMartic_DashBoard.Controllers
     {
         private readonly IProductSale _productSale;
         private readonly IMapper _mapper;
-        private readonly IUnitOfWork<Product> _proUnit;
-        private readonly IUnitOfWork<Sale> _saleUnit;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IProdduct _prodduct;
+        private readonly ISaleRepository _sale;
 
-        public ProductSaleController(IProductSale productSale ,IMapper mapper, IUnitOfWork<Product> ProUnit ,
-            IUnitOfWork<Sale> SaleUnit )
+        public ProductSaleController(IProductSale productSale ,IMapper mapper,
+            IUnitOfWork unitOfWork , IProdduct prodduct , ISaleRepository sale)
         {
             _productSale = productSale;
             _mapper = mapper;
-            _proUnit = ProUnit;
-            _saleUnit = SaleUnit;
+            _unitOfWork = unitOfWork;
+            _prodduct = prodduct;
+            _sale = sale;
         }
         public async Task<IActionResult> Index()
         {
@@ -46,12 +48,11 @@ namespace PrintMartic_DashBoard.Controllers
 
         public async Task<IActionResult> Create()
         {
-            var list = await _proUnit.generic.GetAllAsync();
-           var ProList = list.Where(x => x.Enter == true);
-            var SaleList = await _saleUnit.Sale.GetActiveSales();
+            var list = await _prodduct.GetAllProductswithouttables();
+            var SaleList = await _sale.GetActiveSales();
          
             var PSMapped = new ProductSaleVM();
-            PSMapped.Products = ProList;
+            PSMapped.Products = list;
             PSMapped.Sales = SaleList;
             return View(PSMapped);
         }
@@ -69,14 +70,14 @@ namespace PrintMartic_DashBoard.Controllers
                         ModelState.AddModelError("PriceAfterSale", "اختر اسم المنتج ونسبة الخصم");
                     }else
                     {
-                        var product = await _proUnit.generic.GetByIdAsync(productSaleVM.ProductId);
-                        var sale = await _saleUnit.Sale.GetByIdAsync(productSaleVM.SaleId);
+                        var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productSaleVM.ProductId);
+                        var sale = await _unitOfWork.Repository<Sale>().GetByIdAsync(productSaleVM.SaleId);
 
                         var paS = _productSale.GetPrice(sale.SaleDiscountPercentage, product.TotalPrice);
                         productSaleVM.PriceAfterSale = paS;
                         var ProSale = _mapper.Map<ProductSaleVM, ProductSale>(productSaleVM);
                         _productSale.Add(ProSale);
-                        var count = _productSale.Complet();
+                        var count = await _unitOfWork.Complet();
                         if (count > 0)
                         {
                             ViewData["Message"] = "تم إضافة الخصم على المنتج بنجاح";
@@ -92,10 +93,10 @@ namespace PrintMartic_DashBoard.Controllers
                 }
 
             }
-            var ProList = await _proUnit.generic.GetAllAsync();
-            var SaleList = await _saleUnit.generic.GetAllAsync();
+            var list = await _prodduct.GetAllProductswithouttables();
+            var SaleList = await _sale.GetActiveSales();
             productSaleVM.Sales = SaleList;
-            productSaleVM.Products = ProList;
+            productSaleVM.Products = list;
             TempData["Message"] = "فشلت عملية الإضافه";
             return View(productSaleVM);
 
@@ -110,9 +111,9 @@ namespace PrintMartic_DashBoard.Controllers
                 return RedirectToAction(nameof(Index));
             }
             var itemMapped = _mapper.Map<ProductSale , ProductSaleVM>(item);
-            var ProList = await _proUnit.generic.GetAllAsync();
-            var SaleList = await _saleUnit.generic.GetAllAsync();
-            itemMapped.Products = ProList;
+            var list = await _prodduct.GetAllProductswithouttables();
+            var SaleList = await _sale.GetActiveSales();
+            itemMapped.Products = list;
             itemMapped.Sales = SaleList;
             return View(itemMapped);
         }
@@ -122,7 +123,7 @@ namespace PrintMartic_DashBoard.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ProductSaleVM productSaleVM)
         {
-            if (!ModelState.IsValid) 
+            if (ModelState.IsValid) 
             {
                 try
                 {
@@ -132,12 +133,12 @@ namespace PrintMartic_DashBoard.Controllers
                     }
                     else
                     {
-                        var product = await _proUnit.generic.GetByIdAsync(productSaleVM.ProductId);
-                        var sale = await _saleUnit.generic.GetByIdAsync(productSaleVM.SaleId);
+                        var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productSaleVM.ProductId);
+                        var sale = await _unitOfWork.Repository<Sale>().GetByIdAsync(productSaleVM.SaleId);
                         var paS = _productSale.GetPrice(sale.SaleDiscountPercentage, product.TotalPrice); productSaleVM.PriceAfterSale = paS;
                         var ProSale = _mapper.Map<ProductSaleVM, ProductSale>(productSaleVM);
                         _productSale.Update(ProSale);
-                        var count = _productSale.Complet();
+                        var count = await _unitOfWork.Complet();
                         if (count > 0)
                         {
                             ViewData["Message"] = "تم تعديل الخصم على المنتج بنجاح";
@@ -151,11 +152,10 @@ namespace PrintMartic_DashBoard.Controllers
                 }
 
             }
-
-            var ProList = await _proUnit.generic.GetAllAsync();
-            var SaleList = await _saleUnit.generic.GetAllAsync();
+            var list = await _prodduct.GetAllProductswithouttables();
+            var SaleList = await _sale.GetActiveSales();
+            productSaleVM.Products = list;
             productSaleVM.Sales = SaleList;
-            productSaleVM.Products = ProList;
             TempData["Message"] = "فشلت عملية التعديل";
             return View(productSaleVM);
 
@@ -169,14 +169,14 @@ namespace PrintMartic_DashBoard.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(ProductSaleVM productSaleVM) 
+        public async Task<IActionResult> Delete(ProductSaleVM productSaleVM) 
         {
             try
             {
                 var ProSale = _mapper.Map<ProductSaleVM, ProductSale>(productSaleVM);
                
                 _productSale.Delete(ProSale);
-                var count = _productSale.Complet();
+                var count = await _unitOfWork.Complet();
                 if (count > 0)
                 {
                     TempData["Message"] = "تم حذف الخصم على المنتج بنجاح";
@@ -188,8 +188,6 @@ namespace PrintMartic_DashBoard.Controllers
                 TempData["Message"] = "فشلت عملية الحذف";
                 return View(productSaleVM);
             }
-        
-        
         }
 
     }

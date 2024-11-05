@@ -38,14 +38,19 @@ namespace PrintMatic
 			//Add Context Services
 			builder.Services.AddDbContext<PrintMaticContext>(
 				options => options.UseSqlServer(builder.Configuration.GetConnectionString("conn")));
-
-            builder.Services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+            builder.Services.AddScoped(typeof(ICategoryRepository), typeof(CategoryRepository));
+            builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
             builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped(typeof(IProductSale), typeof(ProductSaleRepository));
             builder.Services.AddScoped(typeof(IProductPhoto), typeof(ProductPhotoRepository));
+            builder.Services.AddAutoMapper(typeof(MappingProfiles));
+            builder.Services.AddScoped(typeof(IProdduct), typeof(ProductRepository));
+            builder.Services.AddScoped(typeof(IProductColor), typeof(ProductColorRepository));
+            builder.Services.AddScoped(typeof(IProductSize), typeof(ProductSizeRepository));
+            builder.Services.AddScoped(typeof(IReviewRepository), typeof(ReviewRepository));
 
-			builder.Services.AddSingleton<IConnectionMultiplexer>((serverprovider) =>
+            builder.Services.AddSingleton<IConnectionMultiplexer>((serverprovider) =>
 			{
 				var connectionredis = builder.Configuration.GetConnectionString("Redis");
 				return ConnectionMultiplexer.Connect(connectionredis);

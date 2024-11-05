@@ -1,4 +1,33 @@
 ﻿@model ProductVM
+<style>
+    .image-container {
+        position: relative;
+        width: 100%;
+        padding-top: 100%; /* Aspect ratio */
+        overflow: hidden;
+    }
+
+        .image-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .delete-icon {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        color: grey;
+        background: white;
+        border-radius: 50%;
+        cursor: pointer;
+        padding: 2px 6px;
+    }
+
+</style>
 
 <div asp-validation-summary="All" class="text-danger"></div>
 <div class="form-group" hidden>
@@ -113,6 +142,7 @@
     </div>
 
     </div>
+
     <br />
 <p class="text-muted nav-heading mt-4 mb-1 bol">
     <span>الألوان و الأحجام</span>
@@ -123,16 +153,121 @@
         <div style="width:100px"></div>
     <partial name="PartialViews/_SizeView" /> 
     </div>
+<br />
+<p class="text-muted nav-heading mt-4 mb-1 bol">
+    <span>الصور و الفيديوهات</span>
+</p>
+<br />
+<div class="form-group">
+    <label class="control-label fw-bold fs-4">ادخل صور المنتج بدون خلفيه بامتداد (.png)</label>
+    <input multiple asp-for="PhotoFiles" class="form-control form-control-lg" type="file" id="imageUpload" />
+    <p id="error-message" style="color: red; display: none;">Only PNG images are allowed.</p>
 
-
-  @*   <div class="col-md-3 mb-3">
-      <label for="validationServer04">State</label>
-      <input type="text" class="form-control is-invalid" id="validationServer04" placeholder="State" required>
-      <div class="invalid-feedback">
-        Please provide a valid state.
-      </div> *@
-
-
+    <!-- Container to hold uploaded images -->
   
-    
-    
+
+    <div  class="row mt-3">
+        @if (Model.photos.Any())
+        {
+            foreach (var img in Model.photos)
+            {
+                <div class="col-3 mb-3">
+                    <div class="image-container">
+                        <img src="~/Uploads/products/@img" alt="Product Image" />
+                        <a href="~/ProductPhoto/Delete?ProductId=@Model.Id&Photo=@img"> <span class="delete-icon" onclick="deleteExistingImage('@img')">&#10006;</span></a>
+                    </div>
+                </div>
+            }
+        }
+        
+    </div>
+    <div id="imagePreview" class="row mt-3">
+    </div>
+ 
+</div>
+
+<script>
+    let uploadedFiles = []; // Array to hold selected files
+
+    document.getElementById("imageUpload").addEventListener("change", function () {
+        const files = Array.from(this.files); // Convert FileList to Array
+        const errorMessage = document.getElementById("error-message");
+
+        // Filter and add only PNG files to the uploadedFiles array
+        let allFilesArePng = true;
+        files.forEach(file => {
+            if (file.type === "image/png") {
+                uploadedFiles.push(file);
+            } else {
+                allFilesArePng = false;
+            }
+        });
+
+        if (!allFilesArePng) {
+            errorMessage.style.display = "block";
+            errorMessage.textContent = "Only PNG images are allowed.";
+        } else {
+            errorMessage.style.display = "none";
+        }
+
+        //this.value = ""; // Clear the input to allow re-uploading the same file if needed
+        displayImages(); // Update the display with the new files
+    });
+
+    function displayImages() {
+        const imagePreview = document.getElementById("imagePreview");
+       imagePreview.innerHTML = ""; // Clear previous images
+
+        uploadedFiles.forEach((file, index) => {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                // Create the image container
+                const colDiv = document.createElement("div");
+                colDiv.className = "col-3 mb-3";
+
+                // Image wrapper
+                const imageContainer = document.createElement("div");
+                imageContainer.className = "image-container";
+
+                // Create the image element
+                const img = document.createElement("img");
+                img.src = e.target.result;
+                img.alt = "Uploaded image";
+
+                // Delete icon
+                const deleteIcon = document.createElement("span");
+                deleteIcon.className = "delete-icon";
+                deleteIcon.innerHTML = "&#10006;"; // X icon
+                deleteIcon.onclick = function () {
+                    deleteFile(index); // Call delete function with file index
+                };
+
+                // Append elements
+                imageContainer.appendChild(img);
+                imageContainer.appendChild(deleteIcon);
+                colDiv.appendChild(imageContainer);
+                imagePreview.appendChild(colDiv);
+            };
+
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function deleteFile(index) {
+        // Remove the selected file from the array
+        uploadedFiles.splice(index, 1);
+
+        // Create a new DataTransfer object and add remaining files
+        const dataTransfer = new DataTransfer();
+        uploadedFiles.forEach(file => dataTransfer.items.add(file));
+
+        // Set the new FileList to the input element
+        const fileInput = document.getElementById("imageUpload");
+        fileInput.files = dataTransfer.files;
+
+        // Update the displayed images
+        displayImages();
+    }
+
+</script>

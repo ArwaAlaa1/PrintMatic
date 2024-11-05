@@ -12,8 +12,8 @@ using PrintMatic.Repository.Data;
 namespace PrintMatic.Repository.Data.Migrations
 {
     [DbContext(typeof(PrintMaticContext))]
-    [Migration("20241008211900_init")]
-    partial class init
+    [Migration("20241008223651_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

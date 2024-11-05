@@ -15,10 +15,10 @@
 
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
-    <Folder Include="wwwroot\Uploads\category\" />
     <Folder Include="Views\Vendor\" />
     <Folder Include="wwwroot\images\category\" />
     <Folder Include="wwwroot\images\product\" />
+    <Folder Include="wwwroot\Uploads\category\" />
     <Folder Include="wwwroot\Uploads\products\" />
   </ItemGroup>
 

@@ -2,16 +2,19 @@
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities;
+using PrintMatic.Core.Repository.Contract;
 
 namespace PrintMartic_DashBoard.Controllers
 {
     public class ProductColorController : Controller
     {
-        private readonly IUnitOfWork<ProductColor> _unitofColor;
+        private readonly IProductColor _color;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProductColorController(IUnitOfWork<ProductColor> unitofColor)
+        public ProductColorController(IProductColor color , IUnitOfWork unitOfWork)
         {
-            _unitofColor = unitofColor;
+            _color = color;
+            _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
@@ -25,9 +28,9 @@ namespace PrintMartic_DashBoard.Controllers
             try
             {
 
-                var item = await _unitofColor.color.GetColor_Pro(id);
-                _unitofColor.color.Delete(id);
-                var count =await _unitofColor.CompletAsync();
+                var item = await _color.GetColor_Pro(id);
+                _color.Delete(id);
+                var count =await _unitOfWork.Complet();
                 if (count > 0)
                 {
                     ViewData["Message"] = "تم حذف تفاصيل المنتج بنجاح";

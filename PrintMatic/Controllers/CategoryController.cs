@@ -12,29 +12,31 @@ namespace PrintMatic.Controllers
 
     public class CategoryController : BaseApiController
     {
-        private readonly IUnitOfWork<Category> _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ICategoryRepository _category;
         private readonly IMapper _mapper;
         private readonly IProductSale _productSale;
-        private readonly IUnitOfWork<Review> _unitOfReview;
+        private readonly IReviewRepository _review;
         private readonly IProductPhoto _productPhoto;
-        private readonly IUnitOfWork<ProductColor> _unitOfcolor;
+        private readonly IProductColor _color;
 
-        public CategoryController(IUnitOfWork<Category> unitOfWork, IMapper mapper
-            ,IProductSale productSale , IUnitOfWork<Review> unitOfReview , IProductPhoto productPhoto,
-            IUnitOfWork<ProductColor> unitOfcolor)
+        public CategoryController(IUnitOfWork unitOfWork,ICategoryRepository category, IMapper mapper
+            ,IProductSale productSale , IReviewRepository review , IProductPhoto productPhoto,
+            IProductColor color)
         {
             _unitOfWork = unitOfWork;
+            _category = category;
             _mapper = mapper;
             _productSale = productSale;
-            _unitOfReview = unitOfReview;
+            _review = review;
             _productPhoto = productPhoto;
-            _unitOfcolor = unitOfcolor;
+            _color = color;
         }
 
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetAll()
         {
-            var list = await _unitOfWork.generic.GetAllAsync();
+            var list = await _unitOfWork.Repository<Category>().GetAllAsync();
             var MappedList = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDTO>>(list);
             return Ok(MappedList);
         }
@@ -43,7 +45,7 @@ namespace PrintMatic.Controllers
         public async Task<ActionResult<CategoryWithProDetails>> GetById(int id)
         {
 
-            var category = await _unitOfWork.category.GetCategoryWithProduct(id);
+            var category = await _category.GetCategoryWithProduct(id);
             if (category == null)
             {
                 return BadRequest("Category doesnot exist");
@@ -54,8 +56,8 @@ namespace PrintMatic.Controllers
             {
                 var SalesList = await _productSale.GetProByIDAsync(prod.Id);
                 var PList = await _productPhoto.GetPhotosOfProduct(prod.Id);
-                var Reviews = await _unitOfReview.review.GetReviewsOfPro(prod.Id);
-                var Colors = await _unitOfcolor.color.GetIdOfProAsync(prod.Id);
+                var Reviews = await _review.GetReviewsOfPro(prod.Id);
+                var Colors = await _color.GetIdOfProAsync(prod.Id);
                 var products = await ProductDto.GetProducts(prod, SalesList, PList, Reviews,Colors);
                 CategoryMapped.Products.ToList().Add(products);
             }

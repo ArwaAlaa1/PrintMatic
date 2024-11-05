@@ -1,5 +1,23 @@
 ﻿@model ProductVM
 
+<style>
+    .image-container {
+        position: relative;
+        width: 100%;
+        padding-top: 100%; /* Aspect ratio */
+        overflow: hidden;
+    }
+
+        .image-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+</style>
 <div >
    
 
@@ -120,3 +138,29 @@
         <partial name="PartialViews/_DeleteColorSize" />
 
 
+    <br />
+    <p class="text-muted nav-heading mt-4 mb-1 bol">
+        <span>الصور و الفيديوهات</span>
+    </p>
+    <br />
+    <div class="form-group">
+        <label class="control-label fw-bold fs-4"> صور المنتج </label>
+        <input multiple asp-for="PhotoFiles" class="form-control form-control-lg" type="file" id="imageUpload" hidden />
+
+
+        <div class="row mt-3">
+            @if (Model.photos.Any())
+            {
+                foreach (var img in Model.photos)
+                {
+                    <div class="col-3 mb-3">
+                        <div class="image-container">
+                            <input asp-for="@img" name="name" value="" />
+                            <img src="~/Uploads/products/@img" alt="Product Image" />
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+ 

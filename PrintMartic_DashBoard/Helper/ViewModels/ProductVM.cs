@@ -32,7 +32,6 @@ namespace PrintMartic_DashBoard.Helper.ViewModels
         public bool Date { get; set; }
         public bool Enter { get; set; }
         public decimal TotalPrice { get; set; }
-
         public virtual Category? Category { get; set; }
         [Required(ErrorMessage = "اسم القسم مطلوب")]
         public int CategoryId { get; set; }
@@ -45,6 +44,7 @@ namespace PrintMartic_DashBoard.Helper.ViewModels
         public string? SizeJson { get; set; }
         public List<ProductColor>? Colors { get; set; } = new List<ProductColor>();
         public List<ProductSize>? Sizes { get; set; }= new List<ProductSize>();
-       
+        public List<IFormFile?>? PhotoFiles { get; set; } = new List<IFormFile?>();
+        public List<string?> photos { get; set; } = new List<string?>();
     }
 }

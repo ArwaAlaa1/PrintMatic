@@ -9,6 +9,7 @@ namespace PrintMartic_DashBoard.Helper.ViewModels
         public string Name { get; set; }
         [Required(ErrorMessage = "وصف القسم مطلوب")]
         public string Description { get; set; }
+        //[RegularExpression(@"^.*\.(png|PNG|SVG|svg)$", ErrorMessage = "Only PNG and SVG files are allowed.")]
         public IFormFile? PhotoFile { get; set; }
 		public string? PhotoURL { get; set; }
         public string? FilePath { get; set; }
