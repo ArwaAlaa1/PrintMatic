@@ -22,7 +22,8 @@ namespace PrintMatic.Extentions
             services.AddScoped<IEmailService, EmailService>();
 			services.AddMemoryCache();
             services.AddScoped<CodeVerificationService>();
-			return services;
+            services.AddScoped<CustomeUpload>();
+            return services;
             
         }
     }

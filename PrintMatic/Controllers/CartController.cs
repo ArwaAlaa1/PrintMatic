@@ -3,26 +3,35 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using PrintMatic.Core;
 using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
+using PrintMatic.Core.Entities.Order;
 using PrintMatic.Core.Repository.Contract;
-using PrintMatic.DTOS;
+using PrintMatic.DTOS.OrderDTOS;
+using PrintMatic.Helper;
+using PrintMatic.Repository.Repository;
 using StackExchange.Redis;
+using System.Net.WebSockets;
 
 namespace PrintMatic.Controllers
 {
     public class CartController : BaseApiController
     {
+        private readonly IUnitOfWork<ShippingCost> unitOfWork;
         private readonly ICartRepository cartRepository;
         private readonly IMapper _mapper;
 		private readonly UserManager<AppUser> _userManager;
+        private readonly CustomeUpload _custome;
 
-		public CartController(ICartRepository cartRepository,IMapper mapper,UserManager<AppUser> userManager)
+        public CartController(IUnitOfWork<ShippingCost> unitOfWork,ICartRepository cartRepository,IMapper mapper,UserManager<AppUser> userManager,CustomeUpload custome)
         {
+            this.unitOfWork = unitOfWork;
             this.cartRepository = cartRepository;
            _mapper = mapper;
 			_userManager = userManager;
-		}
+            _custome = custome;
+        }
 
        
         [HttpGet]
@@ -31,8 +40,9 @@ namespace PrintMatic.Controllers
             if (!email.IsNullOrEmpty())
             {
                 var user=await _userManager.FindByEmailAsync(email);
+
                 var cart = await cartRepository.GetCartAsync(user.Id);
-                if (cart==null)
+                if (cart.Items.Count()==0)
                 {
 					return Ok(new { Message = "لا توجد منتجات فالعربة الان" });
 				}
@@ -41,29 +51,115 @@ namespace PrintMatic.Controllers
 			
 			return Ok( new {Message="لا توجد منتجات فالعربة الان"});
         }
+
         [Authorize]
         [HttpPost]
-        //[Consumes("multipart/form-data")]
-        public async Task<ActionResult<CustomerCart>> UpdateCart([FromForm] CustomerCartDto cart)
+        public async Task<ActionResult<CustomerCart>> AddToCart([FromForm] CartItemsDto Item)
         {
-            var user = await _userManager.GetUserAsync(User);
-            cart.Id = user.Id;
-            
-            var mappedcart = _mapper.Map<CustomerCart>(cart);
-            var createOrupdateCart = await cartRepository.UpdateCartAsync(mappedcart);
+            var userId =  _userManager.GetUserId(User);
+           
+            var cartadd = await cartRepository.GetCartAsync(userId) ;
+            var mappeditem = _mapper.Map<CartItems>(Item);
+           
+            if (cartadd.IsProductUnique(mappeditem) && Item.Photos == null && Item.FilePdf == null)
+            {
+                cartadd.Items.Add(mappeditem);
+               
+            }else if (!cartadd.IsProductUnique(mappeditem) && Item.Photos == null && Item.FilePdf == null)
+            {
+                var item=cartadd.FindMatchingProduct(mappeditem);
+                item.Quantity += 1;
+
+            }
+            else if (Item.Photos != null || Item.FilePdf != null)
+            {
+                
+                if (Item.Photos != null)
+                {
+                    var photos = await _custome.Upload(Item.Photos);
+                    mappeditem.Photos = photos;
+
+                }else if(Item.FilePdf != null)
+                {
+                    var filepdf = await _custome.UploadFile(Item.FilePdf);
+                    mappeditem.FilePdf = filepdf;
+                }
+                cartadd.Items.Add(mappeditem);
+            }
+         
+            var createOrupdateCart = await cartRepository.UpdateCartAsync(cartadd);
             if (createOrupdateCart == null) return BadRequest();
             return Ok(createOrupdateCart);
         }
 
-        [HttpDelete]
-        public async Task/*<ActionResult>*/ DeleteCart(string id)
-        {
-             await cartRepository.DeleteCartAsync(id);
-            /*var isdelete= */
-            //if (isdelete)
-            //    return Ok();
+        [Authorize]
+		[HttpDelete]
+		public async Task<ActionResult<CustomerCart>> DeleteItem(string cartid,string Itemid)
+		{
+			var cart = await cartRepository.GetCartAsync(cartid);
+			var itemToRemove = cart.Items.FirstOrDefault(item => item.Id == Itemid);
+             
+                
+            if (itemToRemove != null)
+			{
+				if (itemToRemove.Photos.Count() > 0)
+				{
+					await _custome.Delete(itemToRemove.Photos);
+                    if (itemToRemove.FilePdf != null)
+                    {
+                        await _custome.DeleteFile(itemToRemove.FilePdf);
+                    }
+                }
+				cart.Items.Remove(itemToRemove);
+			}
+			var updatedBasketData = await cartRepository.UpdateCartAsync(cart);
+			if (cart.Items.Count() == 0)
+			{
+				await cartRepository.DeleteCartAsync(cartid);
+				return Ok(new { Message = "لا توجد منتجات فالعربة الان" });
+			}
+            return Ok(updatedBasketData);
 
-            //return BadRequest();
+		}
+
+
+        [Authorize]
+        [HttpPost("Increase")]
+        public async Task<ActionResult<CustomerCart>> Increase(string cartid, string ItemId)
+        {
+            var cart = await cartRepository.GetCartAsync(cartid);
+            var itemToIncrease = cart.Items.FirstOrDefault(item => item.Id == ItemId);
+
+
+            if (itemToIncrease != null)
+            {
+                itemToIncrease.Quantity += 1;
+                
+            }
+            var updatedBasketData = await cartRepository.UpdateCartAsync(cart);
+
+            return Ok(updatedBasketData);
+
         }
-    }
+        [Authorize]
+        [HttpPost("Decrease")]
+        public async Task<ActionResult<CustomerCart>> Decrease(string cartid, string ItemId)
+        {
+            var cart = await cartRepository.GetCartAsync(cartid);
+            var itemToDecrease = cart.Items.FirstOrDefault(item => item.Id == ItemId);
+
+
+            if (itemToDecrease != null && itemToDecrease.Quantity !=1)
+            {
+                itemToDecrease.Quantity -= 1;
+
+            }
+            var updatedBasketData = await cartRepository.UpdateCartAsync(cart);
+
+            return Ok(updatedBasketData);
+
+        }
+
+
+     }
 }

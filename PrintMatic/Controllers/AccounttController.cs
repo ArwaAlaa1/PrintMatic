@@ -618,28 +618,7 @@ namespace PrintMatic.Controllers
 			}
 		}
 
-		//[Authorize]
-		//[HttpGet("logout")]
-		//public async Task<ActionResult> Logout()
-		//{
-		//	try
-		//	{
-		//		var user = await _userManager.FindByEmailAsync(User.FindFirstValue(ClaimTypes.Email));
-		//		var result = await _userManager.RemoveAuthenticationTokenAsync(user, "JwtBearer", "JwtBearer");
-		//		if (!result.Succeeded)
-		//		{
-		//			var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-		//			return BadRequest($"خطأ في إزالة رمز المصادقة: {errors}");
-		//		}
-		//	}
-		//	catch (Exception ex)
-		//	{
-
-		//		return BadRequest(ex.Message);
-		//	}
-
-		//	return Ok(new { Message = "تم تسجيل الخروج بنجاح" });
-		//}
+		
 
 	}
 

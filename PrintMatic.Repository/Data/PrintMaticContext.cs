@@ -37,9 +37,9 @@ namespace PrintMatic.Repository.Data
 
 			// optionsBuilder.UseSqlServer("Server=db8617.public.databaseasp.net; Database=db8617; User Id=db8617; Password=2f!YQ3q@4#Zh; Encrypt=False; MultipleActiveResultSets=True;");
 			//optionsBuilder.UseSqlServer("Data source =DESKTOP-9IISLS5; DataBase = PrintMaticDB; Trusted_Connection= True;TrustServerCertificate=True");
-       optionsBuilder.UseSqlServer("Server=db8787.public.databaseasp.net; Database=db8787; User Id=db8787; Password=d@8A6yF%-K5r; Encrypt=False; MultipleActiveResultSets=True;");
+      // optionsBuilder.UseSqlServer("Server=db8787.public.databaseasp.net; Database=db8787; User Id=db8787; Password=d@8A6yF%-K5r; Encrypt=False; MultipleActiveResultSets=True;");
 
-			//optionsBuilder.UseSqlServer("Server = Arwa-Alaa\\SQLEXPRESS; Database = gift; Integrated Security = True; MultipleActiveResultSets = true; TrustServerCertificate = True");
+			optionsBuilder.UseSqlServer("Server = Arwa-Alaa\\SQLEXPRESS; Database = gift; Integrated Security = True; MultipleActiveResultSets = true; TrustServerCertificate = True");
 		}
 
         

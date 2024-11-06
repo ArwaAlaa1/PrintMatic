@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
+using PrintMatic.Core.Entities.Order;
 using PrintMatic.DTOS;
 using PrintMatic.DTOS.IdentityDTOS;
+using PrintMatic.DTOS.OrderDTOS;
 
 namespace PrintMatic.Helper
 {
@@ -15,8 +17,9 @@ namespace PrintMatic.Helper
         
            CreateMap<CustomerCart,CustomerCartDto>().ReverseMap();
             CreateMap<CartItems,CartItemsDto>().ReverseMap();
-            CreateMap<Address, AddressUseIdDto>().ReverseMap();
-            CreateMap<Address, AddressDto>().ReverseMap();
+            CreateMap<Core.Entities.Identity.Address, AddressUseIdDto>().ReverseMap();
+            CreateMap<Core.Entities.Identity.Address, AddressDto>().ReverseMap();
+            CreateMap<ShippingCostDto, ShippingCost>().ReverseMap();
             CreateMap<Favorite, FavouriteDto>().ReverseMap();
             CreateMap<ProductColor, ColorDto>().ReverseMap();
             CreateMap<Category, CategoryDTO>().ForMember(i => i.PhotoURL, i => i.MapFrom<CategoryPhotoResolved>()).ReverseMap();

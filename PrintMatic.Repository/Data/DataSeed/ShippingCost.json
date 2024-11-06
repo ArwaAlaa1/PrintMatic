@@ -1,0 +1,167 @@
+[
+  {
+    "City": "الشرقية",
+    "Cost": 70,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "الزقازيق",
+    "Cost": 70,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "بورسعيد",
+    "Cost": 70,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "الإسماعيلية",
+    "Cost": 70,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "السويس",
+    "Cost": 70,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "الوادي الجديد",
+    "Cost": 90,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "شرم الشيخ",
+    "Cost": 90,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "الغردقة",
+    "Cost": 90,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "الفيوم",
+    "Cost": 80,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "بني سويف",
+    "Cost": 80,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "المنيا",
+    "Cost": 80,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "أسيوط",
+    "Cost": 80,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "سوهاج",
+    "Cost": 80,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "قنا",
+    "Cost": 80,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "الأقصر",
+    "Cost": 85,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "أسوان",
+    "Cost": 85,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "القاهرة / الجيزة",
+    "Cost": 50,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "المدن الجديدة",
+    "Cost": 50,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "الشيخ زايد / أكتوبر",
+    "Cost": 50,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "حدائق (أكتوبر / الأهرام)",
+    "Cost": 50,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "بدر / مدينتي / الشروق",
+    "Cost": 50,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "العاشر من رمضان",
+    "Cost": 70,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "الإسكندرية",
+    "Cost": 70,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "مرسى مطروح",
+    "Cost": 90,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "سيوة",
+    "Cost": 100,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "المنوفية",
+    "Cost": 70,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "الدقهلية",
+    "Cost": 75,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "طنطا",
+    "Cost": 70,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "دمنهور",
+    "Cost": 75,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "البحيرة",
+    "Cost": 75,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "المنصورة",
+    "Cost": 70,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "دمياط",
+    "Cost": 75,
+    "ShippingTime": "7"
+  },
+  {
+    "City": "كفر الشيخ",
+    "Cost": 75,
+    "ShippingTime": "7"
+  }
+]

@@ -14,16 +14,26 @@ namespace PrintMatic.Core.Entities.Order
             
         }
 
-		public OrderItem(ProductOrderDetails productItem, decimal price, int quantity)
+		public OrderItem(ProductOrderDetails productItem,/* decimal price,*/ int quantity)
 		{
 			ProductItem = productItem;
-			Price = price;
+			//Price = price;
 			Quantity = quantity;
 		}
 
 		public ProductOrderDetails ProductItem{ get; set; }
 		public OrderItemStatus OrderItemStatus { get; set; } = OrderItemStatus.Pending;
-        public decimal Price { get; set; }
-		public int Quantity { get; set; }
+		private decimal totalprice;
+
+		public decimal TotalPrice
+		{
+			get { return totalprice; }
+			set { totalprice = (decimal)(ProductItem.PriceAfterSale == 0 ? ProductItem.Price * Quantity : ProductItem.PriceAfterSale * Quantity); }
+		}
+
+		//public decimal TotalPrice { get; set; }
+  //      public decimal TotalPrice => (decimal)(ProductItem.PriceAfterSale == 0 ? ProductItem.Price * Quantity : ProductItem.PriceAfterSale * Quantity);
+
+        public int Quantity { get; set; }
 	}
 }

@@ -48,8 +48,17 @@ namespace PrintMatic
 			builder.Services.AddSingleton<IConnectionMultiplexer>((serverprovider) =>
 			{
 				var connectionredis = builder.Configuration.GetConnectionString("Redis");
+
 				return ConnectionMultiplexer.Connect(connectionredis);
 			});
+			builder.Services.AddSingleton<HandleExpirationCart>((serverprovider) =>
+			{
+				var connectionredis = builder.Configuration.GetConnectionString("Redis");
+				var env = serverprovider.GetRequiredService<IWebHostEnvironment>();
+				return new HandleExpirationCart(connectionredis, env);
+			});
+			
+		
 
 			builder.Services.AddApplicationServices();
 
@@ -107,8 +116,9 @@ namespace PrintMatic
 				var usermanager = services.GetRequiredService<UserManager<AppUser>>();
 				var rolemanager = services.GetRequiredService<RoleManager<IdentityRole>>();
 				await AppSeeding.SeedUsersAsync(usermanager,rolemanager);
+                await AppSeeding.SeedShippingCost(dbcontext);
 
-			}
+            }
 			catch (Exception ex)
 			{
 				var logger = loggerfactory.CreateLogger(typeof(Program));

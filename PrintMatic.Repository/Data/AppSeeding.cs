@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using PrintMatic.Core.Entities.Identity;
+using PrintMatic.Core.Entities.Order;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace PrintMatic.Repository.Data
@@ -45,5 +48,25 @@ namespace PrintMatic.Repository.Data
 
 			}
 		}
+	
+		public static async Task SeedShippingCost(PrintMaticContext _Context)
+		{
+			
+			if (_Context.ShippingCosts.Count() == 0)
+			{
+                var costs = File.ReadAllText(".././PrintMatic.Repository/Data/DataSeed/ShippingCost.json");
+                var methods = JsonSerializer.Deserialize<List<ShippingCost>>(costs);
+                if (methods.Count() > 0)
+                {
+                    foreach (var item in methods)
+                    {
+                        _Context.Set<ShippingCost>().Add(item);
+                    }
+                    await _Context.SaveChangesAsync();
+
+                }
+            }
+		}
+	
 	}
 }

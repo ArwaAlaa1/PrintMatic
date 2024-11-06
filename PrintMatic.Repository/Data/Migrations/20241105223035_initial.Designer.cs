@@ -12,7 +12,7 @@ using PrintMatic.Repository.Data;
 namespace PrintMatic.Repository.Data.Migrations
 {
     [DbContext(typeof(PrintMaticContext))]
-    [Migration("20241008223651_initial")]
+    [Migration("20241105223035_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -439,11 +439,11 @@ namespace PrintMatic.Repository.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -909,43 +909,32 @@ namespace PrintMatic.Repository.Data.Migrations
                             b1.Property<int>("OrderItemId")
                                 .HasColumnType("int");
 
-                            b1.Property<string>("CategoryName")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
                             b1.Property<string>("Color")
                                 .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Date")
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("Description")
-                                .IsRequired()
+                            b1.Property<string>("FilePdf")
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<string>("FilePdf")
+                            b1.Property<string>("ItemType")
+                                .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Name")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<int?>("NormalMaxDate")
-                                .HasColumnType("int");
-
-                            b1.Property<int?>("NormalMinDate")
-                                .HasColumnType("int");
-
-                            b1.Property<decimal>("NormalPrice")
-                                .HasColumnType("decimal(18,2)");
-
                             b1.Property<string>("Photo")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Photos")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("NVARCHAR(MAX)");
+
+                            b1.Property<decimal>("Price")
+                                .HasColumnType("decimal(18,2)");
 
                             b1.Property<decimal?>("PriceAfterSale")
                                 .HasColumnType("decimal(18,2)");
@@ -957,20 +946,6 @@ namespace PrintMatic.Repository.Data.Migrations
                                 .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Text")
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Type")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<int?>("UrgentMaxDate")
-                                .HasColumnType("int");
-
-                            b1.Property<int?>("UrgentMinDate")
-                                .HasColumnType("int");
-
-                            b1.Property<string>("UserId")
-                                .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("OrderItemId");

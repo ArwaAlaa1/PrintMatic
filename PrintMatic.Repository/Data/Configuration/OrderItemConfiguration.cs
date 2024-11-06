@@ -14,7 +14,18 @@ namespace PrintMatic.Repository.Data.Configuration
 		public void Configure(EntityTypeBuilder<OrderItem> builder)
 		{
 			builder.OwnsOne(OItem => OItem.ProductItem, ProductItem => ProductItem.WithOwner());
-			builder.Property(o => o.Price).HasColumnType("decimal(18,2)");
+			builder.OwnsOne(OItem => OItem.ProductItem, ProductItem =>
+			{
+				ProductItem.Property(o => o.ItemType).HasConversion(
+			 IStatus => IStatus.ToString(), //store
+			 IStatus => (ItemType)Enum.Parse(typeof(ItemType), IStatus)//retrive
+			 );
+				ProductItem.WithOwner();
+				ProductItem.Property(p => p.Photos)
+            .HasColumnType("NVARCHAR(MAX)");
+            });
+            
+            builder.Property(o => o.TotalPrice).HasColumnType("decimal(18,2)");
 			builder.Property(o => o.OrderItemStatus).HasConversion(
 			OStatus => OStatus.ToString(), //store
 			OStatus => (OrderItemStatus)Enum.Parse(typeof(OrderItemStatus), OStatus)//retrive
