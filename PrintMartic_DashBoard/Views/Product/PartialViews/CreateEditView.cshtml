@@ -70,7 +70,7 @@
     <div class="col">
         <label for="validationServer01">السعر العادي</label>
 
-        <input  class="form-control " asp-for="NormalPrice" placeholder="ادخل السعر العادي للمنتج" >
+        <input class="form-control " id="normalPrice" asp-for="NormalPrice" placeholder="ادخل السعر العادي للمنتج">
         <span asp-validation-for="NormalPrice" class="text-danger"></span>
 
     </div>
@@ -78,7 +78,7 @@
     <div class="col">
         <label for="validationServer01">السعر المستعجل</label>
 
-        <input  class="form-control " asp-for="UrgentPrice" placeholder="ادخل السعر المستعجل للمنتج" required>
+        <input  class="form-control" id="urgentPrice" asp-for="UrgentPrice" placeholder="ادخل السعر المستعجل للمنتج" readonly>
         <span asp-validation-for="UrgentPrice" class="text-danger"></span>
     </div>
     <div class="col">
@@ -270,4 +270,19 @@
         displayImages();
     }
 
+
+    const normalPriceInput = document.getElementById('normalPrice');
+    const urgentPriceInput = document.getElementById('urgentPrice');
+
+    // Add an event listener for changes on the normal price input
+    normalPriceInput.addEventListener('input', () => {
+        const normalPrice = parseFloat(normalPriceInput.value);
+
+        // Check if the input value is a valid number
+        if (!isNaN(normalPrice)) {
+            urgentPriceInput.value = (normalPrice * 2).toFixed(2);
+        } else {
+            urgentPriceInput.value = '';
+        }
+    });
 </script>

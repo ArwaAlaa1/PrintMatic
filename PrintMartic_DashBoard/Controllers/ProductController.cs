@@ -56,13 +56,14 @@ namespace PrintMartic_DashBoard.Controllers
 
             return View(List);
         }
-        [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
 
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
         public async Task<IActionResult> WaitingProducts()
         {
             var List = await _prodduct.GetWaitingProducts();
             return View(List);
         }
+
         [Authorize(AuthenticationSchemes = "Cookies", Roles = "بائع,Admin")]
         public async Task<IActionResult> YourProducts()
         {
@@ -78,6 +79,7 @@ namespace PrintMartic_DashBoard.Controllers
                 return View("Error");
             }
         }
+
         [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
         public async Task<IActionResult> InActiveProducts()
         {
@@ -220,6 +222,7 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
+                   
                     if (productVM.NormalPrice <= 500)
                     {
                         productVM.TotalPrice = productVM.NormalPrice * 1.7m;
@@ -228,7 +231,8 @@ namespace PrintMartic_DashBoard.Controllers
                     {
                         productVM.TotalPrice = productVM.NormalPrice * 2m;
                     }
-                    productVM.Enter = true;
+                    productVM.UrgentPrice = productVM.TotalPrice * 2m;
+                   productVM.Enter = true;
                     var itemMapped = _mapper.Map<ProductVM, Product>(productVM);
                    _unitOfWork.Repository<Product>().Add(itemMapped);
                     var count = await _unitOfWork.Complet();
@@ -351,6 +355,7 @@ namespace PrintMartic_DashBoard.Controllers
                     {
                         productVM.TotalPrice = productVM.NormalPrice * 2m;
                     }
+                    productVM.UrgentPrice = productVM.TotalPrice * 2m;
                     productVM.Enter = false;
                     var itemMapped = _mapper.Map<ProductVM, Product>(productVM);
                     _unitOfWork.Repository<Product>().Add(itemMapped);
@@ -509,6 +514,7 @@ namespace PrintMartic_DashBoard.Controllers
                     {
                         productVM.TotalPrice = productVM.NormalPrice * 2m;
                     }
+                    productVM.UrgentPrice = productVM.TotalPrice * 2m;
                     var ProMapped = _mapper.Map<ProductVM, Product>(productVM);
                     _unitOfWork.Repository<Product>().Update(ProMapped);
                     var count = await _unitOfWork.Complet();
