@@ -1,13 +1,12 @@
 ﻿@model ProductPhotosVM
 
 <div class="form-row">
-
     <div class="col-md-4 mb-3" hidden>
         <label  class="col-form-label fw-bold fs-4">معرف المنتج</label>
         <input asp-for="ProductId" class="form-control" readonly />
 
     </div>
-    <div class="col-md-4 mb-3">
+       <div class="col-md-4 mb-3">
         <label asp-for="Product.Name">اسم المنتج</label>
         <input type="text" class="form-control" value="@Model.Product.Name" readonly>
 

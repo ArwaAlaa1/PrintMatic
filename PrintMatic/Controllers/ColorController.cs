@@ -3,19 +3,20 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities;
+using PrintMatic.Core.Repository.Contract;
 using PrintMatic.DTOS;
 
 namespace PrintMatic.Controllers
 {
     public class ColorController : BaseApiController
     {
-        private readonly IUnitOfWork<ProductColor> _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ColorController(IUnitOfWork<ProductColor> unitOfWork,IMapper mapper) 
+        public ColorController( IUnitOfWork unitOfWork,IMapper mapper) 
         {
             _unitOfWork = unitOfWork;
-           _mapper = mapper;
+            _mapper = mapper;
         }
 
         [HttpGet("GetAllColors")]
@@ -23,7 +24,7 @@ namespace PrintMatic.Controllers
         {
             try
             {
-                var ColorList = await _unitOfWork.generic.GetAllAsync();
+                var ColorList = await _unitOfWork.Repository<ProductColor>().GetAllAsync();
                 var distinctColors = ColorList
                                     .GroupBy(c => c.HexCode)
                                     .Select(g => g.First());

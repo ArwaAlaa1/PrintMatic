@@ -16,5 +16,6 @@ namespace PrintMatic.DTOS.IdentityDTOS
 
         [Required(ErrorMessage = "رقم الهاتف مطلوب")]
         public string PhoneNumber { get; set; }
+        public string Token { get; set; }
     }
 }

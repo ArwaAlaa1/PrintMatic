@@ -14,27 +14,29 @@ namespace PrintMatic.Controllers
     [Authorize]
     public class FavouriteController : BaseApiController
     {
-        private readonly IUnitOfWork<Favorite> _fav;
-        private readonly IUnitOfWork<Product> _product;
+        private readonly IFavouriteRepository _fav;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IProdduct _product;
         private readonly UserManager<AppUser> _user;
         private readonly IMapper _mapper;
         private readonly IProductPhoto _productPhoto;
         private readonly IProductSale _productSale;
-        private readonly IUnitOfWork<Review> _unitOfReview;
-        private readonly IUnitOfWork<ProductColor> _unitOfcolor;
+        private readonly IReviewRepository _review;
+        private readonly IProductColor _color;
 
-        public FavouriteController(IUnitOfWork<Favorite> fav , IUnitOfWork<Product> product
-            ,UserManager<AppUser> user , IMapper mapper, IProductPhoto productPhoto, IProductSale productSale, IUnitOfWork<Review> unitOfReview
-            ,IUnitOfWork<ProductColor> unitOfcolor)
+        public FavouriteController(IFavouriteRepository fav,IUnitOfWork unitOfWork , IProdduct product
+            ,UserManager<AppUser> user , IMapper mapper, IProductPhoto productPhoto, IProductSale productSale, IReviewRepository review
+            ,IProductColor color)
         {
             _fav = fav;
+            _unitOfWork = unitOfWork;
             _product = product;
             _user = user;
             _mapper = mapper;
             _productPhoto = productPhoto;
             _productSale = productSale;
-            _unitOfReview = unitOfReview;
-            _unitOfcolor = unitOfcolor;
+            _review = review;
+            _color = color;
         }
         [HttpPost("AddFavourite")]
         public async Task<IActionResult> AddFavourite(int productId)
@@ -46,12 +48,12 @@ namespace PrintMatic.Controllers
                 {
                     return BadRequest("لا يوجد مستخدم بهذا الكود");
                 }
-                var product = await _product.generic.GetByIdAsync(productId);
+                var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
                 if (product == null)
                 {
                     return BadRequest("لا يوجد منتج بهذا الكود");
                 }
-                var Fav = await _fav.Fav.GetFavoriteAsync(productId, user.Id);
+                var Fav = await _fav.GetFavoriteAsync(productId, user.Id);
                 if (Fav != null)
                 {
                     return BadRequest("هذا المنتج مضاف الى المفضله بالفعل");
@@ -63,8 +65,8 @@ namespace PrintMatic.Controllers
                         ProductId = productId,
                         UserId = user.Id
                     };
-                    _fav.generic.Add(favorite);
-                    var count = _fav.Complet();
+                    _unitOfWork.Repository<Favorite>().Add(favorite);
+                    var count = await _unitOfWork.Complet();
                     if (count > 0)
                     {
                         return Ok(new Response()
@@ -96,16 +98,16 @@ namespace PrintMatic.Controllers
                 {
                     return BadRequest("لا يوجد مستخدم بهذا الكود");
                 }
-                var product = await _product.generic.GetByIdAsync(productId);
+                var product = await _unitOfWork.Repository<Product>().GetByIdAsync(productId);
                 if (product == null)
                 {
                     return BadRequest("لا يوجد منتج بهذا الكود");
                 }
-                var Fav = await _fav.Fav.GetFavoriteAsync(productId, user.Id);
+                var Fav = await _fav.GetFavoriteAsync(productId, user.Id);
                 if (Fav != null)
                 {
-                    _fav.generic.Delete(Fav);
-                    var count = _fav.Complet();
+                    _unitOfWork.Repository<Favorite>().Delete(Fav);
+                    var count = await _unitOfWork.Complet();
                     if (count > 0)
                     {
                         return Ok(new Response()
@@ -137,7 +139,7 @@ namespace PrintMatic.Controllers
                 {
                     return BadRequest("لا يوجد مستخدم بهذا الكود");
                 }
-                var list = await _fav.Fav.GetFavorites(user.Id);
+                var list = await _fav.GetFavorites(user.Id);
                 var FavListMapped = _mapper.Map<IEnumerable<Favorite>,IEnumerable<FavouriteDto>>(list);
                 if (FavListMapped.Any())
                 {
@@ -146,8 +148,8 @@ namespace PrintMatic.Controllers
 
                         var SalesList = await _productSale.GetProByIDAsync(favourite.Product.Id);
                         var PList = await _productPhoto.GetPhotosOfProduct(favourite.Product.Id);
-                        var Reviews = await _unitOfReview.review.GetReviewsOfPro(favourite.Product.Id);
-                        var Colors = await _unitOfcolor.color.GetIdOfProAsync(favourite.Product.Id);
+                        var Reviews = await _review.GetReviewsOfPro(favourite.Product.Id);
+                        var Colors = await _color.GetIdOfProAsync(favourite.Product.Id);
                         var product = await ProductDto.GetProducts(favourite.Product, SalesList, PList, Reviews ,Colors);
                         productDtos.Add(product);
                     }

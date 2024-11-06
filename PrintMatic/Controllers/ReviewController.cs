@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
+using PrintMatic.Core.Repository.Contract;
 using PrintMatic.DTOS;
 using System.ComponentModel.DataAnnotations;
 
@@ -13,12 +14,14 @@ namespace PrintMatic.Controllers
    
     public class ReviewController : BaseApiController
     {
-        private readonly IUnitOfWork<Review> _unitOfWork;
-        private readonly IUnitOfWork<Product> _product;
+        private readonly IReviewRepository _review;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IProdduct _product;
         private readonly UserManager<AppUser> _userManager;
 
-        public ReviewController(IUnitOfWork<Review> unitOfWork,IUnitOfWork<Product> product, UserManager<AppUser> userManager)
+        public ReviewController(IReviewRepository review,IUnitOfWork unitOfWork,IProdduct product, UserManager<AppUser> userManager)
         {
+            _review = review;
             _unitOfWork = unitOfWork;
             _product = product;
             _userManager = userManager;
@@ -35,7 +38,7 @@ namespace PrintMatic.Controllers
                 {
                     return BadRequest("قم بتسجيل الدخول من فضلك");
                 }
-                var product = await _product.generic.GetByIdAsync(ProductId);
+                var product = await _unitOfWork.Repository<Product>().GetByIdAsync(ProductId);
                 if (product == null)
                 {
                     return BadRequest("لا يوجد منتج بهذا الكود");
@@ -46,8 +49,8 @@ namespace PrintMatic.Controllers
                     UserId = user.Id,
                     Rating = rating
                 };
-                _unitOfWork.generic.Add(review);
-                var count = _unitOfWork.Complet();
+                _unitOfWork.Repository<Review>().Add(review);
+                var count = await _unitOfWork.Complet();
                 if (count > 0)
                 {
                     return Ok(new Response()

@@ -48,14 +48,15 @@ namespace PrintMartic_DashBoard
             builder.Services.AddIdentity<AppUser, IdentityRole>()
 				.AddEntityFrameworkStores<PrintMaticContext>();
 
-			builder.Services.AddScoped(typeof(IUnitOfWork<>),typeof(UnitOfWork<>));
+			builder.Services.AddScoped(typeof(IUnitOfWork),typeof(UnitOfWork));
 			builder.Services.AddAutoMapper(typeof(MappingProfiles));
-
+            builder.Services.AddScoped(typeof(IProdduct), typeof(ProductRepository));
             builder.Services.AddScoped(typeof(UserHelper), typeof(UserHelper));
-
-            builder.Services.AddScoped(typeof(IUnitOfWork<>),typeof(UnitOfWork<>));
-			builder.Services.AddScoped(typeof(IProductPhoto), typeof(ProductPhotoRepository));
+            builder.Services.AddScoped(typeof(IProductColor), typeof(ProductColorRepository));
+            builder.Services.AddScoped(typeof(IProductPhoto), typeof(ProductPhotoRepository));
             builder.Services.AddScoped(typeof(IProductSale), typeof(ProductSaleRepository));
+            builder.Services.AddScoped(typeof(IProductSize), typeof(ProductSizeRepository));
+            builder.Services.AddScoped(typeof(IReviewRepository), typeof(ReviewRepository));
 
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
 

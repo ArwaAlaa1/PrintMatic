@@ -5,6 +5,7 @@ using PrintMatic.Core.Entities.Order;
 using PrintMatic.DTOS;
 using PrintMatic.DTOS.IdentityDTOS;
 using PrintMatic.DTOS.OrderDTOS;
+using Address = PrintMatic.Core.Entities.Identity.Address;
 
 namespace PrintMatic.Helper
 {
@@ -19,6 +20,7 @@ namespace PrintMatic.Helper
             CreateMap<CartItems,CartItemsDto>().ReverseMap();
             CreateMap<Core.Entities.Identity.Address, AddressUseIdDto>().ReverseMap();
             CreateMap<Core.Entities.Identity.Address, AddressDto>().ReverseMap();
+            CreateMap<Address, Core.Entities.Order.Address>().ReverseMap();
             CreateMap<ShippingCostDto, ShippingCost>().ReverseMap();
             CreateMap<Favorite, FavouriteDto>().ReverseMap();
             CreateMap<ProductColor, ColorDto>().ReverseMap();

@@ -8,20 +8,9 @@ using System.Threading.Tasks;
 
 namespace PrintMatic.Core
 {
-	public interface IUnitOfWork<T> : IDisposable where T : BaseEntity
-	{
-		public IGenericRepository<T> generic { get; set; }
-
-		public IReviewRepository review { get; set; }
-
-		public IProdduct prodduct { get; set; }
-        public ICategoryRepository category { get; set; }
-        public IProductColor color { get; set; }
-        public IProductSize size { get; set; }
-        public ISaleRepository Sale { get; set; }
-        public IFavouriteRepository Fav { get; set; }
-
-        int Complet();
-        Task<int> CompletAsync();
+    public interface IUnitOfWork : IAsyncDisposable
+    {
+        IGenericRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity;
+        Task<int> Complet();
     }
 }

@@ -3,7 +3,9 @@
 
 
         <div class="m-auto  bg-white p-5">
+ 
             <h1>جميع المنتجات </h1>
+
             @if (!string.IsNullOrEmpty(TempData["Message"] as string))
             {
                 <div class="alert alert-primary mt-3 mb-2">
@@ -11,7 +13,7 @@
                 </div>
             }
             <hr />
-
+   
            @*  <div class="row justify-content-center">
                 <div class="col-12">
                     <div class="row">
@@ -54,14 +56,14 @@
                                                 <th>اسم القسم</th>
                                                 <th>اسم المنتج</th>
                                               @*   <th>الوصف</th> *@
-                                                <th>عدد الصور</th>
+                                                @* <th>عدد الصور</th> *@
                                                 <th>فترة التوصيل</th>
-                                                <th>فترة التوصيل المستعجل</th>
-                                                <th> السعر للبائع</th>
-                                                <th>السعرالمستعجل</th>
+                                                @* <th>فترة التوصيل المستعجل</th> *@
+                                               @*  <th> السعر للبائع</th>
+                                                <th>السعرالمستعجل</th> *@
                                                 <th> السعر الكلي</th>
                                                 <th>اسم البائع</th>
-                                                
+
                         
 
 
@@ -87,24 +89,24 @@
                                                   @*   <td>
                                                             @Html.DisplayFor(modelItem => item.Description)
                                                     </td> *@
-                                                    <td>
+                                                    @* <td>
                                                             @Html.DisplayFor(modelItem => item.NumOfPhotos)
-                                                    </td>
+                                                    </td> *@
                                                     <td>
                                                             @Html.DisplayFor(modelItem => item.NormalMinDate)-@Html.DisplayFor(modelItem => item.NormalMaxDate)
 
                                                     </td>
 
-                                                    <td>
+                                                   @*  <td>
                                                             @Html.DisplayFor(modelItem => item.UrgentMinDate)-@Html.DisplayFor(modelItem => item.UrgentMaxDate)
-                                                    </td>
+                                                    </td> *@
 
-                                                    <td>
+                                                  @*   <td>
                                                             @Html.DisplayFor(modelItem => item.NormalPrice)
                                                     </td>
                                                     <td>
                                                             @Html.DisplayFor(modelItem => item.UrgentPrice)
-                                                    </td>
+                                                    </td> *@
                             <td>
                                     @Html.DisplayFor(modelItem => item.TotalPrice)
                             </td>
@@ -112,13 +114,22 @@
                                                             @Html.DisplayFor(modelItem => item.AppUser.UserName)
                                                     </td>
 
+                                   
                                 @if (item.IsDeleted == false)
                                 {
+                                <td>
+                                    <a class="btn btn-info" asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">
+                                        تفاصيل المنتج
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+
+                                </td>
                                     <td>
                                         <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <span class="text-muted sr-only">Action</span>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-right">
+
                                             <a class="dropdown-item" asp-controller="Product" asp-action="Edit" asp-route-id ="@item.Id">تعديل</a>
                                             <a class="dropdown-item" asp-controller="Product" asp-action="Delete" asp-route-id="@item.Id">حذف</a>
                                             <a class="dropdown-item" asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">تفاصيل</a>
@@ -126,12 +137,25 @@
                                     </td>
 
 
-                                }
+                                } else{
+                                <td>
+                                    <a class="btn btn-info" asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">
+                                        تفاصيل المنتج
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+
+                                </td>
+                            <td>
+                                <a class="btn btn-outline-danger" asp-controller="Product" asp-action="RestoreData" asp-route-id="@item.Id">إعادة العنصر</a>
+
+                            </td>
+                            }
 
 
                                                 </tr>
                                                 }
-
+                                               
+                                               
 
 
                                         </tbody>

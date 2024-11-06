@@ -16,8 +16,9 @@ namespace PrintMatic.Extentions
         {
            
             services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped(typeof(IOrderService), typeof(OrderService));
             services.AddAutoMapper(typeof(MappingProfiles));
-			services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+			services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));
             services.AddScoped<IEmailService, EmailService>();
 			services.AddMemoryCache();

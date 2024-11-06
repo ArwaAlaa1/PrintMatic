@@ -14,11 +14,11 @@ namespace PrintMartic_DashBoard.Controllers
     [Authorize(AuthenticationSchemes = "Cookies", Roles = "Admin")]
     public class CategoryController : Controller
     {
-        private readonly IUnitOfWork<Category> _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 		private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _environment;
 
-        public CategoryController(IUnitOfWork<Category> unitOfWork, IMapper mapper
+        public CategoryController(IUnitOfWork unitOfWork, IMapper mapper
             , IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
@@ -31,7 +31,7 @@ namespace PrintMartic_DashBoard.Controllers
         {
             try
             {
-                var List = await _unitOfWork.generic.GetAllAsync();
+                var List = await _unitOfWork.Repository<Category>().GetAllAsync();
                 if (List == null) return NotFound();
                 return View(List);
             }
@@ -44,7 +44,7 @@ namespace PrintMartic_DashBoard.Controllers
         // Get Category By Id --GET
         public async Task<IActionResult> Details(int id)
         {
-            var item = await _unitOfWork.generic.GetByIdAsync(id);
+            var item = await _unitOfWork.Repository<Category>().GetByIdAsync(id);
             if (item == null) return RedirectToAction(nameof(Index));
             var itemMapped = _mapper.Map<Category, CategoryVM>(item);
             //item.PhotoURL = itemMapped.PhotoURL;
@@ -80,8 +80,8 @@ namespace PrintMartic_DashBoard.Controllers
                     var CatMapped = _mapper.Map<CategoryCrVM, Category>(categoryVM);
                     CatMapped.FilePath = Path.Combine(_environment.ContentRootPath,"wwwroot\\Uploads\\category", CatMapped.PhotoURL);
 
-                    _unitOfWork.generic.Add(CatMapped);
-                    var count = _unitOfWork.Complet();
+                    _unitOfWork.Repository<Category>().Add(CatMapped);
+                    var count = await _unitOfWork.Complet();
 
                     if (count > 0)
                         TempData["message"] = "تم إضافة تفاصيل القسم بنجاح";
@@ -116,12 +116,7 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 try
                 {
-                    //var item = await _unitOfWork.generic.GetByIdAsync(id);
-                    //if (item.Name == categoryVM.Name && item.PhotoURL == categoryVM.PhotoURL)
-                    //{
-                    //    return RedirectToAction(nameof(Index));
-                    //}
-                   // var item = await _unitOfWork.generic.GetByIdAsync(categoryVM.Id);
+                    
                     if (categoryVM.PhotoFile != null)
                     {
                         if(System.IO.File.Exists(categoryVM.FilePath))
@@ -132,8 +127,8 @@ namespace PrintMartic_DashBoard.Controllers
                     }
                    var catMapped = _mapper.Map<CategoryVM, Category>(   categoryVM );
                     catMapped.FilePath = Path.Combine(_environment.ContentRootPath, "wwwroot\\Uploads\\category", catMapped.PhotoURL);
-                    _unitOfWork.generic.Update(catMapped);
-                    var count = _unitOfWork.Complet();
+                    _unitOfWork.Repository<Category>().Update(catMapped);
+                    var count = await _unitOfWork.Complet();
                     if (count > 0)
                     {
                         TempData["Message"] = $"تم تعديل تفاصيل القسم بنجاح";
@@ -158,7 +153,7 @@ namespace PrintMartic_DashBoard.Controllers
         //Delete category --post
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id , CategoryVM categoryVM)
+        public async Task<IActionResult> Delete(int id , CategoryVM categoryVM)
         {
             try
             {
@@ -169,8 +164,8 @@ namespace PrintMartic_DashBoard.Controllers
                 }
                 category.IsDeleted = true;
                 category.IsActive = false;
-                _unitOfWork.generic.Update(category);
-                var count = _unitOfWork.Complet();
+                _unitOfWork.Repository<Category>().Update(category);
+                var count = await _unitOfWork.Complet();
                 if (count > 0)
                 {
                    // DocumentSetting.DeleteFile("category", category.PhotoURL);

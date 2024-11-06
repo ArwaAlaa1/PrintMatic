@@ -10,10 +10,10 @@ namespace PrintMartic_DashBoard.Controllers
     [Authorize(AuthenticationSchemes = "Cookies", Roles = "بائع,Admin")]
     public class SaleController : Controller
     {
-        private readonly IUnitOfWork<Sale> _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public SaleController(IUnitOfWork<Sale> unitOfWork, IMapper mapper)
+        public SaleController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -21,14 +21,14 @@ namespace PrintMartic_DashBoard.Controllers
         //Get 
         public async Task<IActionResult> Index()
         {
-            var List = await _unitOfWork.generic.GetAllAsync();
+            var List = await _unitOfWork.Repository<Sale>().GetAllAsync();
             return View(List);
         }
 
         //Get Details 
         public async Task<IActionResult> Details(int id)
         {
-            var item = await _unitOfWork.generic.GetByIdAsync(id);
+            var item = await _unitOfWork.Repository<Sale>().GetByIdAsync(id);
             if (item == null) return RedirectToAction("Index");
             return View(item);
         }
@@ -42,7 +42,7 @@ namespace PrintMartic_DashBoard.Controllers
         //Create Sale --Post
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(int id, SaleVM saleVM)
+        public async Task<IActionResult> Create(int id, SaleVM saleVM)
         {
             
             if (ModelState.IsValid)
@@ -57,8 +57,8 @@ namespace PrintMartic_DashBoard.Controllers
                     {
                         var sale = _mapper.Map<SaleVM, Sale>(saleVM);
 
-                        _unitOfWork.generic.Add(sale);
-                        var count = _unitOfWork.Complet();
+                        _unitOfWork.Repository<Sale>().Add(sale);
+                        var count = await _unitOfWork.Complet();
                         if (count > 0)
                         {
                             TempData["Message"] = "تم إضافة تفاصيل الخصم بنجاح";
@@ -79,7 +79,7 @@ namespace PrintMartic_DashBoard.Controllers
         //Open Form of Edit --get
         public async Task<IActionResult> Edit(int id)
         {
-            var item = await _unitOfWork.generic.GetByIdAsync(id);
+            var item = await _unitOfWork.Repository<Sale>().GetByIdAsync(id);
             if (item == null) return RedirectToAction(nameof(Index));
             var Mapped = _mapper.Map<Sale , SaleVM>(item);
             return View(Mapped);
@@ -88,7 +88,7 @@ namespace PrintMartic_DashBoard.Controllers
         //Edit Sale -- post
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, SaleVM saleVM)
+        public async Task<IActionResult> Edit(int id, SaleVM saleVM)
         {
             if (ModelState.IsValid)
             {
@@ -102,8 +102,8 @@ namespace PrintMartic_DashBoard.Controllers
                     {
                         var sale = _mapper.Map<SaleVM, Sale>(saleVM);
 
-                        _unitOfWork.generic.Update(sale);
-                        var count = _unitOfWork.Complet();
+                        _unitOfWork.Repository<Sale>().Update(sale);
+                        var count = await _unitOfWork.Complet();
                         if (count > 0)
                         {
                             TempData["Message"] = "تم تعديل تفاصيل الخصم بنجاح";
@@ -129,14 +129,14 @@ namespace PrintMartic_DashBoard.Controllers
         //Delete Sale --post
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, Sale sale) 
+        public async Task<IActionResult> Delete(int id, Sale sale) 
         {
             try
             {
                 sale.IsDeleted = true;
                 sale.IsActive = false;
-                _unitOfWork.generic.Update(sale);
-                var count =_unitOfWork.Complet();
+                _unitOfWork.Repository<Sale>().Update(sale);
+                var count =await _unitOfWork.Complet();
                 
                 if (count > 0)
                 {

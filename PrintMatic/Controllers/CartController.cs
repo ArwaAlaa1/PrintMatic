@@ -18,15 +18,15 @@ namespace PrintMatic.Controllers
 {
     public class CartController : BaseApiController
     {
-        private readonly IUnitOfWork<ShippingCost> unitOfWork;
+       
         private readonly ICartRepository cartRepository;
         private readonly IMapper _mapper;
 		private readonly UserManager<AppUser> _userManager;
         private readonly CustomeUpload _custome;
 
-        public CartController(IUnitOfWork<ShippingCost> unitOfWork,ICartRepository cartRepository,IMapper mapper,UserManager<AppUser> userManager,CustomeUpload custome)
+        public CartController(ICartRepository cartRepository,IMapper mapper,UserManager<AppUser> userManager,CustomeUpload custome)
         {
-            this.unitOfWork = unitOfWork;
+           
             this.cartRepository = cartRepository;
            _mapper = mapper;
 			_userManager = userManager;

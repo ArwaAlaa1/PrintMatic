@@ -10,25 +10,26 @@ using System.Threading.Tasks;
 
 namespace PrintMatic.Repository.Repository
 {
-    public class AddressRepository : GenericRepository<Address> ,IAddressRepository 
+    public class AddressRepository : GenericRepository<Address>, IAddressRepository
     {
-      
+
         public AddressRepository(PrintMaticContext printMaticContext)
-            :base(printMaticContext)
+            : base(printMaticContext)
         {
-            
+
         }
         public async Task<IEnumerable<Address>> GetAllUserAddress(string id)
-       {
-           var addresses=await  _context.Address.Where( a=>a.AppUserId== id).ToListAsync();
-            return addresses ?? new List<Address>()  ;
+        {
+            var addresses = await _context.Address.Where(a => a.AppUserId == id).ToListAsync();
+            return addresses ?? new List<Address>();
         }
 
-		public async Task<Address?> GetUserAddress(int id)
-		{
-            var address=await _context.Address.Where(a => a.Id == id).Include(u => u.AppUser).FirstOrDefaultAsync();
+        public async Task<Address?> GetUserAddress(int id)
+        {
+            var address = await _context.Address.Where(a => a.Id == id).Include(u => u.AppUser).FirstOrDefaultAsync();
             //address.AppUserId = address.AppUser.Id;
             return address;
         }
-	}
+
+    }
 }

@@ -14,16 +14,16 @@ namespace PrintMatic.Services
 	public class OrderService : IOrderService
 	{
 		private readonly ICartRepository _cartRepository;
-        private readonly IUnitOfWork<Product> _unitOfWork;
-        private readonly IUnitOfWork<ShippingCost> unitOfWork2;
+        private readonly IUnitOfWork _unitOfWork;
+      
 
-        public OrderService(ICartRepository cartRepository,IUnitOfWork<Product> unitOfWork, IUnitOfWork<ShippingCost> unitOfWork2)
+        public OrderService(ICartRepository cartRepository, IUnitOfWork unitOfWork)
 		{
 			_cartRepository = cartRepository;
            _unitOfWork = unitOfWork;
-            this.unitOfWork2 = unitOfWork2;
+          
         }
-		public async Task<Order> CreateOrderAsync(string CustomerEmail, string CartId,int shippingCostId, Address ShippingAddress)
+		public async Task<Order?> CreateOrderAsync(string CustomerEmail, string CartId,int shippingCostId, Address ShippingAddress)
 		{
 			//1.Get Cart from cart repo
 			var cart = await _cartRepository.GetCartAsync(CartId);
@@ -41,7 +41,7 @@ namespace PrintMatic.Services
 					{
                        Photos = ImageService.ConvertUrlsToJson(item.Photos);
                     }
-                    var product = await _unitOfWork.generic.GetByIdAsync(item.ProductId);
+                    var product = await _unitOfWork.Repository<Product>().GetByIdAsync(item.ProductId);
                     if (item.Type == "عادى")
                     {
                         productDetails = new ProductOrderDetails(item.ProductId, item.ImageUrl, ItemType.Normal, product.Name, product.NormalPrice, item.PriceAfterSale, item.Color, item.Size, item.Text, item.Date, Photos, item.FilePdf); ;
@@ -52,7 +52,9 @@ namespace PrintMatic.Services
                         productDetails = new ProductOrderDetails(item.ProductId, item.ImageUrl, ItemType.Urgent, product.Name, product.UrgentPrice, item.PriceAfterSale, item.Color, item.Size, item.Text, item.Date, Photos, item.FilePdf); ;
                     }
                     var orderitem = new OrderItem(productDetails, item.Quantity);
-					OrderItems.Add(orderitem);
+					orderitem.TotalPrice = (decimal)(productDetails.PriceAfterSale == 0 ? productDetails.Price * item.Quantity : productDetails.PriceAfterSale * item.Quantity);
+
+                    OrderItems.Add(orderitem);
 
                 }
             }
@@ -61,13 +63,19 @@ namespace PrintMatic.Services
 
 			var TotalPrice = OrderItems.Sum(OI => OI.TotalPrice);
 			//get shippingcost
-			var ShippingCost = await unitOfWork2.generic.GetByIdAsync(shippingCostId);
+			var ShippingCost = await _unitOfWork.Repository<ShippingCost>().GetByIdAsync(shippingCostId);
 			//createorder
 
 			var order=new Order(CustomerEmail,ShippingAddress, TotalPrice,OrderItems, ShippingCost);
 			//save to db
+			 _unitOfWork.Repository<Order>().Add(order);
+			var rows=await _unitOfWork.Complet();
+			if (rows<=0)
+			     return null;
 
-			throw new NotImplementedException();
+			return order;
+
+
 		}
 
 		public Task<Order> GetOrderForUserAsync(int orderid, string CustomerEmail)

@@ -16,13 +16,13 @@ namespace PrintMatic.Repository.Repository
     {
        
         private readonly IDatabase _database;
-		private readonly IUnitOfWork<ShippingCost> _unitOfWork;
+		
 
-		public CartRepository(IConnectionMultiplexer redis,IUnitOfWork<ShippingCost> unitOfWork)
+		public CartRepository(IConnectionMultiplexer redis)
         {
 
             _database = redis.GetDatabase();
-			_unitOfWork = unitOfWork;
+			
 		}
         public async Task<bool> DeleteCartAsync(string cartId)
         {
@@ -53,7 +53,7 @@ namespace PrintMatic.Repository.Repository
         public async Task<CustomerCart?> UpdateCartAsync(CustomerCart cart)
         {
             OrderSummary cost;
-            if (cart.orderSammery.ShippingPrice!=0)
+            if (cart?.orderSammery?.ShippingPrice!=null)
             {
                 cost = new OrderSummary { ShippingPrice = cart.orderSammery.ShippingPrice };
             }

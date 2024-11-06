@@ -28,11 +28,12 @@ namespace PrintMatic.Core.Entities.Order
 		public decimal TotalPrice
 		{
 			get { return totalprice; }
-			set { totalprice = (decimal)(ProductItem.PriceAfterSale == 0 ? ProductItem.Price * Quantity : ProductItem.PriceAfterSale * Quantity); }
+			set { totalprice = value; }
 		}
 
 		//public decimal TotalPrice { get; set; }
-  //      public decimal TotalPrice => (decimal)(ProductItem.PriceAfterSale == 0 ? ProductItem.Price * Quantity : ProductItem.PriceAfterSale * Quantity);
+		//public decimal TotalPrice => (decimal)(ProductItem.PriceAfterSale == 0 ? ProductItem.Price * Quantity : ProductItem.PriceAfterSale * Quantity);
+
 
         public int Quantity { get; set; }
 	}

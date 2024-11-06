@@ -15,45 +15,47 @@ namespace PrintMatic.Controllers
 
     public class ProductController : BaseApiController
     {
-        private readonly IUnitOfWork<Product> _unitOfWork;
-        private readonly IUnitOfWork<ProductColor> _unitofcolor;
-        private readonly IUnitOfWork<ProductSize> _unitofSize;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IProductColor _color;
+        private readonly IProductSize _size;
         private readonly IMapper _mapper;
         private readonly IProductPhoto _productPhoto;
         private readonly IProductSale _productSale;
-        private readonly IUnitOfWork<Review> _unitOfReview;
+        private readonly IReviewRepository _review;
         private readonly UserManager<AppUser> _user;
+        private readonly IProdduct _prodduct;
         private readonly IConfiguration _configuration;
 
-        public ProductController(IUnitOfWork<Product> unitOfWork, 
-            IUnitOfWork<ProductColor> unitofcolor, IUnitOfWork<ProductSize> unitofSize,
+        public ProductController(IUnitOfWork unitOfWork, 
+            IProductColor color, IProductSize size,
             IMapper mapper, IProductPhoto productPhoto, IProductSale productSale,
-            IUnitOfWork<Review> unitOfReview,UserManager<AppUser> user
+            IReviewRepository review,UserManager<AppUser> user,IProdduct prodduct
             ,IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
-            _unitofcolor = unitofcolor;
-            _unitofSize = unitofSize;
+            _color = color;
+            _size = size;
             _mapper = mapper;
             _productPhoto = productPhoto;
             _productSale = productSale;
-            _unitOfReview = unitOfReview;
+            _review = review;
             _user = user;
+           _prodduct = prodduct;
             _configuration = configuration;
         }
 
         [HttpGet("GetAllProducts")]
         public async Task<ActionResult> GetAllProducts()
         {
-            var ProList = await _unitOfWork.prodduct.GetAllProducts();
+            var ProList = await _prodduct.GetAllProducts();
             var ProMapped = _mapper.Map<IEnumerable<Product> , IEnumerable<ProductDto>>(ProList);
             var Products =  new List<ProductDto>();
             foreach (var prod in ProMapped)
             {
                 var SalesList = await _productSale.GetProByIDAsync(prod.Id);
                 var PList = await _productPhoto.GetPhotosOfProduct(prod.Id);
-                var Reviews = await _unitOfReview.review.GetReviewsOfPro(prod.Id);
-                var Colors = await _unitofcolor.color.GetIdOfProAsync(prod.Id);
+                var Reviews = await _review.GetReviewsOfPro(prod.Id);
+                var Colors = await _color.GetIdOfProAsync(prod.Id);
                 var product = await ProductDto.GetProducts(prod, SalesList, PList, Reviews, Colors);
                 Products.Add(product);
             }
@@ -73,7 +75,7 @@ namespace PrintMatic.Controllers
             try
             {
 
-                var product = await _unitOfWork.prodduct.GetIDProducts(id);
+                var product = await _prodduct.GetIDProducts(id);
                 if (product == null)
                 {
                     return BadRequest("There is no product with this Id");
@@ -85,12 +87,12 @@ namespace PrintMatic.Controllers
                     FilePath = product.AppUser.FilePath,
                     UserName = product.AppUser.UserName
                 };
-                var ProductColors = await _unitofcolor.color.GetIdOfProAsync(ProMapped.Id);
+                var ProductColors = await _color.GetIdOfProAsync(ProMapped.Id);
                 foreach (var color in ProductColors)
                 {
                     ProMapped.Colors.Add(color.HexCode);
                 }
-                var ProSizes = await _unitofSize.size.GetIdOfProAsync(ProMapped.Id);
+                var ProSizes = await _size.GetIdOfProAsync(ProMapped.Id);
                 foreach (var size in ProSizes)
                 {
                     ProMapped.Sizes.Add(size.Size);
@@ -118,7 +120,7 @@ namespace PrintMatic.Controllers
                     }
                 }
 
-                var Reviews = await _unitOfReview.review.GetReviewsOfPro(ProMapped.Id);
+                var Reviews = await _review.GetReviewsOfPro(ProMapped.Id);
                 float? Rating = 0f;
                 foreach (var review in Reviews)
                 {
@@ -146,14 +148,14 @@ namespace PrintMatic.Controllers
             {
                 return BadRequest("There is no User with this Id");
             }
-            var ProList = await _unitOfWork.prodduct.GetUserWithHisProducts(UserId);
+            var ProList = await _prodduct.GetUserWithHisProducts(UserId);
             var proMapped = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(ProList);
             foreach (var prod in proMapped)
             {
                 var SalesList = await _productSale.GetProByIDAsync(prod.Id);
                 var PList = await _productPhoto.GetPhotosOfProduct(prod.Id);
-                var Reviews = await _unitOfReview.review.GetReviewsOfPro(prod.Id);
-                var Colors = await _unitofcolor.color.GetIdOfProAsync(prod.Id); 
+                var Reviews = await _review.GetReviewsOfPro(prod.Id);
+                var Colors = await _color.GetIdOfProAsync(prod.Id); 
                 var products = await ProductDto.GetProducts(prod, SalesList, PList, Reviews , Colors);
                 proMapped.ToList().Add(products);
                 
@@ -172,7 +174,7 @@ namespace PrintMatic.Controllers
         {
             if (!string.IsNullOrEmpty(ProductName))
             {
-                var list = await _unitOfWork.prodduct.SearchByName(ProductName);
+                var list = await _prodduct.SearchByName(ProductName);
                 if (list.Any())
                 {
                     var proMapped = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(list);
@@ -180,8 +182,8 @@ namespace PrintMatic.Controllers
                     {
                         var SalesList = await _productSale.GetProByIDAsync(prod.Id);
                         var PList = await _productPhoto.GetPhotosOfProduct(prod.Id);
-                        var Reviews = await _unitOfReview.review.GetReviewsOfPro(prod.Id);
-                        var Colors = await _unitofcolor.color.GetIdOfProAsync(prod.Id);
+                        var Reviews = await _review.GetReviewsOfPro(prod.Id);
+                        var Colors = await _color.GetIdOfProAsync(prod.Id);
                         var products = await ProductDto.GetProducts(prod, SalesList, PList, Reviews,Colors);
                         proMapped.ToList().Add(products);
 

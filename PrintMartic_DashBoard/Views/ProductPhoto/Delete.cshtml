@@ -5,7 +5,8 @@
 
 
     <div class="m-auto  bg-white p-5">
-        <h1>إزالة صورة المنتج</h1>
+    <h1 style="color:#B8001F">هل انت متأكد انك تريد إزالة صورة هذا المنتج ؟</h1>
+
     @if (!string.IsNullOrEmpty(TempData["Message"] as string))
     {
         <div class="alert alert-primary mt-3 mb-2">
@@ -20,16 +21,11 @@
         <input type="hidden" asp-for="Photo" />
         <div class="form-group mt-4">
             <input type="submit" value="حذف" class="btn btn-danger " />
-            @if (User.IsInRole("Admin"))
-            {
-                <a asp-action="Index" class="btn btn-light">العوده</a>
+           
+                <a href="~/Product/Edit/@Model.ProductId" class="btn btn-light">العوده</a>
 
-            }
-            else if (User.IsInRole("بائع"))
-            {
-                <a asp-action="YourProductPhotos" class="btn btn-light">العوده</a>
+           
 
-            }
         </div>
     </form>
 

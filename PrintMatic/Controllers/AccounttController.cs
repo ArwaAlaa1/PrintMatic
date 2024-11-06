@@ -35,7 +35,7 @@ namespace PrintMatic.Controllers
 		private readonly IEmailService _emailService;
 		private readonly CodeVerificationService _verificationService;
 		private readonly SignInManager<AppUser> _signInManager;
-        private readonly IUnitOfWork<Address> _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IAddressRepository _addressRepository;
         private readonly IMapper _mapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -49,7 +49,7 @@ namespace PrintMatic.Controllers
             IEmailService emailService,
             CodeVerificationService verificationService,
 			SignInManager<AppUser> signInManager,
-            IUnitOfWork<Address> unitOfWork,
+            IUnitOfWork unitOfWork,
             IAddressRepository addressRepository,
             IMapper mapper,
             IWebHostEnvironment webHostEnvironment,
@@ -66,7 +66,7 @@ namespace PrintMatic.Controllers
 			_signInManager = signInManager;
             _unitOfWork = unitOfWork;
             _addressRepository = addressRepository;
-          
+           
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
             _apiBaseUrl = configuration["ApiBaseUrl"];
@@ -347,7 +347,7 @@ namespace PrintMatic.Controllers
                     UserName = user.UserName,
                     Email = user.Email,
                     PhoneNumber = user.PhoneNumber,
-
+					Token=await _tokenService.CreateToken(user,_userManager),
 
                     Image = $"{_apiBaseUrl}/images/Users/{user.FilePath ?? "UserDefault.png"}"
 
@@ -359,9 +359,10 @@ namespace PrintMatic.Controllers
 				UserName = user.UserName,
 				Email = user.Email,
 				PhoneNumber = user.PhoneNumber,
+                Token = await _tokenService.CreateToken(user, _userManager),
 
 
-				Image = $"{_apiBaseUrl}{user.FilePath}"
+                Image = $"{_apiBaseUrl}{user.FilePath}"
 
 			});
 		}
@@ -463,8 +464,8 @@ namespace PrintMatic.Controllers
 				//var addressmaped = _mapper.Map<AddressDto, Address>(address);
                 //useraddress = addressmaped;
 				_mapper.Map(address, useraddress);
-				_unitOfWork.generic.Update(useraddress);
-                var count=_unitOfWork.Complet();
+				_unitOfWork.Repository<Address>().Update(useraddress);
+                var count=await _unitOfWork.Complet();
 				if (count > 0)
 				{
 					return Ok(new
@@ -501,7 +502,7 @@ namespace PrintMatic.Controllers
 
 			try
 			{
-				var address = await _unitOfWork.generic.GetByIdAsync(id);
+				var address = await _unitOfWork.Repository<Address>().GetByIdAsync(id);
 				if (address == null)
 				{
 					return NotFound(new { Message = "هذا العنوان غير موجود" });
