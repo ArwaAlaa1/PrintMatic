@@ -24,7 +24,7 @@ namespace PrintMatic.Controllers
         }
 
         [Authorize]
-        [HttpGet("ShippingCost")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<ShippingCost>>> GetAllShippingCosts()
         {
             var Costs = await _unitOfWork.Repository<ShippingCost>().GetAllAsync();

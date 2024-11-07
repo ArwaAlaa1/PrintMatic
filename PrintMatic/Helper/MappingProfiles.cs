@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
+using Microsoft.OpenApi.Extensions;
 using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
 using PrintMatic.Core.Entities.Order;
 using PrintMatic.DTOS;
 using PrintMatic.DTOS.IdentityDTOS;
 using PrintMatic.DTOS.OrderDTOS;
+using System.Globalization;
+using System.Reflection;
+using System.Runtime.Serialization;
 using Address = PrintMatic.Core.Entities.Identity.Address;
 
 namespace PrintMatic.Helper
@@ -22,6 +26,13 @@ namespace PrintMatic.Helper
             CreateMap<Core.Entities.Identity.Address, AddressDto>().ReverseMap();
             CreateMap<Address, Core.Entities.Order.Address>().ReverseMap();
             CreateMap<ShippingCostDto, ShippingCost>().ReverseMap();
+            CreateMap<Order, OrderReturnDto>()
+             .ForMember(dest => dest.OrderDate, opt => opt.MapFrom(src =>
+                 src.OrderDate.ToString("dddd, dd MMMM yyyy ", new CultureInfo("ar"))))
+             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.GetType().GetMember(src.Status.ToString()).FirstOrDefault().GetCustomAttribute<EnumMemberAttribute>().Value))
+             .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GetTotal()))
+              .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.OrderItems.Count))
+             .ForMember(dest => dest.OrderItemPhoto, opt => opt.MapFrom(src => src.OrderItems.FirstOrDefault().ProductItem.Photo));
             CreateMap<Favorite, FavouriteDto>().ReverseMap();
             CreateMap<ProductColor, ColorDto>().ReverseMap();
             CreateMap<Category, CategoryDTO>().ForMember(i => i.PhotoURL, i => i.MapFrom<CategoryPhotoResolved>()).ReverseMap();

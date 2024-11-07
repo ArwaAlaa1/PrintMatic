@@ -6,5 +6,6 @@
         public string CartId { get; set; }
         public int ShippingCostId { get; set; }
         public int AddressId { get; set; }
+
     }
 }

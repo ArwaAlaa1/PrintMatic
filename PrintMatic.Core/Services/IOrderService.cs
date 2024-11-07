@@ -10,7 +10,9 @@ namespace PrintMatic.Core.Services
 	public interface IOrderService
 	{
 		Task<Order?> CreateOrderAsync(string CustomerEmail, string CartId,int shippingCostId, Address ShippingAddress);
-		Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string CustomerEmail);
-		Task<Order> GetOrderForUserAsync(int orderid,string CustomerEmail);
-	}
+		Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string Email);
+		Task<Order> GetOrderForUserAsync(int orderid);
+        Task<Order> CancelOrderForUserAsync(int orderid);
+        Task<Order> ReOrderForUserAsync(int orderid);
+    }
 }

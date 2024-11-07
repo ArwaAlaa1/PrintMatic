@@ -34,7 +34,7 @@ namespace PrintMatic.Core.Entities.Order
 		//public decimal TotalPrice { get; set; }
 		//public decimal TotalPrice => (decimal)(ProductItem.PriceAfterSale == 0 ? ProductItem.Price * Quantity : ProductItem.PriceAfterSale * Quantity);
 
-
-        public int Quantity { get; set; }
+		public string TraderId { get; set; }
+		public int Quantity { get; set; }
 	}
 }

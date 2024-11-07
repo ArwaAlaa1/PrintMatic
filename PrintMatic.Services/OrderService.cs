@@ -15,13 +15,13 @@ namespace PrintMatic.Services
 	{
 		private readonly ICartRepository _cartRepository;
         private readonly IUnitOfWork _unitOfWork;
-      
+        private readonly IOrderRepository _orderRepo;
 
-        public OrderService(ICartRepository cartRepository, IUnitOfWork unitOfWork)
+        public OrderService(ICartRepository cartRepository, IUnitOfWork unitOfWork,IOrderRepository orderRepo)
 		{
 			_cartRepository = cartRepository;
            _unitOfWork = unitOfWork;
-          
+           _orderRepo = orderRepo;
         }
 		public async Task<Order?> CreateOrderAsync(string CustomerEmail, string CartId,int shippingCostId, Address ShippingAddress)
 		{
@@ -78,14 +78,38 @@ namespace PrintMatic.Services
 
 		}
 
-		public Task<Order> GetOrderForUserAsync(int orderid, string CustomerEmail)
+        public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string Email)
+        {
+            var orders=await _orderRepo.GetUserOrders(Email);
+
+			return (IReadOnlyList<Order>)orders;
+        }
+
+        public async Task<Order> GetOrderForUserAsync(int orderid)
 		{
-			throw new NotImplementedException();
+			var order=await _orderRepo.GetOrderForUser(orderid);
+
+			return order;
 		}
 
-		public Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string CustomerEmail)
-		{
-			throw new NotImplementedException();
-		}
-	}
+        public async Task<Order> CancelOrderForUserAsync(int orderid)
+        {
+            var order = await _orderRepo.CancelOrderForUser(orderid);
+			 _orderRepo.Update(order);
+            var rows=await _unitOfWork.Complet();
+            if (rows>0)
+            {return order;
+
+            }
+            return order;
+        }
+
+        public async Task<Order> ReOrderForUserAsync(int orderid)
+        {
+            var order = await _orderRepo.ReOrderForUser(orderid);
+            _orderRepo.Update(order);
+            var row=await _unitOfWork.Complet();
+            return order;
+        }
+    }
 }

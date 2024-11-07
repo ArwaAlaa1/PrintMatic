@@ -13,5 +13,9 @@ namespace PrintMatic.Services
         {
             return JsonConvert.SerializeObject(urls);
         }
+        public static List<string> ConvertJsonToUrls(string json)
+        {
+            return JsonConvert.DeserializeObject<List<string>>(json);
+        }
     }
 }

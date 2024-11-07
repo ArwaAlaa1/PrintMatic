@@ -17,6 +17,7 @@ namespace PrintMatic.Extentions
            
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped(typeof(IOrderService), typeof(OrderService));
+            services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
             services.AddAutoMapper(typeof(MappingProfiles));
 			services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));

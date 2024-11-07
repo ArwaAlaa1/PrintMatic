@@ -9,6 +9,8 @@ using PrintMatic.Core.Entities.Order;
 using PrintMatic.Core.Repository.Contract;
 using PrintMatic.Core.Services;
 using PrintMatic.DTOS.OrderDTOS;
+using PrintMatic.Services;
+using static StackExchange.Redis.Role;
 
 namespace PrintMatic.Controllers
 {
@@ -44,9 +46,73 @@ namespace PrintMatic.Controllers
             var user = await _userManager.GetUserAsync(User);
             var order = await _orderService.CreateOrderAsync(user.Email, orderDto.CartId, orderDto.ShippingCostId, addressmapped);
             if (order is null)
-                return BadRequest("فشل فى الطلب");
+                return BadRequest(new { Message= "! فشل تأكيد الطلب" });
 
+            return Ok(new { Message = " ! تمت العمليه بنجاح" });
+        }
+
+        [Authorize]
+        [HttpGet("UserOrders")]
+        public async Task<ActionResult<IEnumerable<OrderReturnDto>>> GetUserOrders()
+        {
+            var user=await _userManager.GetUserAsync(User);
+            var orders = await _orderService.GetOrdersForUserAsync(user.Email);
+            
+            var mappedOrders = _mapper.Map<List<OrderReturnDto>>(orders);
+            return Ok(mappedOrders);
+
+        }
+
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Order>> GetOrderForUser(int id)
+        {
+            //var user = await _userManager.GetUserAsync(User);
+            var order = await _orderService.GetOrderForUserAsync(id);
+            //foreach (var item in order.OrderItems)
+            //{
+            //    if (item.ProductItem.Photos !=null)
+            //    {
+            //        List<string> urls = ImageService.ConvertJsonToUrls(item.ProductItem.Photos);
+                
+            //    }
+            //}
             return Ok(order);
+
+        }
+
+        [Authorize]
+        [HttpPut("Cancel/{id}")]
+        public async Task<ActionResult<Order>> CancelOrderForUser(int id)
+        {
+            //var user = await _userManager.GetUserAsync(User);
+            var order = await _orderService.CancelOrderForUserAsync(id);
+            if (order!=null)
+                    return Ok(new
+                    {
+
+                        Message = " !تم إلغاء الطلب بنجاح "
+                    });
+           
+            return BadRequest(new
+            {
+
+                Message = " !حدث خطأ أثناء إلغاء الطلب "
+            });
+
+        }
+
+        [Authorize]
+        [HttpPut("ReOrder/{id}")]
+        public async Task<ActionResult<Order>> ReOrderForUser(int id)
+        {
+            //var user = await _userManager.GetUserAsync(User);
+            var order = await _orderService.ReOrderForUserAsync(id);
+            if (order != null)
+                return Ok(new { Message = " !تم إعاده الطلب بنجاح " });
+
+            return BadRequest(new { Message = " !حدث خطأ أثناء إعاده الطلب " });
+
         }
     }
 }
