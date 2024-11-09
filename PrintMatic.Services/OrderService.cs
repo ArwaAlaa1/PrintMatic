@@ -44,7 +44,7 @@ namespace PrintMatic.Services
                     var product = await _unitOfWork.Repository<Product>().GetByIdAsync(item.ProductId);
                     if (item.Type == "عادى")
                     {
-                        productDetails = new ProductOrderDetails(item.ProductId, item.ImageUrl, ItemType.Normal, product.Name, product.NormalPrice, item.PriceAfterSale, item.Color, item.Size, item.Text, item.Date, Photos, item.FilePdf); ;
+                        productDetails = new ProductOrderDetails(item.ProductId, item.ImageUrl, ItemType.Normal, product.Name, product.TotalPrice, item.PriceAfterSale, item.Color, item.Size, item.Text, item.Date, Photos, item.FilePdf); ;
 
                     }
                     else

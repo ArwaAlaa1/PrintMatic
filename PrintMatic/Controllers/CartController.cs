@@ -152,14 +152,18 @@ namespace PrintMatic.Controllers
                 else if (Item.Photos != null || Item.FilePdf != null)
                 {
                     
-                    if (Item.Photos != null)
+                    if (Item.Photos != null && Item.FilePdf != null)
+                    {
+                        mappeditem.Photos = await _custome.Upload(Item.Photos);
+                        mappeditem.FilePdf = await _custome.UploadFile(Item.FilePdf);
+                    }else if (Item.FilePdf != null)
+                    {
+                        mappeditem.FilePdf = await _custome.UploadFile(Item.FilePdf);
+                    } else if (Item.Photos != null)
                     {
                         mappeditem.Photos = await _custome.Upload(Item.Photos);
                     }
-                    else if (Item.FilePdf != null)
-                    {
-                        mappeditem.FilePdf = await _custome.UploadFile(Item.FilePdf);
-                    }
+
                     cartadd.Items.Add(mappeditem);
                 }
 

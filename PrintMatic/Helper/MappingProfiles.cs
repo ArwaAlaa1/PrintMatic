@@ -43,8 +43,8 @@ namespace PrintMatic.Helper
                       src.Status.GetType().GetMember(src.Status.ToString())
                           .FirstOrDefault()
                           .GetCustomAttribute<EnumMemberAttribute>().Value ))
-                  .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.OrderItems.Count))
-                  .ForPath(dest => dest.orderSummary.TotalItems, opt => opt.MapFrom(src => src.OrderItems.Count))
+                  .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.OrderItems.Count()))
+                  .ForPath(dest => dest.orderSummary.TotalItems, opt => opt.MapFrom(src => src.OrderItems.Sum(item => item.Quantity)))
                   .ForPath(dest => dest.orderSummary.TotalPriceBeforeDiscount, opt => opt.MapFrom(src =>
                       src.OrderItems.Sum(oi => oi.ProductItem.Price)))
                   .ForPath(dest => dest.orderSummary.TotalPriceAfterDiscount, opt => opt.MapFrom(src => src.SubTotal))
@@ -61,6 +61,7 @@ namespace PrintMatic.Helper
                 .ForMember(dest => dest.ProductId, opt => opt.MapFrom(src => src.ProductItem.ProductId))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ProductItem.Name))
                 .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.ProductItem.Price))
+                .ForMember(dest => dest.Quantity, opt => opt.MapFrom(src => src.Quantity))
                 .ForMember(dest => dest.PriceAfterSale, opt => opt.MapFrom(src => src.ProductItem.PriceAfterSale))
                 .ForMember(dest => dest.Photo, opt => opt.MapFrom(src => src.ProductItem.Photo)).ReverseMap();
 

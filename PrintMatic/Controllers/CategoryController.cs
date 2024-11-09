@@ -15,22 +15,16 @@ namespace PrintMatic.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICategoryRepository _category;
         private readonly IMapper _mapper;
-        private readonly IProductSale _productSale;
-        private readonly IReviewRepository _review;
-        private readonly IProductPhoto _productPhoto;
-        private readonly IProductColor _color;
+        private readonly IProdduct _prodduct;
 
         public CategoryController(IUnitOfWork unitOfWork,ICategoryRepository category, IMapper mapper
-            ,IProductSale productSale , IReviewRepository review , IProductPhoto productPhoto,
-            IProductColor color)
+            ,IProdduct prodduct
+            )
         {
             _unitOfWork = unitOfWork;
             _category = category;
             _mapper = mapper;
-            _productSale = productSale;
-            _review = review;
-            _productPhoto = productPhoto;
-            _color = color;
+            _prodduct = prodduct;
         }
 
         [HttpGet("GetAll")]
@@ -54,15 +48,13 @@ namespace PrintMatic.Controllers
             var CategoryMapped = _mapper.Map<Category, CategoryWithProDetails>(category);
             foreach (var prod in CategoryMapped.Products)
             {
-                var SalesList = await _productSale.GetProByIDAsync(prod.Id);
-                var PList = await _productPhoto.GetPhotosOfProduct(prod.Id);
-                var Reviews = await _review.GetReviewsOfPro(prod.Id);
-                var Colors = await _color.GetIdOfProAsync(prod.Id);
-                var products = await ProductDto.GetProducts(prod, SalesList, PList, Reviews,Colors);
+                var product = await _prodduct.Get(prod.Id);
+                var products = await ProductDto.GetProducts(prod, product.ProductSales, product.ProductPhotos, product.Reviews, product.ProductColors);
                 CategoryMapped.Products.ToList().Add(products);
             }
             return Ok(CategoryMapped);
         }
+
 
 
     }

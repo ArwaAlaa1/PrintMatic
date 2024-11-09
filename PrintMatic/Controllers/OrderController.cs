@@ -79,7 +79,7 @@ namespace PrintMatic.Controllers
                 {
                     return BadRequest(new { Message = "! فشل تأكيد الطلب" });
                 }
-
+                var deletedcart = await _cartRepository.DeleteCartAsync(orderDto.CartId);
                 return Ok(new { Message = "تمت العملية بنجاح!" });
             }
             catch (Exception ex)
@@ -169,15 +169,26 @@ namespace PrintMatic.Controllers
         {
             try
             {
-               
-                var order = await _orderService.CancelOrderForUserAsync(id);
-
-                if (order != null)
+                var GetOrder = await _orderService.GetOrderForUserAsync(id);
+                if (GetOrder.Status == OrderStatus.Pending)
                 {
-                   
-                    return Ok(new
+                    var order = await _orderService.CancelOrderForUserAsync(id);
+
+                    if (order != null)
                     {
-                        Message = " !تم إلغاء الطلب بنجاح "  
+
+                        return Ok(new
+                        {
+                            Message = " !تم إلغاء الطلب بنجاح "
+                        });
+                    }
+
+                }
+                else
+                {
+                    return BadRequest(new
+                    {
+                        Message = " !لا يمكن الغاء الاوردر لانه قيد التنفيذ "
                     });
                 }
 
@@ -205,16 +216,28 @@ namespace PrintMatic.Controllers
         {
             try
             {
-               
-                var order = await _orderService.ReOrderForUserAsync(id);
-
-                if (order != null)
+                var GetOrder = await _orderService.GetOrderForUserAsync(id);
+                if (GetOrder.Status == OrderStatus.Cancelled)
                 {
-                    
-                    return Ok(new { Message = " !تم إعاده الطلب بنجاح " });  
+
+                    var order = await _orderService.ReOrderForUserAsync(id);
+
+                    if (order != null)
+                    {
+
+                        return Ok(new { Message = " !تم إعاده الطلب بنجاح " });
+                    }
+                }
+                else
+                {
+                    return BadRequest(new
+                    {
+                        Message = " !لا يمكن إعاده طلب الاوردر  "
+                    });
                 }
 
-               
+
+
                 return BadRequest(new { Message = " !حدث خطأ أثناء إعاده الطلب " });  
             }
             catch (Exception ex)

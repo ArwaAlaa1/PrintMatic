@@ -39,8 +39,11 @@ namespace PrintMatic.Core.Entities
 
         public virtual ICollection<ProductPhotos> ProductPhotos { get; set; }
         public virtual ICollection<ProductSale> ProductSales { get; set; }
+        public virtual ICollection<ProductColor> ProductColors { get; set; }
+        public virtual ICollection<ProductSize> ProductSizes { get; set; }
 
 
+        public virtual ICollection<Review> Reviews { get; set; }
 
     }
 }

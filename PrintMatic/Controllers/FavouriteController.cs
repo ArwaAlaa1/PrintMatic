@@ -24,9 +24,9 @@ namespace PrintMatic.Controllers
         private readonly IReviewRepository _review;
         private readonly IProductColor _color;
 
-        public FavouriteController(IFavouriteRepository fav,IUnitOfWork unitOfWork , IProdduct product
-            ,UserManager<AppUser> user , IMapper mapper, IProductPhoto productPhoto, IProductSale productSale, IReviewRepository review
-            ,IProductColor color)
+        public FavouriteController(IFavouriteRepository fav, IUnitOfWork unitOfWork, IProdduct product
+            , UserManager<AppUser> user, IMapper mapper, IProductPhoto productPhoto, IProductSale productSale, IReviewRepository review
+            , IProductColor color)
         {
             _fav = fav;
             _unitOfWork = unitOfWork;
@@ -84,7 +84,7 @@ namespace PrintMatic.Controllers
                     Message = $"فشلت عملية الإضافه {ex.Message.ToString() ?? ex.InnerException?.Message.ToString()}"
                 });
             }
-           
+
         }
 
 
@@ -140,18 +140,15 @@ namespace PrintMatic.Controllers
                     return BadRequest("لا يوجد مستخدم بهذا الكود");
                 }
                 var list = await _fav.GetFavorites(user.Id);
-                var FavListMapped = _mapper.Map<IEnumerable<Favorite>,IEnumerable<FavouriteDto>>(list);
+                var FavListMapped = _mapper.Map<IEnumerable<Favorite>, IEnumerable<FavouriteDto>>(list);
                 if (FavListMapped.Any())
                 {
                     foreach (var favourite in FavListMapped)
                     {
 
-                        var SalesList = await _productSale.GetProByIDAsync(favourite.Product.Id);
-                        var PList = await _productPhoto.GetPhotosOfProduct(favourite.Product.Id);
-                        var Reviews = await _review.GetReviewsOfPro(favourite.Product.Id);
-                        var Colors = await _color.GetIdOfProAsync(favourite.Product.Id);
-                        var product = await ProductDto.GetProducts(favourite.Product, SalesList, PList, Reviews ,Colors);
-                        productDtos.Add(product);
+                        var product = await _product.Get(favourite.Product.Id);
+                        var products = await ProductDto.GetProducts(favourite.Product, product.ProductSales, product.ProductPhotos, product.Reviews, product.ProductColors);
+                        productDtos.Add(products);
                     }
                     return Ok(productDtos);
                 }
@@ -165,8 +162,9 @@ namespace PrintMatic.Controllers
                     Message = $"{ex.Message.ToString() ?? ex.InnerException?.Message.ToString()}"
                 });
             }
-            
+
 
         }
     }
 }
+

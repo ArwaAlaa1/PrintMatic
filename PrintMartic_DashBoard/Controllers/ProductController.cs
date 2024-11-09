@@ -163,20 +163,18 @@ namespace PrintMartic_DashBoard.Controllers
                 return RedirectToAction(nameof(Index));
             }
             var itemMapped = _mapper.Map<Product, ProductVM>(item);
-            var ListofProColor = await _color.GetIdOfProAsync(item.Id);
-            if (ListofProColor.Count > 0)
+            if (item.ProductColors.Any())
             {
-                itemMapped.Colors = ListofProColor;
+                itemMapped.Colors = item.ProductColors.ToList();
             }
-            var ListofProSize = await _size.GetIdOfProAsync(item.Id);
-            if (ListofProSize.Count > 0)
+            if (item.ProductSizes.Any())
             {
-                itemMapped.Sizes = ListofProSize;
+                itemMapped.Sizes = item.ProductSizes.ToList();
             }
-            var PhotoList = await _photo.GetPhotosOfProduct(item.Id);
-            if (PhotoList.Any())
+
+            if (item.ProductPhotos.Any())
             {
-                foreach (var photo in PhotoList)
+                foreach (var photo in item.ProductPhotos)
                 {
                     itemMapped.photos.Add(photo.Photo);
                 }
