@@ -13,6 +13,7 @@ namespace PrintMatic.Core.Repository.Contract
         public Task<Order> GetOrderForUserAsync(int OrderId);
         public Task<Order> CancelOrderForUserAsync(int OrderId);
         public Task<Order> ReOrderForUserAsync(int OrderId);
+        public Task<Order> DeleteOrderForUserAsync(int OrderId);
         public Task<OrderItem> GetOrderItemAsync(int orderitemId);
     }
 }

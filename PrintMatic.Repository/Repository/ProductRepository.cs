@@ -66,7 +66,7 @@ namespace PrintMatic.Repository.Repository
             
             
         }
-<<<<<<< HEAD
+
         public async Task<Product> GetProductWithPhotos(int id)
         {
             var product =await _context.Products.Where(p=>p.Id==id).Include(p=>p.ProductPhotos).FirstAsync();
@@ -75,9 +75,7 @@ namespace PrintMatic.Repository.Repository
 
 
         }
-    }
-}
-=======
+
         public async Task<IEnumerable<Product>> FilterSearsh(string? ProName , int? CategoryId , string? HexCode , decimal? price , string? size )
         {
         
@@ -150,4 +148,3 @@ namespace PrintMatic.Repository.Repository
         }
   }
 
->>>>>>> 40b63af24f24d1a93d5d2cba3b5c104fac2dc70c

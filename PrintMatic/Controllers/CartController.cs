@@ -16,6 +16,8 @@ using StackExchange.Redis;
 using System.Drawing;
 using System.Linq.Expressions;
 using System.Net.WebSockets;
+using System.Text.Json.Nodes;
+using System.Text.Json;
 
 namespace PrintMatic.Controllers
 {
@@ -49,7 +51,7 @@ namespace PrintMatic.Controllers
         {
             try
             {
-                // Retrieve the current user
+                
                 var user = await _userManager.GetUserAsync(User);
                 if (user == null)
                 {
@@ -80,6 +82,8 @@ namespace PrintMatic.Controllers
                     }
                 }
 
+
+                
                 return Ok(cart);
             }
             catch (Exception ex)
@@ -95,11 +99,11 @@ namespace PrintMatic.Controllers
         {
             try
             {
-                // Retrieve the user ID
+                
                 var userId = _userManager.GetUserId(User);
                 var cartadd = await cartRepository.GetCartAsync(userId);
 
-                // Retrieve product details
+               
                 var product = await _prodduct.GetProductWithPhotos(Item.ProductId);
                 if (product == null)
                 {
@@ -147,7 +151,7 @@ namespace PrintMatic.Controllers
                 }
                 else if (Item.Photos != null || Item.FilePdf != null)
                 {
-                    // Handle photo and file uploads
+                    
                     if (Item.Photos != null)
                     {
                         mappeditem.Photos = await _custome.Upload(Item.Photos);
@@ -181,21 +185,21 @@ namespace PrintMatic.Controllers
         {
             try
             {
-                // Retrieve the cart by cart ID
+                
                 var cart = await cartRepository.GetCartAsync(cartid);
                 if (cart == null)
                 {
                     return NotFound(new { Message = "العربة غير موجودة" });
                 }
 
-                // Find the item to remove by Item ID
+                
                 var itemToRemove = cart.Items?.FirstOrDefault(item => item.Id == Itemid);
                 if (itemToRemove == null)
                 {
                     return NotFound(new { Message = "العنصر غير موجود في العربة" });
                 }
 
-                // Handle deletion of photos and PDF if they exist
+                
                 if (itemToRemove.Photos != null && itemToRemove.Photos.Any())
                 {
                     await _custome.Delete(itemToRemove.Photos);
@@ -206,10 +210,10 @@ namespace PrintMatic.Controllers
                     await _custome.DeleteFile(itemToRemove.FilePdf);
                 }
 
-                // Remove the item from the cart
+                
                 cart.Items.Remove(itemToRemove);
 
-                // Update the cart or delete if empty
+               
                 var updatedBasketData = await cartRepository.UpdateCartAsync(cart);
                 if (!cart.Items.Any())
                 {
@@ -255,24 +259,24 @@ namespace PrintMatic.Controllers
         {
             try
             {
-                // Retrieve the cart by ID
+                
                 var cart = await cartRepository.GetCartAsync(cartid);
                 if (cart == null)
                 {
                     return NotFound(new { Message = "العربة غير موجودة" });
                 }
 
-                // Find the item to increase quantity
+                
                 var itemToIncrease = cart.Items.FirstOrDefault(item => item.Id == ItemId);
                 if (itemToIncrease == null)
                 {
                     return NotFound(new { Message = "العنصر غير موجود في العربة" });
                 }
 
-                // Increase the quantity of the item
+                
                 itemToIncrease.Quantity += 1;
 
-                // Update the cart
+                
                 var updatedBasketData = await cartRepository.UpdateCartAsync(cart);
                 if (updatedBasketData == null)
                 {
@@ -283,10 +287,10 @@ namespace PrintMatic.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception for internal diagnostics
+               
                 _logger.LogError(ex, "Error occurred while increasing item quantity in the cart.");
 
-                // Return a generic error message to the user
+               
                 return BadRequest( new { Message = "حدث خطأ غير متوقع. يرجى المحاولة لاحقًا." });
             }
         }
@@ -297,14 +301,14 @@ namespace PrintMatic.Controllers
         {
             try
             {
-                // Retrieve the cart by ID
+               
                 var cart = await cartRepository.GetCartAsync(cartid);
                 if (cart == null)
                 {
                     return NotFound(new { Message = "العربة غير موجودة" });
                 }
 
-                // Find the item to decrease quantity
+               
                 var itemToDecrease = cart.Items.FirstOrDefault(item => item.Id == ItemId);
                 if (itemToDecrease == null)
                 {

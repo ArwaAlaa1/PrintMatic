@@ -30,7 +30,7 @@ namespace PrintMatic.Repository.Repository
 
         public async Task<IEnumerable<Order>> GetUserOrdersAsync(string Email)
         {
-            var order=await _context.Set<Order>().Where(O => O.CustomerEmail == Email).Include(o=>o.ShippingCost).Include(o => o.OrderItems).ToListAsync();
+            var order=await _context.Set<Order>().Where(O => O.CustomerEmail == Email && O.IsDeleted==false).Include(o=>o.ShippingCost).Include(o => o.OrderItems).ToListAsync();
             return order;
         }
 
@@ -38,10 +38,10 @@ namespace PrintMatic.Repository.Repository
         {
             var order = await _context.Set<Order>().Where(O => O.Id == OrderId).Include(OI => OI.OrderItems).FirstAsync();
             order.Status = OrderStatus.Cancelled;
-            order.IsDeleted = true;
+            order.IsActive = false;
             foreach (var item in order.OrderItems)
             {
-                item.IsDeleted = true;
+                item.IsActive = false;
             }
           
             return order;
@@ -51,10 +51,10 @@ namespace PrintMatic.Repository.Repository
         {
             var order = await _context.Set<Order>().Where(O => O.Id == OrderId).Include(OI => OI.OrderItems).FirstAsync();
             order.Status = OrderStatus.Pending;
-            order.IsDeleted = false;
+            order.IsActive =true;
             foreach (var item in order.OrderItems)
             {
-                item.IsDeleted = false;
+                item.IsActive =true;
             }
             return order;
         }
@@ -63,6 +63,18 @@ namespace PrintMatic.Repository.Repository
         {
             var item=await _context.Set<OrderItem>().Where(oi => oi.Id == orderitemId).FirstAsync();
             return item;
+        }
+
+        public async Task<Order> DeleteOrderForUserAsync(int OrderId)
+        {
+            var order = await _context.Set<Order>().Where(O => O.Id == OrderId).Include(OI => OI.OrderItems).FirstAsync();
+           
+            order.IsDeleted = true;
+            foreach (var item in order.OrderItems)
+            {
+                item.IsDeleted = true;
+            }
+            return order;
         }
     }
 }

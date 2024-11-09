@@ -112,9 +112,19 @@ namespace PrintMatic.Services
             return order;
         }
 
+    
+
+        public async Task<Order> DeleteOrderForUserAsync(int orderid)
+        {
+           var order= await _orderRepo.DeleteOrderForUserAsync(orderid);
+            _orderRepo.Update(order);
+            var row = await _unitOfWork.Complet();
+            return order;
+        }
+
         public async Task<OrderItem> GetOrderItemForOrder(int orderItemId)
         {
-            var item=await _orderRepo.GetOrderItemAsync(orderItemId);
+            var item = await _orderRepo.GetOrderItemAsync(orderItemId);
             return item;
 
         }

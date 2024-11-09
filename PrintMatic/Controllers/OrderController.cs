@@ -25,14 +25,18 @@ namespace PrintMatic.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly string _imagepath;
+        private readonly ILogger<OrderController> _logger;
+        private readonly IConfiguration _configuration;
+        private readonly string? _imagepath;
 
         public OrderController(IOrderService orderService
             ,ICartRepository cartRepository
             ,IAddressRepository addressRepository
             ,IMapper mapper
             ,UserManager<AppUser> userManager
-            , IWebHostEnvironment webHostEnvironment)
+            , IWebHostEnvironment webHostEnvironment,
+            ILogger<OrderController> logger,
+                        IConfiguration configuration)
         {
             _orderService = orderService;
             _cartRepository = cartRepository;
@@ -40,112 +44,254 @@ namespace PrintMatic.Controllers
             _mapper = mapper;
             _userManager = userManager;
             _webHostEnvironment = webHostEnvironment;
-            _imagepath = "https://localhost:7234";
+            _logger = logger;
+            _configuration = configuration;
+            _imagepath = _configuration["ApiBaseUrl"];
         }
 
-        
+
         [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
+        public async Task<ActionResult> CreateOrder(OrderDto orderDto)
         {
-            var address=await _addressRepository.GetUserAddress(orderDto.AddressId);
-            var addressmapped= _mapper.Map<Core.Entities.Order.Address>(address);
-            var user = await _userManager.GetUserAsync(User);
-            var order = await _orderService.CreateOrderAsync(user.Email, orderDto.CartId, orderDto.ShippingCostId, addressmapped);
-            if (order is null)
-                return BadRequest(new { Message= "! فشل تأكيد الطلب" });
+            try
+            {
+                
+                var address = await _addressRepository.GetUserAddress(orderDto.AddressId);
+                if (address == null)
+                {
+                    return NotFound(new { Message = "العنوان غير موجود" });
+                }
 
-            return Ok(new { Message = " ! تمت العمليه بنجاح" });
+                
+                var addressMapped = _mapper.Map<Core.Entities.Order.Address>(address);
+
+               
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized(new { Message = "المستخدم غير مصرح له" });
+                }
+
+                
+                var order = await _orderService.CreateOrderAsync(user.Email, orderDto.CartId, orderDto.ShippingCostId, addressMapped);
+                if (order == null)
+                {
+                    return BadRequest(new { Message = "! فشل تأكيد الطلب" });
+                }
+
+                return Ok(new { Message = "تمت العملية بنجاح!" });
+            }
+            catch (Exception ex)
+            {
+                
+                _logger.LogError(ex, "Error occurred while creating the order.");
+
+                return BadRequest( new { Message = "حدث خطأ غير متوقع. يرجى المحاولة لاحقًا." });
+            }
         }
 
         [Authorize]
         [HttpGet("UserOrders")]
         public async Task<ActionResult<IEnumerable<OrderReturnDto>>> GetUserOrders()
         {
-            var user=await _userManager.GetUserAsync(User);
-            var orders = await _orderService.GetOrdersForUserAsync(user.Email);
-            
-            var mappedOrders = _mapper.Map<List<OrderReturnDto>>(orders);
-            return Ok(mappedOrders);
+            try
+            {
+                
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                {
+                    return Unauthorized(new { Message = "المستخدم غير مصرح له" });
+                }
 
+                
+                var orders = await _orderService.GetOrdersForUserAsync(user.Email);
+                if (orders == null || !orders.Any())
+                {
+                    return NotFound(new { Message = "لا توجد طلبات للمستخدم" });
+                }
+
+                
+                var mappedOrders = _mapper.Map<List<OrderReturnDto>>(orders);
+
+                
+                return Ok(mappedOrders);
+            }
+            catch (Exception ex)
+            {
+                
+                _logger.LogError(ex, "Error occurred while retrieving orders for user.");
+
+                
+                return BadRequest( new { Message = "حدث خطأ غير متوقع. يرجى المحاولة لاحقًا." });
+            }
         }
+
 
         [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<OneOrderReturnDto>> GetOrderForUser(int id)
         {
-            //var user = await _userManager.GetUserAsync(User);
-            var order = await _orderService.GetOrderForUserAsync(id);
-            
-            var mappedOrders = _mapper.Map<OneOrderReturnDto>(order);
-            return Ok(mappedOrders);
+            try
+            {
+               
+                var user = await _userManager.GetUserAsync(User);
 
+               
+                var order = await _orderService.GetOrderForUserAsync(id);
+
+                
+                if (order == null)
+                {
+                    _logger.LogWarning($"Order with id {id} not found for user {user?.Email}");
+                    return NotFound(new { Message = "الطلب غير موجود" }); 
+                }
+
+                
+                var mappedOrder = _mapper.Map<OneOrderReturnDto>(order);
+
+                
+                return Ok(mappedOrder);
+            }
+            catch (Exception ex)
+            {
+                
+                _logger.LogError(ex, $"An error occurred while retrieving order with id {id}");
+
+                
+                return BadRequest( new { Message = "حدث خطأ أثناء استرجاع البيانات. حاول مرة أخرى لاحقاً." }); 
+            }
         }
 
         [Authorize]
         [HttpPut("Cancel/{id}")]
         public async Task<ActionResult<Order>> CancelOrderForUser(int id)
         {
-            //var user = await _userManager.GetUserAsync(User);
-            var order = await _orderService.CancelOrderForUserAsync(id);
-            if (order!=null)
+            try
+            {
+               
+                var order = await _orderService.CancelOrderForUserAsync(id);
+
+                if (order != null)
+                {
+                   
                     return Ok(new
                     {
-
-                        Message = " !تم إلغاء الطلب بنجاح "
+                        Message = " !تم إلغاء الطلب بنجاح "  
                     });
-           
-            return BadRequest(new
+                }
+
+                return BadRequest(new
+                {
+                    Message = " !حدث خطأ أثناء إلغاء الطلب "  
+                });
+            }
+            catch (Exception ex)
             {
+                
+                _logger.LogError(ex, $"An error occurred while canceling order with id {id}");
 
-                Message = " !حدث خطأ أثناء إلغاء الطلب "
-            });
-
+             
+                return BadRequest( new
+                {
+                    Message = "حدث خطأ أثناء إلغاء الطلب. حاول مرة أخرى لاحقاً."  
+                });
+            }
         }
 
         [Authorize]
         [HttpPut("ReOrder/{id}")]
         public async Task<ActionResult<Order>> ReOrderForUser(int id)
         {
-            //var user = await _userManager.GetUserAsync(User);
-            var order = await _orderService.ReOrderForUserAsync(id);
-            if (order != null)
-                return Ok(new { Message = " !تم إعاده الطلب بنجاح " });
-
-            return BadRequest(new { Message = " !حدث خطأ أثناء إعاده الطلب " });
-
-        }
-        [Authorize]
-        [HttpGet("OrderItem/{ItemId}")]
-        public async Task<ActionResult<OrderItemReturnDto>> GetOrderItem(int ItemId)
-        {
-            //var user = await _userManager.GetUserAsync(User);
-            var orderitem = await _orderService.GetOrderItemForOrder(ItemId);
-            if (orderitem != null)
+            try
             {
-                List<string> urls=new List<string>();
-                if (orderitem.ProductItem.Photos != null)
+               
+                var order = await _orderService.ReOrderForUserAsync(id);
+
+                if (order != null)
                 {
                     
-                   List<string> images = ImageService.ConvertJsonToUrls(orderitem.ProductItem.Photos);
-                    foreach (var item in images)
-                    {
-                        urls.Add($"{_imagepath}/Custome/Image/{item}");
-                    }
-                    
+                    return Ok(new { Message = " !تم إعاده الطلب بنجاح " });  
                 }
-                if (orderitem.ProductItem.FilePdf != null)
-                {
-                    orderitem.ProductItem.FilePdf = $"{_imagepath}/Custome/Image/{orderitem.ProductItem.FilePdf}";
-                }
-                    var mappedOrderItem = _mapper.Map<OrderItemReturnDto>(orderitem);
-                mappedOrderItem.Photos = urls;
-                return Ok(mappedOrderItem);
+
+               
+                return BadRequest(new { Message = " !حدث خطأ أثناء إعاده الطلب " });  
             }
-                
+            catch (Exception ex)
+            {
+               
+                _logger.LogError(ex, $"An error occurred while reordering the order with id {id}");
 
-            return BadRequest(new { Message = " !حدث خطأ أثناء استرجاع المنتج  " });
-
+               
+                return BadRequest( new
+                {
+                    Message = "حدث خطأ أثناء إعاده الطلب. حاول مرة أخرى لاحقاً."  
+                });
+            }
         }
+
+        [Authorize]
+        [HttpDelete("DeleteOrder/{id}")]
+        public async Task<ActionResult<Order>> DeleteOrderForUser(int id)
+        {
+            try
+            {
+               
+                var order = await _orderService.DeleteOrderForUserAsync(id);
+
+     
+                if (order != null)
+                {
+                    return Ok(new { Message = " !تم حذف الطلب بنجاح " }); 
+                }
+
+              
+                return BadRequest(new { Message = " !حدث خطأ أثناء حذف الطلب " }); 
+            }
+            catch (Exception ex)
+            {
+               
+                _logger.LogError(ex, $"An error occurred while deleting the order with id {id}");
+
+               
+                return BadRequest( new
+                {
+                    Message = "حدث خطأ أثناء حذف الطلب. حاول مرة أخرى لاحقاً."  
+                });
+            }
+        }
+
+        //[Authorize]
+        //[HttpGet("OrderItem/{ItemId}")]
+        //public async Task<ActionResult<OrderItemReturnDto>> GetOrderItem(int ItemId)
+        //{
+        //    //var user = await _userManager.GetUserAsync(User);
+        //    var orderitem = await _orderService.GetOrderItemForOrder(ItemId);
+        //    if (orderitem != null)
+        //    {
+        //        List<string> urls=new List<string>();
+        //        if (orderitem.ProductItem.Photos != null)
+        //        {
+
+        //           List<string> images = ImageService.ConvertJsonToUrls(orderitem.ProductItem.Photos);
+        //            foreach (var item in images)
+        //            {
+        //                urls.Add($"{_imagepath}/Custome/Image/{item}");
+        //            }
+
+        //        }
+        //        if (orderitem.ProductItem.FilePdf != null)
+        //        {
+        //            orderitem.ProductItem.FilePdf = $"{_imagepath}/Custome/Image/{orderitem.ProductItem.FilePdf}";
+        //        }
+        //            var mappedOrderItem = _mapper.Map<OrderItemReturnDto>(orderitem);
+        //        mappedOrderItem.Photos = urls;
+        //        return Ok(mappedOrderItem);
+        //    }
+
+
+        //    return BadRequest(new { Message = " !حدث خطأ أثناء استرجاع المنتج  " });
+
+        //}
     }
 }

@@ -14,7 +14,7 @@ namespace PrintMatic.DTOS.OrderDTOS
         //public ShippingCost ShippingCost { get; set; }
         public decimal Total { get; set; }
         //public decimal GetTotal() => SubTotal + ShippingCost.Cost;
-        public string OrderItemPhoto { get; set; } 
+        public List<string> OrderItemPhoto { get; set; } 
         //public string PaymentId { get; set; } = "";
     }
 }

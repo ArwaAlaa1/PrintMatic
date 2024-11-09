@@ -5,7 +5,7 @@ namespace PrintMatic.DTOS.OrderDTOS
     public class OrderItemInOrderReturnDto
     {
         
-        public int OrderItemId { get; set; }
+        public int ProductId { get; set; }
         public string Photo { get; set; }
         
         public string Name { get; set; }
