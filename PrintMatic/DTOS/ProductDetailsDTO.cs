@@ -15,14 +15,12 @@ namespace PrintMatic.DTOS
         public int NormalMaxDate { get; set; }
         public int UrgentMinDate { get; set; }
         public int UrgentMaxDate { get; set; }
-
-        public decimal NormalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
         public decimal UrgentPrice { get; set; }
         public bool Text { get; set; }
         public bool Date { get; set; }
         public UserSimpleDetails User { get; set; }
-        public bool Enter { get; set; }
-        public decimal TotalPrice { get; set; }
+     
         public string CategoryName { get; set; }
         public List<string> Colors { get; set; }= new List<string>();
         public List<string> Sizes { get; set; } = new List<string>();

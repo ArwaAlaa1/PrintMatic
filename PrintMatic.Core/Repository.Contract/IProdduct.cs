@@ -17,6 +17,10 @@ namespace PrintMatic.Core.Repository.Contract
         Task<IEnumerable<Product>> GetUserWithHisProducts(string id);
         Task<IEnumerable<Product>> SearchByName(string ProName);
         Task<IEnumerable<Product>> GetAllProductswithouttables();
+<<<<<<< HEAD
         Task<Product> GetProductWithPhotos(int id);
+=======
+        Task<IEnumerable<Product>> FilterSearsh(string? ProName, int? CategoryId, string? HexCode, decimal? price, string? size);
+>>>>>>> 40b63af24f24d1a93d5d2cba3b5c104fac2dc70c
     }
 }

@@ -66,6 +66,7 @@ namespace PrintMatic.Repository.Repository
             
             
         }
+<<<<<<< HEAD
         public async Task<Product> GetProductWithPhotos(int id)
         {
             var product =await _context.Products.Where(p=>p.Id==id).Include(p=>p.ProductPhotos).FirstAsync();
@@ -76,3 +77,77 @@ namespace PrintMatic.Repository.Repository
         }
     }
 }
+=======
+        public async Task<IEnumerable<Product>> FilterSearsh(string? ProName , int? CategoryId , string? HexCode , decimal? price , string? size )
+        {
+        
+                var products =  _context.Products.Where(x => x.IsDeleted == false && x.Enter == true).AsEnumerable();
+                int similarityThreshold = 70;
+                if (!string.IsNullOrWhiteSpace(ProName))
+                {
+                     products = products.Where(x => Fuzz.Ratio(x.Name, ProName) > similarityThreshold || x.Name.Trim().ToLower().Contains(ProName.Trim().ToUpper())).ToList();
+                }
+                if (CategoryId.HasValue)
+                {
+                    products = products.Where(x =>x.CategoryId == CategoryId).ToList();
+                }
+                if (!string.IsNullOrWhiteSpace(HexCode))
+                {
+                    List<ProductColor> ProColor = new List<ProductColor>();
+                List<Product> products1 = new List<Product>();
+                foreach (var pro in products)
+                    {
+                       var product = _context.ProductColors.Where(x => x.IsDeleted == false && x.ProductId == pro.Id && x.HexCode == HexCode).FirstOrDefault();
+                    if (product != null) { 
+                        ProColor.Add(product);
+                    }
+                    }
+                foreach (var item in ProColor)
+                {
+                    
+                   var  pro = products.Where(x => x.Id == item.ProductId).FirstOrDefault();
+                    if (pro != null)
+                    {
+                        products1.Add(pro);
+                    }
+                }
+                products = products1;
+                }
+                
+                if(price.HasValue)
+                {
+                    products = products.Where(x => x.TotalPrice == price).ToList();
+                }
+            if (!string.IsNullOrWhiteSpace(size))
+            {
+                List<ProductSize> ProSize = new List<ProductSize>();
+                List<Product> products1 = new List<Product>();
+                foreach (var pro in products)
+                {
+                    var product = _context.ProductSizes.Where(x => x.IsDeleted == false && x.ProductId == pro.Id && x.Size == size).FirstOrDefault();
+                    if (product != null)
+                    {
+                        ProSize.Add(product);
+                    }
+                }
+                foreach (var item in ProSize)
+                {
+                    var pro = products.Where(x => x.Id == item.ProductId).FirstOrDefault();
+                    if (pro != null)
+                    {
+                        products1.Add(pro);
+                    }
+                }
+                products = products1;
+            }
+
+
+            return products;
+            }
+
+            
+
+        }
+  }
+
+>>>>>>> 40b63af24f24d1a93d5d2cba3b5c104fac2dc70c

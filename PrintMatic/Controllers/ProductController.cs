@@ -8,6 +8,8 @@ using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
 using PrintMatic.Core.Repository.Contract;
 using PrintMatic.DTOS;
+using System.Collections.Generic;
+using System.Drawing;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PrintMatic.Controllers
@@ -197,6 +199,35 @@ namespace PrintMatic.Controllers
             }
             else
                 return BadRequest("ادخل اسم المنتج الذى تبحث عنه");
+        }
+
+        [HttpGet("FilterSearch")]
+        public async Task<ActionResult<IEnumerable<ProductDto>>> FilterSearch(string? ProName, int? CategoryId, string? HexCode, decimal? price, string? size)
+        {
+            if (!string.IsNullOrWhiteSpace(ProName) || CategoryId.HasValue || !string.IsNullOrWhiteSpace(HexCode) || !string.IsNullOrWhiteSpace(size) || price.HasValue)
+            {
+                var ProList = await _prodduct.FilterSearsh(ProName, CategoryId, HexCode, price, size);
+                if (ProList.Any())
+                {
+                    var proMapped = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(ProList);
+                    foreach (var prod in proMapped)
+                    {
+                        var SalesList = await _productSale.GetProByIDAsync(prod.Id);
+                        var PList = await _productPhoto.GetPhotosOfProduct(prod.Id);
+                        var Reviews = await _review.GetReviewsOfPro(prod.Id);
+                        var Colors = await _color.GetIdOfProAsync(prod.Id);
+                        var products = await ProductDto.GetProducts(prod, SalesList, PList, Reviews, Colors);
+                        proMapped.ToList().Add(products);
+
+                    }
+                    return Ok(proMapped);
+                }else
+                    return BadRequest("لا يوجد عنصر بهذه المواصفات");
+            }
+            else
+            {
+                return BadRequest("ادخل المواصفات التي تبحث عنها بالمنتج");
+            }
         }
     }
 }
