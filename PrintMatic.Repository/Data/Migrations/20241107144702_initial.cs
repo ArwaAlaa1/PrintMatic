@@ -503,6 +503,7 @@ namespace PrintMatic.Repository.Data.Migrations
                     ProductItem_FilePdf = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OrderItemStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TotalPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TraderId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     OrderId = table.Column<int>(type: "int", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),

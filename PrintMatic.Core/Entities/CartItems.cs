@@ -11,9 +11,6 @@ namespace PrintMatic.Core.Entities
 		public decimal Price { get; set; }
 		public decimal? PriceAfterSale { get; set; }
 		public string Type { get; set; }
-		public string UserId { get; set; }
-		
-	
 		
 		public string? Color { get; set; }
 		public string? Size { get; set; }
@@ -23,7 +20,10 @@ namespace PrintMatic.Core.Entities
 		public string? FilePdf { get; set; }
 		
 		public int Quantity { get; set; }
-		public decimal TotalPrice => (decimal)(PriceAfterSale ==0 ? Price * Quantity: PriceAfterSale*Quantity);
+        public int MaxData { get; set; }
+        public int MinData { get; set; }
+        
+        public decimal TotalPrice => (decimal)(PriceAfterSale ==0 ? Price * Quantity: PriceAfterSale*Quantity);
 
         
     }

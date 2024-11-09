@@ -66,5 +66,13 @@ namespace PrintMatic.Repository.Repository
             
             
         }
+        public async Task<Product> GetProductWithPhotos(int id)
+        {
+            var product =await _context.Products.Where(p=>p.Id==id).Include(p=>p.ProductPhotos).FirstAsync();
+           
+            return product;
+
+
+        }
     }
 }

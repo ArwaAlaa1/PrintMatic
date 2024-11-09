@@ -12,12 +12,12 @@ namespace PrintMatic.DTOS.OrderDTOS
         {
             return !Items.Any(existingItem =>
                 existingItem.ProductId == newItem.ProductId &&
-                existingItem.ProductName == newItem.ProductName &&
-                existingItem.ImageUrl == newItem.ImageUrl &&
-                existingItem.Price == newItem.Price &&
-                existingItem.PriceAfterSale == newItem.PriceAfterSale &&
+                //existingItem.ProductName == newItem.ProductName &&
+                //existingItem.ImageUrl == newItem.ImageUrl &&
+                //existingItem.Price == newItem.Price &&
+                //existingItem.PriceAfterSale == newItem.PriceAfterSale &&
                 existingItem.Type == newItem.Type &&
-                existingItem.UserId == newItem.UserId &&
+                
                 (existingItem.Color == newItem.Color || existingItem.Color == null && newItem.Color == null) &&
                 (existingItem.Size == newItem.Size || existingItem.Size == null && newItem.Size == null) &&
                 (existingItem.Text == newItem.Text || existingItem.Text == null && newItem.Text == null) &&

@@ -51,7 +51,7 @@ namespace PrintMatic.Services
                     {
                         productDetails = new ProductOrderDetails(item.ProductId, item.ImageUrl, ItemType.Urgent, product.Name, product.UrgentPrice, item.PriceAfterSale, item.Color, item.Size, item.Text, item.Date, Photos, item.FilePdf); ;
                     }
-                    var orderitem = new OrderItem(productDetails, item.Quantity);
+                    var orderitem = new OrderItem(productDetails, item.Quantity,product.UserId);
 					orderitem.TotalPrice = (decimal)(productDetails.PriceAfterSale == 0 ? productDetails.Price * item.Quantity : productDetails.PriceAfterSale * item.Quantity);
 
                     OrderItems.Add(orderitem);
@@ -80,21 +80,21 @@ namespace PrintMatic.Services
 
         public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string Email)
         {
-            var orders=await _orderRepo.GetUserOrders(Email);
+            var orders=await _orderRepo.GetUserOrdersAsync(Email);
 
 			return (IReadOnlyList<Order>)orders;
         }
 
         public async Task<Order> GetOrderForUserAsync(int orderid)
 		{
-			var order=await _orderRepo.GetOrderForUser(orderid);
+			var order=await _orderRepo.GetOrderForUserAsync(orderid);
 
 			return order;
 		}
 
         public async Task<Order> CancelOrderForUserAsync(int orderid)
         {
-            var order = await _orderRepo.CancelOrderForUser(orderid);
+            var order = await _orderRepo.CancelOrderForUserAsync(orderid);
 			 _orderRepo.Update(order);
             var rows=await _unitOfWork.Complet();
             if (rows>0)
@@ -106,10 +106,17 @@ namespace PrintMatic.Services
 
         public async Task<Order> ReOrderForUserAsync(int orderid)
         {
-            var order = await _orderRepo.ReOrderForUser(orderid);
+            var order = await _orderRepo.ReOrderForUserAsync(orderid);
             _orderRepo.Update(order);
             var row=await _unitOfWork.Complet();
             return order;
+        }
+
+        public async Task<OrderItem> GetOrderItemForOrder(int orderItemId)
+        {
+            var item=await _orderRepo.GetOrderItemAsync(orderItemId);
+            return item;
+
         }
     }
 }

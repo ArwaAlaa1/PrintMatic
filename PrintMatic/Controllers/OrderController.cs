@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,7 @@ using PrintMatic.Core.Repository.Contract;
 using PrintMatic.Core.Services;
 using PrintMatic.DTOS.OrderDTOS;
 using PrintMatic.Services;
+
 using static StackExchange.Redis.Role;
 
 namespace PrintMatic.Controllers
@@ -22,18 +24,23 @@ namespace PrintMatic.Controllers
         private readonly IAddressRepository _addressRepository;
         private readonly IMapper _mapper;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly string _imagepath;
 
         public OrderController(IOrderService orderService
             ,ICartRepository cartRepository
             ,IAddressRepository addressRepository
             ,IMapper mapper
-            ,UserManager<AppUser> userManager)
+            ,UserManager<AppUser> userManager
+            , IWebHostEnvironment webHostEnvironment)
         {
             _orderService = orderService;
             _cartRepository = cartRepository;
             _addressRepository = addressRepository;
             _mapper = mapper;
             _userManager = userManager;
+            _webHostEnvironment = webHostEnvironment;
+            _imagepath = "https://localhost:7234";
         }
 
         
@@ -65,19 +72,13 @@ namespace PrintMatic.Controllers
 
         [Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrderForUser(int id)
+        public async Task<ActionResult<OneOrderReturnDto>> GetOrderForUser(int id)
         {
             //var user = await _userManager.GetUserAsync(User);
             var order = await _orderService.GetOrderForUserAsync(id);
-            //foreach (var item in order.OrderItems)
-            //{
-            //    if (item.ProductItem.Photos !=null)
-            //    {
-            //        List<string> urls = ImageService.ConvertJsonToUrls(item.ProductItem.Photos);
-                
-            //    }
-            //}
-            return Ok(order);
+            
+            var mappedOrders = _mapper.Map<OneOrderReturnDto>(order);
+            return Ok(mappedOrders);
 
         }
 
@@ -112,6 +113,38 @@ namespace PrintMatic.Controllers
                 return Ok(new { Message = " !تم إعاده الطلب بنجاح " });
 
             return BadRequest(new { Message = " !حدث خطأ أثناء إعاده الطلب " });
+
+        }
+        [Authorize]
+        [HttpGet("OrderItem/{ItemId}")]
+        public async Task<ActionResult<OrderItemReturnDto>> GetOrderItem(int ItemId)
+        {
+            //var user = await _userManager.GetUserAsync(User);
+            var orderitem = await _orderService.GetOrderItemForOrder(ItemId);
+            if (orderitem != null)
+            {
+                List<string> urls=new List<string>();
+                if (orderitem.ProductItem.Photos != null)
+                {
+                    
+                   List<string> images = ImageService.ConvertJsonToUrls(orderitem.ProductItem.Photos);
+                    foreach (var item in images)
+                    {
+                        urls.Add($"{_imagepath}/Custome/Image/{item}");
+                    }
+                    
+                }
+                if (orderitem.ProductItem.FilePdf != null)
+                {
+                    orderitem.ProductItem.FilePdf = $"{_imagepath}/Custome/Image/{orderitem.ProductItem.FilePdf}";
+                }
+                    var mappedOrderItem = _mapper.Map<OrderItemReturnDto>(orderitem);
+                mappedOrderItem.Photos = urls;
+                return Ok(mappedOrderItem);
+            }
+                
+
+            return BadRequest(new { Message = " !حدث خطأ أثناء استرجاع المنتج  " });
 
         }
     }

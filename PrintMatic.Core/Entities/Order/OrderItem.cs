@@ -14,12 +14,14 @@ namespace PrintMatic.Core.Entities.Order
             
         }
 
-		public OrderItem(ProductOrderDetails productItem,/* decimal price,*/ int quantity)
+		public OrderItem(ProductOrderDetails productItem,/* decimal price,*/ int quantity,string traderId)
 		{
 			ProductItem = productItem;
 			//Price = price;
 			Quantity = quantity;
-		}
+			TraderId = traderId;
+
+        }
 
 		public ProductOrderDetails ProductItem{ get; set; }
 		public OrderItemStatus OrderItemStatus { get; set; } = OrderItemStatus.Pending;

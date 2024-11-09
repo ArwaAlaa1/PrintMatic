@@ -13,7 +13,7 @@ namespace PrintMatic.DTOS
         public string Name { get; set; }
         //public decimal Rating { get; set; }
         public decimal TotalPrice { get; set; }
-        public decimal PriceAfterSale {  get; set; }
+        public decimal PriceAfterSale { get; set; }
         public string PhotoUrl { get; set; }
         public float? AvgRating { get; set; }
         public List<string> Colors {  get; set; } = new List<string>();

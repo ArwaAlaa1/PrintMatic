@@ -17,5 +17,6 @@ namespace PrintMatic.Core.Repository.Contract
         Task<IEnumerable<Product>> GetUserWithHisProducts(string id);
         Task<IEnumerable<Product>> SearchByName(string ProName);
         Task<IEnumerable<Product>> GetAllProductswithouttables();
+        Task<Product> GetProductWithPhotos(int id);
     }
 }

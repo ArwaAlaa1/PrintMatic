@@ -14,5 +14,6 @@ namespace PrintMatic.Core.Services
 		Task<Order> GetOrderForUserAsync(int orderid);
         Task<Order> CancelOrderForUserAsync(int orderid);
         Task<Order> ReOrderForUserAsync(int orderid);
+        Task<OrderItem> GetOrderItemForOrder(int orderItemId);
     }
 }

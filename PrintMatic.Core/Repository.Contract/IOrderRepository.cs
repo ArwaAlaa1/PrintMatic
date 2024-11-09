@@ -9,9 +9,10 @@ namespace PrintMatic.Core.Repository.Contract
 {
     public interface IOrderRepository:IGenericRepository<Order> 
     {
-        public Task<IEnumerable<Order>> GetUserOrders(string Email);
-        public Task<Order> GetOrderForUser(int OrderId);
-        public Task<Order> CancelOrderForUser(int OrderId);
-        public Task<Order> ReOrderForUser(int OrderId);
+        public Task<IEnumerable<Order>> GetUserOrdersAsync(string Email);
+        public Task<Order> GetOrderForUserAsync(int OrderId);
+        public Task<Order> CancelOrderForUserAsync(int OrderId);
+        public Task<Order> ReOrderForUserAsync(int OrderId);
+        public Task<OrderItem> GetOrderItemAsync(int orderitemId);
     }
 }
