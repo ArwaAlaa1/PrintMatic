@@ -150,10 +150,10 @@ namespace PrintMatic.Controllers
                         var products = await ProductDto.GetProducts(favourite.Product, product.ProductSales, product.ProductPhotos, product.Reviews, product.ProductColors);
                         productDtos.Add(products);
                     }
-                    return Ok(productDtos);
                 }
+                    return Ok(productDtos);
 
-                return BadRequest("لا يوجد منتجات في المفضله");
+                
             }
             catch (Exception ex)
             {

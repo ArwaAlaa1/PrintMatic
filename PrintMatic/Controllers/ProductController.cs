@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
@@ -10,6 +11,8 @@ using PrintMatic.Core.Repository.Contract;
 using PrintMatic.DTOS;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PrintMatic.Controllers
@@ -27,12 +30,13 @@ namespace PrintMatic.Controllers
         private readonly UserManager<AppUser> _user;
         private readonly IProdduct _prodduct;
         private readonly IConfiguration _configuration;
+        private readonly IFavouriteRepository _favourite;
 
         public ProductController(IUnitOfWork unitOfWork,
             IProductColor color, IProductSize size,
             IMapper mapper, IProductPhoto productPhoto, IProductSale productSale,
             IReviewRepository review, UserManager<AppUser> user, IProdduct prodduct
-            , IConfiguration configuration)
+            , IConfiguration configuration, IFavouriteRepository favourite)
         {
             _unitOfWork = unitOfWork;
             _color = color;
@@ -44,6 +48,7 @@ namespace PrintMatic.Controllers
             _user = user;
             _prodduct = prodduct;
             _configuration = configuration;
+            _favourite = favourite;
         }
 
         [HttpGet("GetAllProducts")]
@@ -69,7 +74,7 @@ namespace PrintMatic.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductDetailsDTO>> GetById(int id)
+        public async Task<ActionResult<ProductDetailsDTO>> GetById(int id, string? token)
         {
             try
             {
@@ -125,6 +130,25 @@ namespace PrintMatic.Controllers
 
                 }
                 ProMapped.AvgRating = Rating / 5f;
+                string userId;
+                if (!string.IsNullOrEmpty(token))
+                {
+                    var handler = new JwtSecurityTokenHandler();
+                    var jwtToken = handler.ReadJwtToken(token);
+
+
+                    userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+                                  ?? jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+
+                    if (!string.IsNullOrEmpty(userId))
+                    {
+                        var fav = await _favourite.GetFavoriteAsync(id, userId);
+                        if (fav != null)
+                        {
+                            ProMapped.IsFav = true;
+                        }
+                    }
+                }
                 return Ok(ProMapped);
             }
             catch (Exception ex)
@@ -136,7 +160,7 @@ namespace PrintMatic.Controllers
 
 
         [HttpGet("GetUserWithHisProducts")]
-        public async Task<ActionResult<UserWithPro>> GetUserWithHisProducts(string UserId)
+        public async Task<ActionResult<UserWithPro>> GetUserWithHisProducts(string UserId, string? token)
         {
             var user = await _user.FindByIdAsync(UserId);
             if (user == null)
@@ -150,7 +174,25 @@ namespace PrintMatic.Controllers
                 var product = await _prodduct.Get(prod.Id);
                 var products = await ProductDto.GetProducts(prod, product.ProductSales, product.ProductPhotos, product.Reviews, product.ProductColors);
                 proMapped.ToList().Add(products);
+                string userId;
+                if (!string.IsNullOrEmpty(token))
+                {
+                    var handler = new JwtSecurityTokenHandler();
+                    var jwtToken = handler.ReadJwtToken(token);
 
+
+                    userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+                                  ?? jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+
+                    if (!string.IsNullOrEmpty(userId))
+                    {
+                        var fav = await _favourite.GetFavoriteAsync(prod.Id, userId);
+                        if (fav != null)
+                        {
+                            prod.IsFav = true;
+                        }
+                    }
+                }
             }
             return Ok(new UserWithPro()
             {
@@ -162,57 +204,103 @@ namespace PrintMatic.Controllers
             });
         }
         [HttpGet("SearchByName")]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> SearchByName(string? ProductName)
+        public async Task<ActionResult<IEnumerable<ProductDto>>> SearchByName(string? ProductName, string? token)
         {
-            if (!string.IsNullOrEmpty(ProductName))
+            try
             {
-                var list = await _prodduct.SearchByName(ProductName);
-                if (list.Any())
+                IEnumerable<ProductDto> proMapped = new List<ProductDto>();
+                if (!string.IsNullOrEmpty(ProductName))
                 {
-                    var proMapped = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(list);
-                    foreach (var prod in proMapped)
+                    var list = await _prodduct.SearchByName(ProductName);
+                    if (list.Any())
                     {
-                        var product = await _prodduct.Get(prod.Id);
-                        var products = await ProductDto.GetProducts(prod, product.ProductSales, product.ProductPhotos, product.Reviews, product.ProductColors);
-                        proMapped.ToList().Add(products);
+                        proMapped = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(list);
+                        foreach (var prod in proMapped)
+                        {
+                            var product = await _prodduct.Get(prod.Id);
+                            var products = await ProductDto.GetProducts(prod, product.ProductSales, product.ProductPhotos, product.Reviews, product.ProductColors);
+                            proMapped.ToList().Add(products);
+                            string userId;
+                            if (!string.IsNullOrEmpty(token))
+                            {
+                                var handler = new JwtSecurityTokenHandler();
+                                var jwtToken = handler.ReadJwtToken(token);
 
+
+                                userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+                                              ?? jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+
+                                if (!string.IsNullOrEmpty(userId))
+                                {
+                                    var fav = await _favourite.GetFavoriteAsync(prod.Id, userId);
+                                    if (fav != null)
+                                    {
+                                        prod.IsFav = true;
+                                    }
+                                }
+                            }
+                        }
                     }
-                    return Ok(proMapped);
                 }
-                else
-                    return BadRequest("لا يوجد منتج بهذا الاسم");
-
+                return Ok(proMapped);
 
             }
-            else
-                return BadRequest("ادخل اسم المنتج الذى تبحث عنه");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString() ?? ex.InnerException?.Message.ToString());
+            }
+
+
         }
 
         [HttpGet("FilterSearch")]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> FilterSearch(string? ProName, int? CategoryId, string? HexCode, decimal? price, string? size)
+        public async Task<ActionResult<IEnumerable<ProductDto>>> FilterSearch(string? ProName, int? CategoryId, string? HexCode, decimal? price, string? size, string? token)
         {
-            if (!string.IsNullOrWhiteSpace(ProName) || CategoryId.HasValue || !string.IsNullOrWhiteSpace(HexCode) || !string.IsNullOrWhiteSpace(size) || price.HasValue)
+            try
             {
-                var ProList = await _prodduct.FilterSearsh(ProName, CategoryId, HexCode, price, size);
-                if (ProList.Any())
-                {
-                    var proMapped = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(ProList);
-                    foreach (var prod in proMapped)
-                    {
-                        var product = await _prodduct.Get(prod.Id);
-                        var products = await ProductDto.GetProducts(prod, product.ProductSales, product.ProductPhotos, product.Reviews, product.ProductColors);
-                        proMapped.ToList().Add(products);
+                IEnumerable<ProductDto> proMapped = new List<ProductDto>();
 
+                if (!string.IsNullOrWhiteSpace(ProName) || CategoryId.HasValue || !string.IsNullOrWhiteSpace(HexCode) || !string.IsNullOrWhiteSpace(size) || price.HasValue)
+                {
+                    var ProList = await _prodduct.FilterSearsh(ProName, CategoryId, HexCode, price, size);
+                    if (ProList.Any())
+                    {
+                        proMapped = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(ProList);
+                        foreach (var prod in proMapped)
+                        {
+                            var product = await _prodduct.Get(prod.Id);
+                            var products = await ProductDto.GetProducts(prod, product.ProductSales, product.ProductPhotos, product.Reviews, product.ProductColors);
+                            proMapped.ToList().Add(products);
+                            string userId;
+                            if (!string.IsNullOrEmpty(token))
+                            {
+                                var handler = new JwtSecurityTokenHandler();
+                                var jwtToken = handler.ReadJwtToken(token);
+
+
+                                userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+                                              ?? jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+
+                                if (!string.IsNullOrEmpty(userId))
+                                {
+                                    var fav = await _favourite.GetFavoriteAsync(prod.Id, userId);
+                                    if (fav != null)
+                                    {
+                                        prod.IsFav = true;
+                                    }
+                                }
+                            }
+                        }
                     }
-                    return Ok(proMapped);
                 }
-                else
-                    return BadRequest("لا يوجد عنصر بهذه المواصفات");
+                return Ok(proMapped);
+
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest("ادخل المواصفات التي تبحث عنها بالمنتج");
+                return BadRequest(ex.Message.ToString() ?? ex.InnerException?.Message.ToString());
             }
+
         }
     }
 }

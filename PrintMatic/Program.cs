@@ -49,6 +49,7 @@ namespace PrintMatic
             builder.Services.AddScoped(typeof(IProductColor), typeof(ProductColorRepository));
             builder.Services.AddScoped(typeof(IProductSize), typeof(ProductSizeRepository));
             builder.Services.AddScoped(typeof(IReviewRepository), typeof(ReviewRepository));
+            builder.Services.AddScoped(typeof(IFavouriteRepository), typeof(FavouriteRepository));
 
             builder.Services.AddSingleton<IConnectionMultiplexer>((serverprovider) =>
 			{
