@@ -6,6 +6,8 @@ using PrintMartic_DashBoard.ViewModels;
 using PrintMatic.Core.Entities.Identity;
 
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using StackExchange.Redis;
 
 
 
@@ -29,7 +31,7 @@ namespace PrintMartic_DashBoard.Controllers
         public async Task<IActionResult> Signin()
         {
 
-            ClaimsPrincipal claimsPrincipal =HttpContext.User;
+            ClaimsPrincipal claimsPrincipal = HttpContext.User;
             if (claimsPrincipal.Identity.IsAuthenticated)
                 return RedirectToAction("Index", "Home");
             return View();
@@ -39,18 +41,20 @@ namespace PrintMartic_DashBoard.Controllers
         public async Task<IActionResult> Signin(LoginViewModel login)
         {
             var user = await _userManager.FindByNameAsync(login.UserName);
-            var role=await _userManager.GetRolesAsync(user);
             if (user == null)
             {
                 ModelState.AddModelError("Email", "Email Is Invalid");
                 return RedirectToAction(nameof(Signin));
             }
+            var role = await _userManager.GetRolesAsync(user);
            
-            var result = await _signInManager.CheckPasswordSignInAsync(user, login.Password, false);
+
+           var result1 = await _signInManager.CheckPasswordSignInAsync(user, login.Password, false);
+            var result = await _signInManager.PasswordSignInAsync(user.UserName, login.Password, login.RememberMe, lockoutOnFailure: false);
            
-                if (result.Succeeded)
+            if (result.Succeeded && result1.Succeeded)
             {
-                if (role.Count == 0) 
+                if (role.Count == 0)
                 {
                     role = new string[] { "عميل" };
                 }
@@ -58,7 +62,7 @@ namespace PrintMartic_DashBoard.Controllers
                 List<Claim>? claims = new List<Claim>()
                     {
                          new Claim(ClaimTypes.Name, login.UserName),
-                     new Claim(ClaimTypes.NameIdentifier, login.UserName),
+                     new Claim(ClaimTypes.NameIdentifier, user.Id),
                     new Claim(ClaimTypes.Role, role.FirstOrDefault())
                     };
 
@@ -67,7 +71,7 @@ namespace PrintMartic_DashBoard.Controllers
 
                 AuthenticationProperties authenticationProperties = new AuthenticationProperties()
                 {
-                    AllowRefresh =true,
+                    AllowRefresh = true,
                     IsPersistent = login.RememberMe
                 };
 
@@ -83,18 +87,17 @@ namespace PrintMartic_DashBoard.Controllers
             return View();
         }
 
-        
+
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync("Cookies");
             var x = User.Identity.IsAuthenticated;
+            await HttpContext.SignOutAsync("Cookies");
+           
             return RedirectToAction(nameof(Signin));
         }
-        //public async Task<IActionResult> Logout()
-        //{
-        //    await _signInManager.SignOutAsync();
-        //    return RedirectToAction(nameof(Login));
-        //}
+      
+    
+     
 
 
 

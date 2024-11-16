@@ -9,9 +9,13 @@ namespace PrintMatic.Core.Entities.Order
 {
 	public enum OrderItemStatus
 	{
-		[EnumMember(Value = "قيد التنفيذ")]
+		[EnumMember(Value = "قيد المعاينة")]
 		Pending,
-		[EnumMember(Value = "تم التجهيز")]
-		Ready
-	}
+        [EnumMember(Value = "قيد التنفيذ")]
+        InProgress,
+        [EnumMember(Value = "تم التجهيز")]
+		Ready,
+        [EnumMember(Value = "تم إالغاء")]
+        Cancelled
+    }
 }

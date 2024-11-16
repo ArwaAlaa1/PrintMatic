@@ -49,7 +49,8 @@ namespace PrintMartic_DashBoard
 				.AddEntityFrameworkStores<PrintMaticContext>();
 
 			builder.Services.AddScoped(typeof(IUnitOfWork),typeof(UnitOfWork));
-			builder.Services.AddAutoMapper(typeof(MappingProfiles));
+            builder.Services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
+            builder.Services.AddAutoMapper(typeof(MappingProfiles));
             builder.Services.AddScoped(typeof(IProdduct), typeof(ProductRepository));
             builder.Services.AddScoped(typeof(UserHelper), typeof(UserHelper));
             builder.Services.AddScoped(typeof(IProductColor), typeof(ProductColorRepository));

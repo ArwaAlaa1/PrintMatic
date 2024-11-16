@@ -670,5 +670,32 @@ namespace PrintMartic_DashBoard.Controllers
             return View(productVM);
         }
 
+        [HttpPost]
+        public async Task<JsonResult> ToggleStatus(int id, bool isActive)
+        {
+            try
+            {
+                // Retrieve the item from the database (e.g., using Entity Framework)
+                var item =await _unitOfWork.Repository<Product>().GetByIdAsync(id);
+                if (item == null)
+                {
+                    return Json(new { success = false });
+                }
+
+                // Update the IsActive property
+                item.IsActive= isActive;
+                await _unitOfWork.Complet();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                // Handle any errors
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+
     }
+
 }

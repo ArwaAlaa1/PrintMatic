@@ -24,7 +24,8 @@ namespace PrintMatic.Core.Entities.Order
         }
 
 		public ProductOrderDetails ProductItem{ get; set; }
-		public OrderItemStatus OrderItemStatus { get; set; } = OrderItemStatus.Pending;
+        public int OrderId { get; set; }
+        public OrderItemStatus OrderItemStatus { get; set; } = OrderItemStatus.Pending;
 		private decimal totalprice;
 
 		public decimal TotalPrice

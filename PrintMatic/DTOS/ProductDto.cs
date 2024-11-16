@@ -15,6 +15,7 @@ namespace PrintMatic.DTOS
         public decimal TotalPrice { get; set; }
         public decimal PriceAfterSale { get; set; }
         public string PhotoUrl { get; set; }
+        public bool IsActive { get; set; }
         public float? AvgRating { get; set; }
         public List<string> Colors {  get; set; } = new List<string>();
 

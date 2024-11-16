@@ -30,7 +30,53 @@
     <!-- App CSS -->
     <link rel="stylesheet" href="~/css/app-light.css" id="lightTheme">
     <link rel="stylesheet" href="~/css/app-dark.css" id="darkTheme" disabled>
-  
+    <style>
+        .toggle-button {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .available {
+            background-color: green;
+        }
+
+        .not-available {
+            background-color: red;
+        }
+
+        .status-pending {
+            background-color: orange;
+        }
+
+        .status-inprogress {
+            background-color: blue;
+        }
+
+        .status-shipping {
+            background-color: teal;
+        }
+
+        .status-delivered {
+            background-color: green;
+        }
+
+        .status-cancelled {
+            background-color: red;
+        }
+   
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+    </style>
+
 </head>
 
 <body class="vertical  light rtl ">

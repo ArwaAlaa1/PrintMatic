@@ -40,10 +40,10 @@
                                     <th>صوره اللوجو</th>
                                     <th>اسم المستخدم</th>
            
-                                    <th>الاسم الظاهر</th>
+                                   @*  <th>الاسم الظاهر</th> *@
                                     <th>البريد الالكترونى</th>
                                     <th>رقم الموبايل</th>
-                                    <th >موقع الشركه</th>
+                                  
            
                                     <th>صلاحيه المسخدم</th>
                                     <th>العمليات</th>
@@ -62,34 +62,34 @@
                                             </div>
                                            </td>
                                                 <td>
-                                                    <p class="mb-0 text-muted"><strong>@item.Id</strong></p>
+                                                    <p class="mb-0 "><strong>@item.Id</strong></p>
                                                 </td>
                                             <td>
                                                 <div class="avatar avatar-md">
-                                                    <img src="~/@item.Photo" style="width=70px" class="avatar-img rounded-rounded">
+                                                    <img src="@item.Photo" style="width:70px;" class="avatar-img rounded-rounded">
                                                 </div>
                                             </td>
                                        
                                         <td>
-                                                <p class="mb-0 text-muted"><strong>@item.UserName</strong></p>
+                                                <p class="mb-0 "><strong>@item.UserName</strong></p>
                                             
                                         </td>
-                                        <td>
+                                       @*  <td>
                                             
-                                            <p class="mb-0 text-muted">@item.DisplayName</p>
-                                        </td>
+                                            <p class="mb-0 ">@item.DisplayName</p>
+                                        </td> *@
                                         <td>
                                            
-                                            <p class="mb-0 text-muted">@item.Email</p>
+                                            <p class="mb-0 ">@item.Email</p>
                                         </td>
                                         <td >
-                                            <p class="text-muted"> @item.PhoneNumber</p>
+                                                    <p class="mb-0 "> @item.PhoneNumber</p>
                                             </td>
-                                            <td><p class="text-muted"> @item.Location</p></td>
+                                           
                                             <td>@string.Join(",", item.Roles.ToList())</td>
                                             <td>
                                             <button class="btn btn-sm dropdown-toggle more-horizontal" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                <span class="text-muted sr-only">Action</span>
+                                                <span class=" sr-only">Action</span>
                                             </button>
                                             <div class="dropdown-menu dropdown-menu-right">
                                                 <a class="dropdown-item"  asp-action="EditVendor" asp-route-id="@item.Id">تعديل</a>

@@ -1,0 +1,90 @@
+﻿@using PrintMartic_DashBoard.Extention
+@using PrintMatic.Core.Entities.Identity
+@using PrintMatic.Core.Entities.Order
+@model IEnumerable<OrderViewModelForCompany>
+@inject UserManager<AppUser> user
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+<h2>قائمة الطلبات: @ViewBag.CurrentStatus</h2>
+
+<div class="container-fluid" >
+    <div class="row justify-content-center">
+<div class="col-12">
+<div class="row">
+    <!-- Recent orders -->
+    <div class="col-md-12">
+      <table class="table table-borderless table-striped">
+            <thead>
+                <tr role="row">
+                    <th>رقم الطلب</th>
+                    
+                    <th>تاريخ الطلب</th>
+                                <th>حاله الطلب</th>
+                       <th>عدد العناصر المطلوبه</th>
+                   <th>العناصر المطلوبه </th> 
+                    <th>فاتورة الطلب</th>
+                    
+                    @* <th>العمليات</th> *@
+                </tr>
+            </thead>
+            <tbody>
+             
+             @foreach (var order in Model)
+             {
+                 <tr>
+
+                                    <td scope="col">@order.Id</td>
+                                        <td>@order.OrderDate</td>
+                                    <td >
+                                       
+                                       @order.Status.GetEnumMemberValue()
+                                        <span class=" status-indicator
+    @(order.Status == OrderStatus.Pending ? "status-pending" :
+      order.Status == OrderStatus.InProgress ? "status-inprogress" :
+      order.Status == OrderStatus.Shipping  ? "status-shipping" :
+      order.Status == OrderStatus.Deliverd ? "status-delivered" :
+      order.Status == OrderStatus.Cancelled  ? "status-cancelled" : "")"></span>
+                                    </td>
+
+                                         <td>@order.NumberItems</td>
+                                    <td>
+                                        <a class="btn btn-info" asp-controller="Order" asp-action="OrderDetails" asp-route-OrderId="@order.Id">
+                                            تفاصيل الطلب
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-success" asp-controller="Order" asp-action="GetInvoice" asp-route-id="@order.Id">
+                                        فاتوره الطلب
+                                            <i class="fa-solid fa-file-invoice"></i>
+                                    </a>
+                                    </td>
+                                      
+                                      @*   <td>
+                                            <div class="dropdown">
+                                           
+                                                <button class="btn btn-sm dropdown-toggle more-vertical" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <span class="text-muted sr-only">العمليات</span>
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                 
+                                                    <a class="dropdown-item" href="#">Remove</a>
+                                                    <a class="dropdown-item" href="#">Assign</a>
+                                                </div>
+                                            </div>
+                                        </td> *@
+                  </tr>
+                                            
+            }           
+           
+            </tbody>
+        </table>
+    </div> <!-- / .col-md-3 -->
+</div> <!-- end section -->
+
+</div>
+</div>
+</div>

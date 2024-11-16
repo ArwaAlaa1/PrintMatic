@@ -113,14 +113,27 @@
                                                     <td>
                                                             @Html.DisplayFor(modelItem => item.AppUser.UserName)
                                                     </td>
+                            <td>
+                                <button id="toggleStatusButton_@item.Id"
+                                        class="toggle-button @(item.IsActive ? "available" : "not-available")"
+                                        onclick="toggleStatus(@item.Id, @(item.IsActive.ToString().ToLower()))">
+                                        @if (item.IsActive)
+                                        {
+                                        <span>متوفر</span>
+                                        }
+                                        else
+                                        {
+                                        <span>غير متوفر</span>
+                                        }
+                                </button>
+                            </td>
 
-                                   
                                 @if (item.IsDeleted == false)
                                 {
                                 <td>
                                     <a class="btn btn-info" asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">
-                                        تفاصيل المنتج
-                                        <i class="fas fa-eye"></i>
+                                        <i class="fas fa-eye"></i> تفاصيل المنتج
+                                       
                                     </a>
 
                                 </td>
@@ -140,8 +153,8 @@
                                 } else{
                                 <td>
                                     <a class="btn btn-info" asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">
-                                        تفاصيل المنتج
-                                        <i class="fas fa-eye"></i>
+                                        <i class="fas fa-eye"></i> تفاصيل المنتج
+                                        
                                     </a>
 
                                 </td>
@@ -173,5 +186,40 @@
                                 </div>
                             </div>
                         </div> <!-- customized table -->
+<script>
+    function toggleStatus(itemId, currentStatus) {
+       
+        const newStatus = !currentStatus;
+
+        
+        $.ajax({
+            url: '/Product/ToggleStatus', 
+            type: 'POST',
+            data: { id: itemId, isActive: newStatus },
+            success: function (response) {
+                if (response.success) {
+                    
+                    const button = document.getElementById(`toggleStatusButton_${itemId}`);
+                    if (newStatus) {
+                        button.classList.remove('not-available');
+                        button.classList.add('available');
+                        button.textContent = 'متوفر';
+                    } else {
+                        button.classList.remove('available');
+                        button.classList.add('not-available');
+                        button.textContent = 'غير متوفر';
+                    }
+
                    
+                    button.setAttribute('onclick', `toggleStatus(${itemId}, ${newStatus})`);
+                } else {
+                    alert('Failed to update status.');
+                }
+            },
+            error: function () {
+                alert('Error updating status.');
+            }
+        });
+    }
+</script>
 

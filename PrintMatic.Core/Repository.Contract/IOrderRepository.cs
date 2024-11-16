@@ -15,5 +15,10 @@ namespace PrintMatic.Core.Repository.Contract
         public Task<Order> ReOrderForUserAsync(int OrderId);
         public Task<Order> DeleteOrderForUserAsync(int OrderId);
         public Task<OrderItem> GetOrderItemAsync(int orderitemId);
+
+        //Specific Signatures for DashBoard as Trader
+        public IQueryable<Order> GetOrdersForSpecificCompanyAsync(string TraderId);
+        public Task<Order> GetOrderWithItemsAsync(int OrderId,string traderid);
+
     }
 }

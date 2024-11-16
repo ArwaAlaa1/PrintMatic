@@ -1,0 +1,126 @@
+﻿@using PrintMartic_DashBoard.Extention
+@using PrintMatic.Services
+@model OrderViewModelForCompany
+@{
+    ViewData["Title"] = "OrderDetails";
+    Layout = "~/Views/Shared/_MyLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <h2 class="page-title">تفاصيل الطلب رقم @((Model.Id + 1000).ToString())#</h2>
+           
+           @*  <p> تفاصيل الطلب </p> *@
+            <div class="row">
+                <!-- simple table -->
+                <div class="col-md-12 my-6">
+                    <div class="card shadow">
+                        <div class="card-body">
+                            @* <h5 class="card-title">Simple Table</h5>
+                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p> *@
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>اسم المنتج</th>
+                                        <th>النوع</th>
+                                        <th>الحاله</th>
+                                        <th>العدد</th>
+                                        <th>السعر الكلى</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach(var item in Model.OrderItems)
+                                {
+                                        <tr>
+                                            <td>@item.ProductItem.Name</td>
+                                            <td>@item.ProductItem.ItemType.GetEnumMemberValue()</td>
+                                            <td>@item.OrderItemStatus.GetEnumMemberValue()
+                                                <span class=" status-indicator
+    @(@item.OrderItemStatus == PrintMatic.Core.Entities.Order.OrderItemStatus.Pending ? "status-pending" :
+      @item.OrderItemStatus == PrintMatic.Core.Entities.Order.OrderItemStatus.InProgress ? "status-inprogress" :
+      @item.OrderItemStatus== PrintMatic.Core.Entities.Order.OrderItemStatus.Ready  ? "status-shipping" :
+    
+      @item.OrderItemStatus== PrintMatic.Core.Entities.Order.OrderItemStatus.Cancelled  ? "status-cancelled" : "")"></span>
+                                            </td>
+                                            
+                                            <td>@item.Quantity</td>
+                                            <td>@item.TotalPrice</td>
+                                           <td class="p-3">
+                                                @if(item.ProductItem.Color != null)
+                                                {
+                                                    <p>
+
+                                                        <span class="text-dark">اللون</span> : @item.ProductItem.Color
+                                                        <span class=" status-indicator" style="background-color:@item.ProductItem.Color"></span>
+                                                    </p>
+                                                }
+                                                @if (item.ProductItem.Text != null)
+                                                {
+                                                    <p>
+                                                        <span class="text-dark"> العباره المطلوبه</span>  :  @item.ProductItem.Text
+
+                                                    </p>
+                                                }
+                                                @if (item.ProductItem.Date != null)
+                                                {
+                                                    <p>
+                                                        <span class="text-dark">  التاريخ المطلوب</span> : @item.ProductItem.Date
+
+                                                    </p>
+                                                }
+                                                @if (item.ProductItem.Size != null)
+                                                {
+                                                    <p>
+                                                        <span class="text-dark">  الحجم المطلوب</span>   : @item.ProductItem.Size
+
+                                                    </p>
+                                                }
+                                                @if (item.ProductItem.Photos !="")
+                                                {
+                                                    
+                                                       
+                                                        
+                                                    <p>
+                                                        @{
+                                                            List<string> photos = ImageService.ConvertJsonToUrls(item.ProductItem.Photos);
+                                                        }
+                                                        <span>عدد الصور المرفوعة</span> : @photos.Count()
+                                                    </p>
+                                                    <a asp-action="DownloadPhotos" asp-controller="Order" asp-route-Id="@item.Id" asp-route-OrderId="@Model.Id" class="btn btn-primary">
+                                                        تحميل جميع الصور
+                                                    </a>
+
+                                                }
+                                                @if (item.ProductItem.FilePdf != null)
+                                                {
+                                                    <a href="@Url.Content($"http://giftlyapp.runasp.net/Custome/Pdfs/{item.ProductItem.FilePdf}")"
+                                                       download="@($"{Model.Id + 1000}{item.ProductItem.Name}.pdf")"
+                                                       class="btn btn-danger">
+                                                        تحميل الملف
+                                                    </a>
+
+
+                                                }
+                                            </td>
+                                        </tr>
+                                }
+                                   
+                                <tr>
+                                    <tb></tb>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                               
+                            </table>
+                            <a  asp-action="ConfirmOrder" asp-controller="Order" asp-route-OrderId="@Model.Id" class="btn btn-success">
+                                تأكيد الطلب
+                            </a>
+                        </div>
+                    </div>
+                </div> <!-- simple table -->
+</div>
+</div>
+</div>
+</div>

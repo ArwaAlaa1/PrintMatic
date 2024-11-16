@@ -64,7 +64,6 @@ namespace PrintMartic_DashBoard.Controllers
         }
 
         [HttpPost]
-
         public async Task<IActionResult> AddUser(UserFormViewModel addUser)
         {
             try
@@ -83,7 +82,7 @@ namespace PrintMartic_DashBoard.Controllers
                     PhoneNumber = addUser.PhoneNumber,
                  
                     IsCompany = addUser.IsCompany,
-                    Photo = $"images/user/{addUser.Photo}"
+                    Photo = $"Uploads/user/{addUser.Photo}"
                 };
 
                 // Create the user in the system
@@ -164,7 +163,7 @@ namespace PrintMartic_DashBoard.Controllers
                     PhoneNumber = editUser.PhoneNumber,
                     
                     IsCompany = editUser.IsCompany,
-                    //Photo = $"images/user/{editUser.Photo}"
+                    Photo = $"Uploads/user/{editUser.Photo}"
 
                 };
 
@@ -190,9 +189,6 @@ namespace PrintMartic_DashBoard.Controllers
         }
 
      
-
-       
-        
         public async Task<IActionResult> Delete(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -269,7 +265,7 @@ namespace PrintMartic_DashBoard.Controllers
                 user.PhoneNumber = userRoleEdit.UserForm.PhoneNumber;
                
                 user.IsCompany = userRoleEdit.UserForm.IsCompany;
-                user.Photo = $"images/user/{userRoleEdit.UserForm.Photo}";
+                user.Photo = $"Uploads/user/{userRoleEdit.UserForm.Photo}";
 
 
                 await _userManager.UpdateAsync(user);
@@ -289,7 +285,7 @@ namespace PrintMartic_DashBoard.Controllers
             var allUsers = await _userManager.Users.Select(u => new UserViewModel()
             {
                 Id = u.Id,
-                Photo = u.Photo,
+                Photo =  u.Photo ,
                 UserName = u.UserName,
                
                 Email = u.Email,
