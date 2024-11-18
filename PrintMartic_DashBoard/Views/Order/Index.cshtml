@@ -26,8 +26,11 @@
                        <th>عدد العناصر المطلوبه</th>
                    <th>العناصر المطلوبه </th> 
                     <th>فاتورة الطلب</th>
-                    
-                    @* <th>العمليات</th> *@
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <th>إالغاء الطلب</th>
+                                }
+                                @* <th>العمليات</th> *@
                 </tr>
             </thead>
             <tbody>
@@ -50,33 +53,44 @@
                                     </td>
 
                                          <td>@order.NumberItems</td>
-                                    <td>
-                                        <a class="btn btn-info" asp-controller="Order" asp-action="OrderDetails" asp-route-OrderId="@order.Id">
-                                            تفاصيل الطلب
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-success" asp-controller="Order" asp-action="GetInvoice" asp-route-id="@order.Id">
-                                        فاتوره الطلب
-                                            <i class="fa-solid fa-file-invoice"></i>
-                                    </a>
-                                    </td>
-                                      
-                                      @*   <td>
-                                            <div class="dropdown">
-                                           
-                                                <button class="btn btn-sm dropdown-toggle more-vertical" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <span class="text-muted sr-only">العمليات</span>
-                                                </button>
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                 
-                                                    <a class="dropdown-item" href="#">Remove</a>
-                                                    <a class="dropdown-item" href="#">Assign</a>
-                                                </div>
-                                            </div>
-                                        </td> *@
-                  </tr>
+                               @if(User.IsInRole("بائع"))
+                               {
+                                        <td>
+                                            <a class="btn btn-info" asp-controller="Order" asp-action="OrderDetails" asp-route-OrderId="@order.Id">
+                                                تفاصيل الطلب
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-success" asp-controller="Order" asp-action="GetInvoice" asp-route-id="@order.Id">
+                                                فاتوره الطلب
+                                                <i class="fa-solid fa-file-invoice"></i>
+                                            </a>
+                                        </td>
+                               }@if (User.IsInRole("Admin"))
+                                    {
+                                        <td>
+                                            <a class="btn btn-info" asp-controller="Order" asp-action="OrderDetails" asp-route-OrderId="@order.Id">
+                                                تفاصيل الطلب
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-success" asp-controller="Order" asp-action="GetInvoice" asp-route-id="@order.Id">
+                                                فاتوره الطلب
+                                                <i class="fa-solid fa-file-invoice"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-danger" asp-controller="Order" asp-action="CancelOrder" asp-route-OrderId="@order.Id">
+                                                إلغاء الطلب
+                                                <i class="fa-solid fa-Cancel"></i>
+                                            </a>
+                                        </td>
+
+                                    }
+
+                                    </tr>
                                             
             }           
            

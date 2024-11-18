@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace PrintMartic_DashBoard.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Cookies")]
+    
     public class HomeController : Controller
 	{
 		private readonly ILogger<HomeController> _logger;
@@ -22,6 +22,7 @@ namespace PrintMartic_DashBoard.Controllers
 		[Authorize(AuthenticationSchemes = "Cookies")]
 		public async Task<IActionResult> Index()
 		{
+			var x =  User.Identity.IsAuthenticated;
             bool flag = false;
             if (User.IsInRole("Admin"))
 			{

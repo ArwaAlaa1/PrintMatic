@@ -66,8 +66,8 @@ namespace PrintMartic_DashBoard
 		builder.Services.AddAuthentication("Cookies")
        .AddCookie(options =>
        {
-           options.LoginPath = "/Account/Signin"; // Redirect to this path if not authenticated
-          // options.AccessDeniedPath = "/Account/AccessDenied"; // Redirect here if the user is authenticated but not authorized
+           options.LoginPath = "/Account/Signin"; 
+          // options.AccessDeniedPath = "/Account/AccessDenied"; 
            options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
          
        });

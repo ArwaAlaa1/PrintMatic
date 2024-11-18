@@ -29,6 +29,7 @@ namespace PrintMatic.Extentions
 				Region = address.Region,
 				Country = address.Country,
 				AddressDetails = address.AddressDetails,
+				CityId=address.CityId,
 				AppUserId = user.Id
 			};
 			try
@@ -60,7 +61,8 @@ namespace PrintMatic.Extentions
 				City = addressDto.City,
 				Region = addressDto.Region,
 				Country = addressDto.Country,
-				AddressDetails = addressDto.AddressDetails,
+                 CityId = address.CityId,
+                 AddressDetails = addressDto.AddressDetails,
 				AppUserId = user.Id
 			};
 			try
@@ -93,7 +95,8 @@ namespace PrintMatic.Extentions
 				Region = address.Region,
 				Country = address.Country,
 				AddressDetails = address.AddressDetails,
-				AppUserId = user.Id
+                CityId = address.CityId,
+                AppUserId = user.Id
 			};
 			var addressuser = user.Addresses.Where(a => a.Id == id).FirstOrDefault();
 			addressuser= address01;

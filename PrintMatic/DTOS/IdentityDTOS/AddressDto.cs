@@ -13,9 +13,10 @@ namespace PrintMatic.DTOS.IdentityDTOS
 		public string PhoneNumber { get; set; }
 		[Required(ErrorMessage = "هذا الحقل مطلوب")]
 		public string Region { get; set; }
-		[Required(ErrorMessage = "هذا الحقل مطلوب")]
-	
-		public string City { get; set; }
+		
+        public int? CityId { get; set; }
+        [Required(ErrorMessage = "هذا الحقل مطلوب")]
+        public string City { get; set; }
 		[Required(ErrorMessage = "هذا الحقل مطلوب")]
 		public string Country { get; set; }
         public string? AddressDetails { get; set; }

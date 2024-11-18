@@ -252,6 +252,9 @@ namespace PrintMatic.Repository.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("CityId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -429,7 +432,7 @@ namespace PrintMatic.Repository.Data.Migrations
                     b.Property<DateTime>("ModifiedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("OrderId")
+                    b.Property<int>("OrderId")
                         .HasColumnType("int");
 
                     b.Property<string>("OrderItemStatus")
@@ -903,7 +906,9 @@ namespace PrintMatic.Repository.Data.Migrations
                 {
                     b.HasOne("PrintMatic.Core.Entities.Order.Order", null)
                         .WithMany("OrderItems")
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.OwnsOne("PrintMatic.Core.Entities.Order.ProductOrderDetails", "ProductItem", b1 =>
                         {
@@ -983,7 +988,7 @@ namespace PrintMatic.Repository.Data.Migrations
             modelBuilder.Entity("PrintMatic.Core.Entities.ProductColor", b =>
                 {
                     b.HasOne("PrintMatic.Core.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("ProductColors")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1024,7 +1029,7 @@ namespace PrintMatic.Repository.Data.Migrations
             modelBuilder.Entity("PrintMatic.Core.Entities.ProductSize", b =>
                 {
                     b.HasOne("PrintMatic.Core.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("ProductSizes")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1035,7 +1040,7 @@ namespace PrintMatic.Repository.Data.Migrations
             modelBuilder.Entity("PrintMatic.Core.Entities.Review", b =>
                 {
                     b.HasOne("PrintMatic.Core.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("Reviews")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1066,9 +1071,15 @@ namespace PrintMatic.Repository.Data.Migrations
 
             modelBuilder.Entity("PrintMatic.Core.Entities.Product", b =>
                 {
+                    b.Navigation("ProductColors");
+
                     b.Navigation("ProductPhotos");
 
                     b.Navigation("ProductSales");
+
+                    b.Navigation("ProductSizes");
+
+                    b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
         }

@@ -28,7 +28,7 @@ namespace PrintMartic_DashBoard.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Signin()
+        public  IActionResult Signin()
         {
 
             ClaimsPrincipal claimsPrincipal = HttpContext.User;
@@ -40,64 +40,65 @@ namespace PrintMartic_DashBoard.Controllers
         [HttpPost]
         public async Task<IActionResult> Signin(LoginViewModel login)
         {
+            if (!ModelState.IsValid)
+            {
+                return View(login);
+            }
+
             var user = await _userManager.FindByNameAsync(login.UserName);
             if (user == null)
             {
-                ModelState.AddModelError("Email", "Email Is Invalid");
-                return RedirectToAction(nameof(Signin));
+                ModelState.AddModelError("UserName", "Invalid username or password");
+                return View(login); // Return view with error.
             }
-            var role = await _userManager.GetRolesAsync(user);
-           
 
-           var result1 = await _signInManager.CheckPasswordSignInAsync(user, login.Password, false);
             var result = await _signInManager.PasswordSignInAsync(user.UserName, login.Password, login.RememberMe, lockoutOnFailure: false);
-           
-            if (result.Succeeded && result1.Succeeded)
+
+            if (result.Succeeded)
             {
+                var role = await _userManager.GetRolesAsync(user);
                 if (role.Count == 0)
                 {
                     role = new string[] { "عميل" };
                 }
 
-                List<Claim>? claims = new List<Claim>()
-                    {
-                         new Claim(ClaimTypes.Name, login.UserName),
-                     new Claim(ClaimTypes.NameIdentifier, user.Id),
-                    new Claim(ClaimTypes.Role, role.FirstOrDefault())
-                    };
+                List<Claim> claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, login.UserName),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim(ClaimTypes.Role, role.FirstOrDefault())
+        };
 
-                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims,
-                    CookieAuthenticationDefaults.AuthenticationScheme);
-
-                AuthenticationProperties authenticationProperties = new AuthenticationProperties()
+                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "Cookies");
+                AuthenticationProperties authenticationProperties = new AuthenticationProperties
                 {
                     AllowRefresh = true,
                     IsPersistent = login.RememberMe
                 };
 
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity),
-                    authenticationProperties);
+                await HttpContext.SignInAsync("Cookies", new ClaimsPrincipal(claimsIdentity), authenticationProperties);
 
                 return RedirectToAction("Index", "Home");
             }
 
-            ViewData["ValidateMessage"] = "User Not Found";
-            return View();
+            ModelState.AddModelError(string.Empty, "Invalid login attempt");
+            return View(login);
         }
-
 
         public async Task<IActionResult> Logout()
         {
-            var x = User.Identity.IsAuthenticated;
             await HttpContext.SignOutAsync("Cookies");
-           
+
+            // Explicitly delete cookies
+            foreach (var cookie in Request.Cookies.Keys)
+            {
+                Response.Cookies.Delete(cookie);
+            }
+
             return RedirectToAction(nameof(Signin));
         }
-      
-    
-     
+
+
 
 
 

@@ -27,6 +27,8 @@
                                         <th>الحاله</th>
                                         <th>العدد</th>
                                         <th>السعر الكلى</th>
+                                        <th>التفاصيل</th>
+                                        <th>إالغاء العنصر</th>
                                         
                                     </tr>
                                 </thead>
@@ -104,8 +106,19 @@
 
                                                 }
                                             </td>
+                                            @if (User.IsInRole("Admin"))
+                                            {
+                                                <td>
+                                                <a asp-action="CancelItem" asp-controller="Order" asp-route-ItemId="@item.Id" class="btn btn-danger">
+                                                    إالغاء العنصر
+                                                        <i class="fa-solid fa-Cancel"></i>
+                                                </a>
+                                                </td>
+                                            }
                                         </tr>
-                                }
+
+                                       
+                                    }
                                    
                                 <tr>
                                     <tb></tb>

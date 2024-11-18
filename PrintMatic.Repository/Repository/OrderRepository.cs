@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using PrintMatic.Core.Entities.Order;
 using PrintMatic.Core.Repository.Contract;
 using PrintMatic.Repository.Data;
@@ -36,12 +37,12 @@ namespace PrintMatic.Repository.Repository
 
         public async Task<Order> CancelOrderForUserAsync(int OrderId)
         {
-            var order = await _context.Set<Order>().Where(O => O.Id == OrderId).Include(OI => OI.OrderItems).FirstAsync();
+            var order = await _context.Set<Order>().Where(O => O.Id == OrderId).Include(OI => OI.OrderItems).FirstOrDefaultAsync();
             order.Status = OrderStatus.Cancelled;
-            order.IsActive = false;
+            //order.IsActive = false;
             foreach (var item in order.OrderItems)
             {
-                item.IsActive = false;
+                item.OrderItemStatus = OrderItemStatus.Cancelled;
             }
 
             return order;
@@ -77,22 +78,67 @@ namespace PrintMatic.Repository.Repository
             return order;
         }
 
+        //****************Specific Signatures for DashBoard as Trader***************
+        //Get Orders For Specific Company
         public IQueryable<Order> GetOrdersForSpecificCompanyAsync(string TraderId)
         {
             var orders = _context.Orders
-         .Where(order => order.OrderItems.Any(item => item.TraderId == TraderId)).Include(oi => oi.OrderItems.Where(i => i.TraderId == TraderId))
-         ;
+         .Where(order => order.OrderItems.Any(item => item.TraderId == TraderId))
+         .Include(oi => oi.OrderItems.Where(i => i.TraderId == TraderId));
             return orders;
         }
 
-        public async Task<Order> GetOrderWithItemsAsync(int OrderId, string traderid)
+        //Get Order With Items Of Specific Trader
+        public async Task<Order> GetOrderWithItemsForSpecificCompanyAsync(int OrderId, string traderid)
         {
             var order = await _context.Orders
-       .Where(order => order.Id == OrderId).Include(oi => oi.OrderItems.Where(i => i.TraderId == traderid))
+       .Where(order => order.Id == OrderId)
+       .Include(oi => oi.OrderItems.Where(i => i.TraderId == traderid))
        .FirstOrDefaultAsync();
 
             return order;
         }
 
+
+
+        //************Specific Signatures for DashBoard as Admin***************
+
+        //Get All Orders
+        public IQueryable<Order> GetOrdersForAdminAsync()
+        {
+            var orders = _context.Orders.Include(o=>o.OrderItems);
+            return orders;
+        }
+
+        //Get Order With OrderItems Details
+        public async Task<Order> GetOrderForAdminAsync(int OrderId)
+        {
+
+            var order = await _context.Orders
+               .Where(order => order.Id == OrderId)
+               .Include(oi => oi.OrderItems).FirstOrDefaultAsync();
+
+            return order;
+        }
+
+        //GetInvoice
+        public async Task<Order> GetOrderWithDetailsForAdminAsync(int OrderId)
+        {
+            var order = await _context.Orders
+       .Where(order => order.Id == OrderId)
+       .Include(oi => oi.OrderItems).Include(oi => oi.ShippingAddress)
+               .Include(oi => oi.ShippingCost).FirstOrDefaultAsync();
+     
+            return order;
+        }
+
+        public async Task<OrderItem> CanceltOrderItemForAdminAsync(int ItemId)
+        {
+            var orderItem = await _context.OrderItems
+           .Where(oi => oi.Id == ItemId).FirstOrDefaultAsync();
+            orderItem.OrderItemStatus = OrderItemStatus.Cancelled;
+            
+            return orderItem;
+        }
     }
 }
