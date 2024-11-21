@@ -1,31 +1,36 @@
-﻿@using PrintMatic.Core.Entities.Order
-
+﻿@using PrintMatic.Core.Entities.Identity
+@using PrintMatic.Core.Entities.Order
+@inject UserManager<AppUser> user
 @model Order
 @{
     ViewData["Title"] = "GetInvoice";
     Layout = "~/Views/Shared/_MyLayout.cshtml";
 }
-<div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-12 col-lg-10 col-xl-8">
+<div class="container-fluid" >
+    <div class="row justify-content-center" >
+        <div class="col-12 col-lg-12 col-xl-12" >
             <div class="row align-items-center mb-4">
                 <div class="col">
                     <h2 class="h5 page-title"><small class="text-muted text-uppercase">Invoice</small><br />#1806</h2>
                 </div>
-                <div class="col-auto">
-                    <button type="button" class="btn btn-secondary">Print</button>
-                    <button type="button" class="btn btn-primary">Pay</button>
-                </div>
+              
             </div>
-            <div class="card shadow">
+            <div class="card shadow" id="invoice" dir="rtl">
                 <div class="card-body p-5">
                     <div class="row mb-5">
                         <div class="col-12 text-center mb-4">
                             <img src="./assets/images/logo.svg" class="navbar-brand-img brand-sm mx-auto mb-4" alt="...">
-                            <h2 class="mb-0 text-uppercase">Invoice</h2>
-                            <p class="text-muted"> Altavista<br /> 9022 Suspendisse Rd. </p>
+                            @{
+                                var userdata =await  user.FindByIdAsync(Model.OrderItems.First().TraderId);
+                            }
+
+                            <span class="text-dark">@userdata.UserName</span>
+                            <br />
+                            <span class="small text-muted text-uppercase">Invoice #</span><br />
+                                <strong>1806</strong>
+                        
                         </div>
-                        <div class="col-md-7">
+                       @*  <div class="col-md-7">
                             <p class="small text-muted text-uppercase mb-2">Invoice from</p>
                             <p class="mb-4">
                                 <strong>Imani Lara</strong><br /> Asset Management<br /> 9022 Suspendisse Rd.<br /> High Wycombe<br /> (478) 446-9234<br />
@@ -34,70 +39,158 @@
                                 <span class="small text-muted text-uppercase">Invoice #</span><br />
                                 <strong>1806</strong>
                             </p>
-                        </div>
-                        <div class="col-md-5">
-                            <p class="small text-muted text-uppercase mb-2">Invoice to</p>
-                            <p class="mb-4">
-                                <strong>Walter Sawyer</strong><br /> Human Resources<br /> Ap #992-8933 Sagittis Street<br /> Ivanteyevka<br /> (803) 792-2559<br />
+                        </div> *@
+
+                        <div class="col-12">
+                            <p class="small text-muted text-uppercase mb-2">بيانات العميل </p>
+                            <p class="mb-6">
+                             
+                                <strong><span class="text-dark">الاسم</span> :@Model.ShippingAddress.FullName</strong>
+                                <div> <span class="text-dark">البريد الالكترونى</span> :@Model.CustomerEmail  </div>
+                                <div>  <span class="text-dark">الدولة</span> :@Model.ShippingAddress.Country  </div>
+                                <div><span class="text-dark">المدينة</span> : @Model.ShippingAddress.City  </div>
+                                <div><span class="text-dark">المنطقة</span> : @Model.ShippingAddress.Region  </div>
+                                @if(Model.ShippingAddress.AddressDetails != null)
+                                {
+                                    <div><span class="text-dark">العنوان</span> : @Model.ShippingAddress.AddressDetails  </div>
+                                }
+
+                                <div> <span class="text-dark">رقم الهاتف</span> :@Model.ShippingAddress.PhoneNumber  </div>
+                               
                             </p>
+                          
                             <p>
                                 <small class="small text-muted text-uppercase">Due date</small><br />
-                                <strong>April, 20, 2020</strong>
+                                <strong>@DateTime.Now</strong>
                             </p>
                         </div>
                     </div> <!-- /.row -->
-                    <table class="table table-borderless table-striped">
+                    <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">Description</th>
-                                <th scope="col" class="text-right">Rate</th>
-                                <th scope="col" class="text-right">Hours</th>
-                                <th scope="col" class="text-right">Ammout</th>
+                                <th scope="col" class="text-dark">#</th>
+                                <th scope="col" class="text-dark">اسم المنتج</th>
+                                <th scope="col" class="text-dark">تفاصيل المنتج</th>
+                                <th scope="col" class="text-dark">العدد</th>
+                                <th scope="col" class="text-dark">السعر الاساسى</th>
+                                <th scope="col" class="text-dark">السعر بعد الخصم</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>
-                                    Creative Design<br />
-                                    <span class="small text-muted">Design responsive website with existing prototype</span>
-                                </td>
-                                <td class="text-right">$15.00</td>
-                                <td class="text-right">2</td>
-                                <td class="text-right">$30.00</td>
-                            </tr>
-                           
-                        </tbody>
+                          
+                            @foreach (var item in @Model.OrderItems)
+                            {
+                                
+                                    <tr>
+                                        <th scope="row"></th>
+                                        <td>
+                                           @item.ProductItem.Name
+                                        </td>
+                                       
+                                        <td class="text-left">
+                                            @if (item.ProductItem.Color != null)
+                                            {
+                                                <p>
+
+                                                    <span class="text-dark">اللون</span> : @item.ProductItem.Color
+                                                    <span class=" status-indicator" style="background-color:@item.ProductItem.Color"></span>
+                                                </p>
+                                            }
+                                            @if (item.ProductItem.Text != null)
+                                            {
+                                                <p>
+                                                    <span class="text-dark"> العباره المطلوبه</span>  :  @item.ProductItem.Text
+
+                                                </p>
+                                            }
+                                            @if (item.ProductItem.Date != null)
+                                            {
+                                                <p>
+                                                    <span class="text-dark">  التاريخ المطلوب</span> : @item.ProductItem.Date
+
+                                                </p>
+                                            }
+                                            @if (item.ProductItem.Size != null)
+                                            {
+                                                <p>
+                                                    <span class="text-dark">  الحجم المطلوب</span>   : @item.ProductItem.Size
+
+                                                </p>
+                                            }
+                                        </td>
+                                        <td class="text-left">@item.Quantity</td>
+                                        <td class="text-left">@item.ProductItem.Price</td>
+                                        <td class="text-left">@item.ProductItem.PriceAfterSale</td>
+                                    </tr>
+                               
+                            }
+                           </tbody>
                     </table>
                     <div class="row mt-5">
-                        <div class="col-2 text-center">
-                            <img src="./assets/images/qrcode.svg" class="navbar-brand-img brand-sm mx-auto my-4" alt="...">
-                        </div>
-                        <div class="col-md-5">
-                            <p class="text-muted small">
-                                <strong>Note :</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit nisi sed sollicitudin pellentesque. Nunc posuere purus rhoncus pulvinar aliquam.
+                       
+                       
+                            <div class="col-md-5">
+                               
+                            </div>
+                        <div class="col-md-7">
+                            <p class="mb-2 h6">
+                                <span class="ms-3">عدد المنتجات</span> :  <!-- Added margin-left -->
+                                <strong>@Model.OrderItems.Sum(oi => oi.Quantity)</strong>
+                            </p>
+                            <hr />
+                            <p class="mb-2 h6">
+                                <span class="me-3">الاجمالى الفرعى</span> :  <!-- Added margin-right -->
+                                <strong>@Model.OrderItems.Sum(oi => oi.Quantity * oi.ProductItem.Price)</strong>
+                            </p>
+                            <hr />
+                            <p class="mb-2 h6">
+                                <span class="ps-4 pe-4">الجمالى بعد الخصم</span> :
+                                <strong>@Model.OrderItems.Sum(oi => oi.Quantity * oi.ProductItem.PriceAfterSale)</strong>
+                            </p>
+                            <hr />
+                            <p class="mb-2 h6">
+                                <span class="ps-4 pe-4">المبلغ الاجمالى </span>  :
+                                <span>@Model.OrderItems.Sum(oi => oi.ProductItem.PriceAfterSale == 0 ? oi.ProductItem.Price * oi.Quantity : oi.ProductItem.PriceAfterSale * oi.Quantity)</span>
                             </p>
                         </div>
-                        <div class="col-md-5">
-                            <div class="text-right mr-2">
-                                <p class="mb-2 h6">
-                                    <span class="text-muted">Subtotal : </span>
-                                    <strong>$285.00</strong>
-                                </p>
-                                <p class="mb-2 h6">
-                                    <span class="text-muted">VAT (10%) : </span>
-                                    <strong>$28.50</strong>
-                                </p>
-                                <p class="mb-2 h6">
-                                    <span class="text-muted">Total : </span>
-                                    <span>$313.50</span>
-                                </p>
-                            </div>
-                        </div>
+
+
+
+
                     </div> <!-- /.row -->
+                    <div class="col-auto no-print mb-3">
+                        <a class="btn btn-primary no-print me-3" id="readyButton"
+                           asp-controller="Order" asp-action="ReadyOrder" asp-route-orderid="@Model.Id">تم التجهيز</a>
+
+                        <button id="printButton" class="btn btn-danger no-print" disabled>طباعة <i class="fa-solid fa-print"></i></button>
+                    </div>
+                   
                 </div> <!-- /.card-body -->
             </div> <!-- /.card -->
         </div> <!-- /.col-12 -->
     </div> <!-- .row -->
-</div> <!-- .container-fluid -->
+    
+      
+</div>
+
+
+
+<script>
+
+    // Get the buttons
+    const readyButton = document.getElementById('readyButton');
+    const printButton = document.getElementById('printButton');
+
+    // Add click event to enable the "طباعة" button
+    readyButton.addEventListener('click', () => {
+        printButton.disabled = false; // Enable the print button
+    });
+
+    // Add click event for the "طباعة" button
+    printButton.addEventListener('click', () => {
+        window.print(); // Trigger the print action
+    });
+
+
+
+</script>

@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 using PrintMatic.Core;
 using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
 using PrintMatic.Core.Repository.Contract;
 using PrintMatic.DTOS;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace PrintMatic.Controllers
 {
@@ -129,7 +132,7 @@ namespace PrintMatic.Controllers
         }
 
         [HttpGet("GetAllFavorites")]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(string? token)
         {
             try
             {
@@ -148,6 +151,27 @@ namespace PrintMatic.Controllers
 
                         var product = await _product.Get(favourite.Product.Id);
                         var products = await ProductDto.GetProducts(favourite.Product, product.ProductSales, product.ProductPhotos, product.Reviews, product.ProductColors);
+                        string userId;
+                        if (!string.IsNullOrEmpty(token))
+                        {
+                            var handler = new JwtSecurityTokenHandler();
+                            var jwtToken = handler.ReadJwtToken(token);
+
+
+                            userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+                                          ?? jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+
+                            if (!string.IsNullOrEmpty(userId))
+                            {
+                                var fav = await _fav.GetFavoriteAsync(products.Id, userId);
+                                if (fav != null)
+                                {
+                                    products.IsFav = true;
+                                }
+                            }
+                        }
+
+
                         productDtos.Add(products);
                     }
                 }

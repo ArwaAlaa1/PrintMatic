@@ -99,7 +99,16 @@ namespace PrintMatic.Repository.Repository
             return order;
         }
 
+        public  async Task<Order> GetInvoiceForTraderAsync(int OrderId,string TraderId)
+        {
+            var order = await _context.Orders
+ .Where(order => order.Id == OrderId)
+ .Include(oi => oi.OrderItems.Where(i => i.TraderId == TraderId))
+ .Include(o=>o.ShippingAddress).Include(o=>o.ShippingCost)
+ .FirstOrDefaultAsync();
 
+            return order;
+        }
 
         //************Specific Signatures for DashBoard as Admin***************
 
@@ -122,7 +131,7 @@ namespace PrintMatic.Repository.Repository
         }
 
         //GetInvoice
-        public async Task<Order> GetOrderWithDetailsForAdminAsync(int OrderId)
+        public async Task<Order> GetInvoiceForAdminAsync(int OrderId)
         {
             var order = await _context.Orders
        .Where(order => order.Id == OrderId)
@@ -140,5 +149,7 @@ namespace PrintMatic.Repository.Repository
             
             return orderItem;
         }
+
+      
     }
 }

@@ -19,5 +19,7 @@ namespace PrintMatic.Core.Entities.Order
 		Deliverd,
 		[EnumMember(Value = "تم الالغاء")]
 		Cancelled,
-	}
+        [EnumMember(Value = "تم التجهيز")]
+        Ready
+    }
 }

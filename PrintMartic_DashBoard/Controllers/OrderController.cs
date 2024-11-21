@@ -75,7 +75,7 @@ namespace PrintMartic_DashBoard.Controllers
                
             }else if (User.IsInRole("Admin"))
             {
-                 order = await _orderRepository.GetOrderForAdminAsync(OrderId);
+                 order = await _orderRepository.GetInvoiceForAdminAsync(OrderId);
             }
                     
             var ordermapped = _mapper.Map<Order, OrderViewModelForCompany>(order);
@@ -163,16 +163,59 @@ namespace PrintMartic_DashBoard.Controllers
             var trader=await _userManager.GetUserAsync(User);
             if (User.IsInRole("بائع"))
             {
-                order = await _orderRepository.GetOrderWithItemsForSpecificCompanyAsync(orderid, trader.Id);
-
+                order = await _orderRepository.GetInvoiceForTraderAsync(orderid, trader.Id);
+               
             }
             if (User.IsInRole("Admin"))
             {
-                order = await _orderRepository.GetOrderWithItemsForSpecificCompanyAsync(orderid, trader.Id);
+                order = await _orderRepository.GetInvoiceForAdminAsync(orderid);
             }
             return View(order);
         }
 
+
+        [Authorize(AuthenticationSchemes = "Cookies", Roles = "بائع,Admin")]
+        public async Task<IActionResult> ReadyOrder(int orderid)
+        {
+
+
+            var order = new Order();
+            var trader = await _userManager.GetUserAsync(User);
+            if (User.IsInRole("بائع"))
+            {
+                order = await _orderRepository.GetOrderWithItemsForSpecificCompanyAsync(orderid, trader.Id);
+
+                order.Status = OrderStatus.Ready;
+
+                foreach (var item in order.OrderItems)
+                {
+                    item.OrderItemStatus = OrderItemStatus.Ready;
+                    _unitOfWork.Repository<OrderItem>().Update(item);
+                }
+
+
+            }
+            else if (User.IsInRole("Admin"))
+            {
+                order = await _orderRepository.GetOrderForAdminAsync(orderid);
+
+                order.Status = OrderStatus.Ready;
+
+                foreach (var item in order.OrderItems)
+                {
+                    item.OrderItemStatus = OrderItemStatus.Ready;
+                    _unitOfWork.Repository<OrderItem>().Update(item);
+                }
+
+
+            }
+            _unitOfWork.Repository<Order>().Update(order);
+
+
+            await _unitOfWork.Complet();
+            return NoContent();
+
+        }
 
         public async Task<IActionResult> DownloadPhotos(int Id, int OrderId)
         {

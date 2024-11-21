@@ -52,7 +52,7 @@ namespace PrintMatic.Controllers
         }
 
         [HttpGet("GetAllProducts")]
-        public async Task<ActionResult> GetAllProducts()
+        public async Task<ActionResult> GetAllProducts(string? token)
         {
             var ProList = await _prodduct.GetAllProducts();
             var ProMapped = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(ProList);
@@ -61,6 +61,25 @@ namespace PrintMatic.Controllers
             {
                 var Prowithdetails = await _prodduct.Get(prod.Id);
                 var product = await ProductDto.GetProducts(prod, Prowithdetails.ProductSales, Prowithdetails.ProductPhotos, Prowithdetails.Reviews, Prowithdetails.ProductColors);
+                string userId;
+                if (!string.IsNullOrEmpty(token))
+                {
+                    var handler = new JwtSecurityTokenHandler();
+                    var jwtToken = handler.ReadJwtToken(token);
+
+
+                    userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value
+                                  ?? jwtToken.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value;
+
+                    if (!string.IsNullOrEmpty(userId))
+                    {
+                        var fav = await _favourite.GetFavoriteAsync(product.Id, userId);
+                        if (fav != null)
+                        {
+                            product.IsFav = true;
+                        }
+                    }
+                }
                 Products.Add(product);
             }
             if (Products.Any())
