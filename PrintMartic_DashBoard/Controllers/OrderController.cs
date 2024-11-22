@@ -233,39 +233,115 @@ namespace PrintMartic_DashBoard.Controllers
             var orderitem = await _unitOfWork.Repository<OrderItem>().GetByIdAsync(Id);
             var photos = ImageService.ConvertJsonToUrls(orderitem.ProductItem.Photos);
 
-            // Create a temporary folder to store the images before zipping
-            string folderName = $"OrderNum{OrderId + 1000}_{orderitem.ProductItem.Name}_Photos";
+            // Ensure folder name uniqueness using timestamp
+            string folderName = $"OrderNum{OrderId + 1000}_{orderitem.ProductItem.Name}_Photos_{DateTime.Now:yyyyMMddHHmmss}";
             string tempFolderPath = Path.Combine(Path.GetTempPath(), folderName);
             Directory.CreateDirectory(tempFolderPath);
 
             using (HttpClient client = new HttpClient())
             {
-                // Download each photo and save it to the temp folder
                 foreach (var photoUrl in photos)
                 {
+                    // Ensure the URL is complete
                     var photo = $"http://giftlyapp.runasp.net/Custome/Image/{photoUrl}";
-                    var response = await client.GetAsync(photo);
-                    if (response.IsSuccessStatusCode)
+                    try
                     {
-                        string fileName = Path.GetFileName(photoUrl);
-                        string filePath = Path.Combine(tempFolderPath, fileName);
-                        await using var fileStream = new FileStream(filePath, FileMode.Create);
-                        await response.Content.CopyToAsync(fileStream);
+                        var response = await client.GetAsync(photo);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string fileName = Path.GetFileName(photoUrl);
+                            string filePath = Path.Combine(tempFolderPath, fileName);
+                            await using var fileStream = new FileStream(filePath, FileMode.Create);
+                            await response.Content.CopyToAsync(fileStream);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log the error (optional)
+                        Console.WriteLine($"Error downloading {photo}: {ex.Message}");
                     }
                 }
             }
 
-            // Create a ZIP file from the temp folder with the same name as the folder
+            // Create a ZIP file from the temp folder
             string zipFilePath = Path.Combine(Path.GetTempPath(), $"{folderName}.zip");
-            ZipFile.CreateFromDirectory(tempFolderPath, zipFilePath);
+            try
+            {
+                ZipFile.CreateFromDirectory(tempFolderPath, zipFilePath);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error creating ZIP file: {ex.Message}");
+                throw;
+            }
 
             // Clean up the temporary folder
-            Directory.Delete(tempFolderPath, true);
+            try
+            {
+                Directory.Delete(tempFolderPath, true);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting temp folder: {ex.Message}");
+            }
 
             // Return the ZIP file as a downloadable file
-            byte[] fileBytes = System.IO.File.ReadAllBytes(zipFilePath);
-            return File(fileBytes, "application/zip", $"{folderName}.zip");
+            try
+            {
+                byte[] fileBytes = System.IO.File.ReadAllBytes(zipFilePath);
+                return File(fileBytes, "application/zip", $"{folderName}.zip");
+            }
+            finally
+            {
+                // Clean up the ZIP file after sending it
+                if (System.IO.File.Exists(zipFilePath))
+                {
+                    System.IO.File.Delete(zipFilePath);
+                }
+            }
         }
+
+
+
+
+        //public async Task<IActionResult> DownloadPhotos(int Id, int OrderId)
+        //{
+        //    var orderitem = await _unitOfWork.Repository<OrderItem>().GetByIdAsync(Id);
+        //    var photos = ImageService.ConvertJsonToUrls(orderitem.ProductItem.Photos);
+
+        //    // Create a temporary folder to store the images before zipping
+        //    string folderName = $"OrderNum{OrderId + 1000}_{orderitem.ProductItem.Name}_Photos";
+        //    string tempFolderPath = Path.Combine(Path.GetTempPath(), folderName);
+        //    Directory.CreateDirectory(tempFolderPath);
+
+        //    using (HttpClient client = new HttpClient())
+        //    {
+        //        // Download each photo and save it to the temp folder
+        //        foreach (var photoUrl in photos)
+        //        {
+        //            var photo = $"http://giftlyapp.runasp.net/Custome/Image/{photoUrl}";
+        //            var response = await client.GetAsync(photo);
+        //            if (response.IsSuccessStatusCode)
+        //            {
+        //                string fileName = Path.GetFileName(photoUrl);
+        //                string filePath = Path.Combine(tempFolderPath, fileName);
+        //                await using var fileStream = new FileStream(filePath, FileMode.Create);
+        //                await response.Content.CopyToAsync(fileStream);
+        //            }
+        //        }
+        //    }
+
+        //    // Create a ZIP file from the temp folder with the same name as the folder
+        //    string zipFilePath = Path.Combine(Path.GetTempPath(), $"{folderName}.zip");
+        //    ZipFile.CreateFromDirectory(tempFolderPath, zipFilePath);
+
+        //    // Clean up the temporary folder
+        //    Directory.Delete(tempFolderPath, true);
+
+        //    // Return the ZIP file as a downloadable file
+        //    byte[] fileBytes = System.IO.File.ReadAllBytes(zipFilePath);
+        //    return File(fileBytes, "application/zip", $"{folderName}.zip");
+        //}
 
     }
 }
