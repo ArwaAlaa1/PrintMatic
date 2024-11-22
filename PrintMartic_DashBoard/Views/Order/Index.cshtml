@@ -22,8 +22,15 @@
                     <th>رقم الطلب</th>
                     
                     <th>تاريخ الطلب</th>
-                                <th>حاله الطلب</th>
+                                <th>اسم العميل</th>
+                                 <th>رقم الموبايل</th>
+
+                            
+                              @*   <th>حاله التجهيز</th>                                    
+                             
+ *@
                        <th>عدد العناصر المطلوبه</th>
+
                    <th>العناصر المطلوبه </th> 
                     <th>فاتورة الطلب</th>
                                 @if (User.IsInRole("Admin"))
@@ -41,7 +48,7 @@
 
                                     <td scope="col">@order.Id</td>
                                         <td>@order.OrderDate</td>
-                                    <td >
+                                  @*   <td >
                                        
                                        @order.Status.GetEnumMemberValue()
                                         <span class=" status-indicator
@@ -51,8 +58,11 @@
       order.Status == OrderStatus.Deliverd ? "status-delivered" :
       order.Status == OrderStatus.Cancelled  ? "status-cancelled" : "")"></span>
                                     </td>
-
-                                         <td>@order.NumberItems</td>
+                                    *@
+                                  
+                                    <td>@order.CustomerUserName</td>
+                                    <td>@order.ShippingAddress.PhoneNumber</td>
+                              <td>@order.NumberItems</td>
                                @if(User.IsInRole("بائع"))
                                {
                                         <td>

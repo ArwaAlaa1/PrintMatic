@@ -18,8 +18,9 @@ namespace PrintMatic.Core.Repository.Contract
        
 
         //Specific Signatures for DashBoard as Trader
-        public IQueryable<Order> GetOrdersForSpecificCompanyAsync(string TraderId);
+        public IQueryable<Order> GetOrdersForSpecificCompanyAsync(string TraderId,OrderItemStatus status);
         public Task<Order> GetOrderWithItemsForSpecificCompanyAsync(int OrderId,string traderid);
+        public IQueryable<Order> GetOrdersForSpecificCompanyAsync(string TraderId);
 
         public Task<Order> GetInvoiceForTraderAsync(int OrderId,string TraderId);
         //Specific Signatures for DashBoard as Admin
@@ -28,5 +29,10 @@ namespace PrintMatic.Core.Repository.Contract
         public Task<Order> GetOrderForAdminAsync(int OrderId);
         public Task<Order> GetInvoiceForAdminAsync(int OrderId);
         public Task<OrderItem> CanceltOrderItemForAdminAsync(int ItemId);
+
+        //Specific Signatures for DashBoard as Admin
+        public Task<IQueryable<Order>> GetReadyOrders();
+
+
     }
 }

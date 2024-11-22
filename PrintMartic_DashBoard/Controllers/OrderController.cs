@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using PrintMartic_DashBoard.Extention;
 using PrintMartic_DashBoard.ViewModels;
 using PrintMatic.Core;
+using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Identity;
 using PrintMatic.Core.Entities.Order;
 using PrintMatic.Core.Repository.Contract;
@@ -36,18 +37,23 @@ namespace PrintMartic_DashBoard.Controllers
         {
             OrderStatus parsedStatus;
             var isStatusValid = Enum.TryParse(status, ignoreCase: true, out parsedStatus);
+            OrderItemStatus parsedItemStatus;
+            var StatusValid = Enum.TryParse(status, ignoreCase: true, out parsedItemStatus);
+
             var allOrders =new List<Order>();
             var user = await _userManager.GetUserAsync(User);
             if (User.IsInRole("بائع"))
             {
                  allOrders = status == "All"
               ? await _orderRepository.GetOrdersForSpecificCompanyAsync(user.Id).ToListAsync()
-              : isStatusValid ? await (_orderRepository.GetOrdersForSpecificCompanyAsync(user.Id))
-                  .Where(o => o.Status == parsedStatus).ToListAsync()
+              : isStatusValid ? await (_orderRepository.GetOrdersForSpecificCompanyAsync(user.Id, parsedItemStatus))
+                 .ToListAsync()
                   : new List<Order>();
 
-               
-            }else if(User.IsInRole("Admin"))
+            
+
+            }
+            else if(User.IsInRole("Admin"))
             {
                  allOrders = status == "All"
              ? await _orderRepository.GetOrdersForAdminAsync().ToListAsync()
@@ -58,7 +64,11 @@ namespace PrintMartic_DashBoard.Controllers
                 
             }
             var orders = _mapper.Map<List<Order>, List<OrderViewModelForCompany>>(allOrders);
-            
+            foreach (var order in orders)
+            {
+                var customer = await _userManager.FindByEmailAsync(order.CustomerEmail);
+                order.CustomerUserName = customer?.UserName;
+            }
             ViewBag.CurrentStatus = parsedStatus.GetEnumMemberValue(); 
             return View(orders);
         }
@@ -185,7 +195,7 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 order = await _orderRepository.GetOrderWithItemsForSpecificCompanyAsync(orderid, trader.Id);
 
-                order.Status = OrderStatus.Ready;
+                order.StatusReady = OrderReady.Ready;
 
                 foreach (var item in order.OrderItems)
                 {
@@ -199,7 +209,7 @@ namespace PrintMartic_DashBoard.Controllers
             {
                 order = await _orderRepository.GetOrderForAdminAsync(orderid);
 
-                order.Status = OrderStatus.Ready;
+                order.StatusReady = OrderReady.Ready;
 
                 foreach (var item in order.OrderItems)
                 {
@@ -216,6 +226,7 @@ namespace PrintMartic_DashBoard.Controllers
             return NoContent();
 
         }
+
 
         public async Task<IActionResult> DownloadPhotos(int Id, int OrderId)
         {

@@ -25,6 +25,7 @@ namespace PrintMatic.Core.Entities.Order
 		public string CustomerEmail { get; set; }
         public DateTimeOffset OrderDate { get; set; }=DateTimeOffset.Now;
         public OrderStatus Status { get; set; } = OrderStatus.Pending;
+        public OrderReady StatusReady { get; set; } =OrderReady.NotReady;
         public Address ShippingAddress { get; set; }
 		public int? ShippingCostId { get; set; }
 		public ShippingCost ShippingCost { get; set; }

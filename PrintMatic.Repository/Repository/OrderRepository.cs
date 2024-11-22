@@ -52,10 +52,11 @@ namespace PrintMatic.Repository.Repository
         {
             var order = await _context.Set<Order>().Where(O => O.Id == OrderId).Include(OI => OI.OrderItems).FirstAsync();
             order.Status = OrderStatus.Pending;
-            order.IsActive = true;
+            //order.IsActive = true;
             foreach (var item in order.OrderItems)
             {
-                item.IsActive = true;
+                //item.IsActive = true;
+                item.OrderItemStatus = OrderItemStatus.Pending;
             }
             return order;
         }
@@ -80,11 +81,19 @@ namespace PrintMatic.Repository.Repository
 
         //****************Specific Signatures for DashBoard as Trader***************
         //Get Orders For Specific Company
+        public IQueryable<Order> GetOrdersForSpecificCompanyAsync(string TraderId, OrderItemStatus status)
+        {
+            var orders = _context.Orders
+         .Where(order => order.OrderItems.Any(item => item.TraderId == TraderId && item.OrderItemStatus == status))
+         .Include(oi => oi.OrderItems.Where(i => i.TraderId == TraderId )).Include(o=>o.ShippingAddress);
+            return orders;
+        }
+
         public IQueryable<Order> GetOrdersForSpecificCompanyAsync(string TraderId)
         {
             var orders = _context.Orders
          .Where(order => order.OrderItems.Any(item => item.TraderId == TraderId))
-         .Include(oi => oi.OrderItems.Where(i => i.TraderId == TraderId));
+         .Include(oi => oi.OrderItems.Where(i => i.TraderId == TraderId)).Include(o => o.ShippingAddress);
             return orders;
         }
 
@@ -150,6 +159,12 @@ namespace PrintMatic.Repository.Repository
             return orderItem;
         }
 
-      
+        public async Task<IQueryable<Order>> GetReadyOrders()
+        {
+            var orders =_context.Orders
+                .Where(oi => oi.OrderItems.All(oi => oi.OrderItemStatus == OrderItemStatus.Ready))
+                .AsQueryable();
+            return orders;
+        }
     }
 }

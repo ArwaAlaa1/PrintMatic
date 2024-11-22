@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using PrintMatic.Core.Entities;
 using PrintMatic.Core.Entities.Order;
 using System;
 using System.Collections.Generic;
@@ -18,8 +19,12 @@ namespace PrintMatic.Repository.Data.Configuration
 				OStatus => OStatus.ToString(), //store
 				OStatus =>(OrderStatus) Enum.Parse(typeof(OrderStatus), OStatus)//retrive
 				);
+            builder.Property(o => o.StatusReady).HasConversion(
+                OStatus => OStatus.ToString(), //store
+                OStatus => (OrderReady)Enum.Parse(typeof(OrderReady), OStatus)//retrive
+                );
 
-			builder.Property(o => o.SubTotal).HasColumnType("decimal(18,2)");
+            builder.Property(o => o.SubTotal).HasColumnType("decimal(18,2)");
 
 		}
 	}

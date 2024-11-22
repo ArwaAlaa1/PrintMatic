@@ -12,7 +12,7 @@ using PrintMatic.Repository.Data;
 namespace PrintMatic.Repository.Data.Migrations
 {
     [DbContext(typeof(PrintMaticContext))]
-    [Migration("20241117045032_initial")]
+    [Migration("20241121170402_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -402,6 +402,10 @@ namespace PrintMatic.Repository.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StatusReady")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

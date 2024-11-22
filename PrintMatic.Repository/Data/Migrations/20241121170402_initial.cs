@@ -299,6 +299,7 @@ namespace PrintMatic.Repository.Data.Migrations
                     CustomerEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OrderDate = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StatusReady = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ShippingAddress_FullName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ShippingAddress_PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ShippingAddress_Region = table.Column<string>(type: "nvarchar(max)", nullable: false),
