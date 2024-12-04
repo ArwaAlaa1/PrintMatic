@@ -63,6 +63,7 @@ namespace PrintMatic.Repository.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public  DbSet<ShippingCost> ShippingCosts { get; set; }
+        public DbSet<NotificationMessage> NotificationMessage { get; set; }
 
     }
 }

@@ -18,5 +18,7 @@ namespace PrintMatic.Core.Entities.Identity
         public string? FilePath { get; set; }
 
         public bool? IsCompany { get; set; }
+
+        public string FCMToken { get; set; }
     }
 }

@@ -22,13 +22,16 @@ namespace PrintMartic_DashBoard.Controllers
         private readonly IMapper _mapper;
         private readonly IOrderRepository _orderRepository;
         private readonly UserManager<AppUser> _userManager;
+        private readonly INotificationRepository _notification;
 
-        public OrderController(IUnitOfWork unitOfWork ,IMapper  mapper,IOrderRepository orderRepository,UserManager<AppUser> userManager)
+        public OrderController(IUnitOfWork unitOfWork ,IMapper  mapper,IOrderRepository orderRepository
+            ,UserManager<AppUser> userManager,INotificationRepository notification)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _orderRepository = orderRepository;
             _userManager = userManager;
+            _notification = notification;
         }
 
         [HttpGet]
@@ -132,6 +135,7 @@ namespace PrintMartic_DashBoard.Controllers
 
             
             await _unitOfWork.Complet();
+
             return RedirectToAction("Index", "Order", new { status = "InProgress" });
           
         }

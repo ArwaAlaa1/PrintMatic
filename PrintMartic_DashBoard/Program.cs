@@ -59,7 +59,7 @@ namespace PrintMartic_DashBoard
             builder.Services.AddScoped(typeof(IProductSize), typeof(ProductSizeRepository));
             builder.Services.AddScoped(typeof(IReviewRepository), typeof(ReviewRepository));
             builder.Services.AddScoped(typeof(ISaleRepository), typeof(SaleRepository));
-
+            builder.Services.AddScoped(typeof(INotificationRepository), typeof(NotificationRepository));
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
 			#endregion

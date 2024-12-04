@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -98,11 +100,10 @@ namespace PrintMatic
 			
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
-			#endregion
+            #endregion
 
-
-
-			var app = builder.Build();
+         
+            var app = builder.Build();
 
 			#region Update Database
 
