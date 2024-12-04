@@ -10,6 +10,9 @@ namespace PrintMatic.Core.Entities.Identity
 {
 	public class AppUser:IdentityUser
 	{
+        public string? Location { get; set; }
+        public int? Lat { get; set; }
+        public int? Long { get; set; }
 
         public IList<Address>? Addresses { get; set; }=null;
        

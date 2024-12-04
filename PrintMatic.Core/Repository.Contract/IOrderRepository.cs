@@ -31,7 +31,9 @@ namespace PrintMatic.Core.Repository.Contract
         public Task<OrderItem> CanceltOrderItemForAdminAsync(int ItemId);
 
         //Specific Signatures for DashBoard as Admin
-        public Task<IQueryable<Order>> GetReadyOrders();
+        public Task<List<Order>> GetReadyOrders();
+
+
 
 
     }

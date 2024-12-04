@@ -14,12 +14,19 @@ namespace PrintMatic.Extentions
 
         public static IServiceCollection AddApplicationServices(this IServiceCollection services)
         {
-           
+            services.AddScoped<CompanyService>();
+            
+            services.AddTransient<CompanyNameResolver>();
+            services.AddTransient<CompanyLocationResolver>();
+            services.AddAutoMapper(typeof(MappingOrder));
+
+
             services.AddScoped<ICartRepository, CartRepository>();
             services.AddScoped(typeof(IOrderService), typeof(OrderService));
             services.AddScoped(typeof(IOrderRepository), typeof(OrderRepository));
             services.AddAutoMapper(typeof(MappingProfiles));
-			services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+            services.AddAutoMapper(typeof(MappingOrder));
+            services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
             services.AddScoped(typeof(IAddressRepository), typeof(AddressRepository));
             services.AddScoped<IEmailService, EmailService>();
 			services.AddMemoryCache();

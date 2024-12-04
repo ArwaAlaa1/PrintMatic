@@ -86,7 +86,14 @@ namespace PrintMatic.Helper
           .ForMember(dest => dest.Text, opt => opt.MapFrom(src => src.ProductItem.Text))
           .ForMember(dest => dest.Date, opt => opt.MapFrom(src => src.ProductItem.Date))
           .ForMember(dest => dest.FilePdf, opt => opt.MapFrom(src => src.ProductItem.FilePdf)).ReverseMap();
-           
+
+
+            //delivery
+
+
+          
+
+
 
             CreateMap<Favorite, FavouriteDto>().ReverseMap();
             CreateMap<ProductColor, ColorDto>().ReverseMap();

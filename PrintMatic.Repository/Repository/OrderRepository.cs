@@ -159,12 +159,16 @@ namespace PrintMatic.Repository.Repository
             return orderItem;
         }
 
-        public async Task<IQueryable<Order>> GetReadyOrders()
+        public async Task<List<Order>> GetReadyOrders()
         {
-            var orders =_context.Orders
-                .Where(oi => oi.OrderItems.All(oi => oi.OrderItemStatus == OrderItemStatus.Ready))
-                .AsQueryable();
+            var orders = await _context.Orders
+                .Where(o => o.OrderItems.All(oi => oi.OrderItemStatus == OrderItemStatus.Ready))
+                .Include(i=>i.OrderItems)
+                .Include(o => o.ShippingAddress)
+                .Include(o => o.ShippingCost)
+                .ToListAsync(); 
             return orders;
         }
+
     }
 }
